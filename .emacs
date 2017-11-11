@@ -17,7 +17,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (adjust-parens slime auto-complete typescript-mode tss web-mode ac-html ac-html-bootstrap ng2-mode ac-html-angular multiple-cursors powerline sr-speedbar smartparens moe-theme noctilux-theme nzenburn-theme ukrainian-holidays paganini-theme hamburg-theme ac-etags)))
+    (highlight highlight-blocks highlight-sexp rainbow-delimiters rainbow-blocks highlight-parentheses adjust-parens slime auto-complete typescript-mode tss web-mode ac-html ac-html-bootstrap ng2-mode ac-html-angular multiple-cursors powerline sr-speedbar smartparens moe-theme noctilux-theme nzenburn-theme ukrainian-holidays paganini-theme hamburg-theme ac-etags)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
 
@@ -168,3 +168,24 @@
  ;; If there is more than one, they won't work right.
  )
 
+
+;;
+;; lisp hooks
+;;
+
+(add-hook 'lisp-mode-hook
+	  '(lambda ()
+	     (rainbow-delimiters-mode)
+	     (highlight-sexp-mode)
+	     (highlight-blocks-mode)
+	     ))
+
+
+;;
+;; emacs lisp mode
+;;
+(add-hook 'emacs-lisp-mode-hook
+	  '(lambda ()
+	     (rainbow-delimiters-mode)
+	     (highlight-sexp-mode)
+	     (highlight-blocks-mode)))
