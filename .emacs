@@ -17,25 +17,13 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (highlight highlight-blocks highlight-sexp rainbow-delimiters rainbow-blocks highlight-parentheses adjust-parens slime auto-complete typescript-mode tss web-mode ac-html ac-html-bootstrap ng2-mode ac-html-angular multiple-cursors powerline sr-speedbar smartparens moe-theme noctilux-theme nzenburn-theme ukrainian-holidays paganini-theme hamburg-theme ac-etags)))
+    (ac-geiser geiser quack scheme-complete chicken-scheme rainbow-blocks rainbow-delimiters rainbow-identifiers rainbow-mode highlight-sexp context-coloring highlight highlight-blocks highlight-chars highlight-cl highlight-context-line highlight-defined highlight-escape-sequences highlight-function-calls highlight-indent-guides highlight-indentation highlight-leading-spaces highlight-numbers highlight-operators highlight-parentheses highlight-quoted highlight-refontification highlight-stages highlight-symbol highlight-tail highlight-thing highlight-unique-symbol highlight2clipboard hl-anything hl-defined hl-indent hl-sentence hl-sexp hl-spotlight hl-todo slime tss web-mode ac-html ac-html-bootstrap ng2-mode ac-html-angular multiple-cursors powerline sr-speedbar smartparens moe-theme noctilux-theme nzenburn-theme ukrainian-holidays paganini-theme hamburg-theme ac-etags)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
-
-
-;;
-;; adjust-parens
-;;
-(require 'adjust-parens)
-;;
-;;
-;;
-
-
 
 ;;
 ;;typescript usage
 ;;
-
 (require 'typescript)
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 
@@ -50,6 +38,11 @@
 	     )
 	  )
 
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda()
+	    (rainbow-delimiters-mode)
+	    (highlight-sexp-mode)
+	    (highlight-blocks-mode)))
 
 (tss-config-default)
 
@@ -58,15 +51,19 @@
 ;;
 
 
-;;
-;;slime initialization
-;;
+
+;; ===================
+;; slime configuration
+;; ===================
 
 (setq inferior-lisp-program "/usr/bin/sbcl")
 
-;;
-;; end slime
-;;
+;; ===================
+;; slime end 
+;; ===================
+
+
+
 
 
 ;; (add-to-list 'load-path "~/.emacs.d/theme/") 
@@ -115,7 +112,7 @@
       version-control t                 ; version numbers for backup files
       delete-old-versions t             ; delete excess backup files silently
       delete-by-moving-to-trash t
-      kept-old-versions 1               ; oldest versions to keep when a new numbered backup is made (default: 2)
+      kept-old-versions 100               ; oldest versions to keep when a new numbered backup is made (default: 2)
       kept-new-versions 100               ; newest versions to keep when a new numbered backup is made (default: 2)
       auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
@@ -168,24 +165,12 @@
  ;; If there is more than one, they won't work right.
  )
 
-
 ;;
-;; lisp hooks
+;; lisp mode hook
 ;;
 
 (add-hook 'lisp-mode-hook
 	  '(lambda ()
-	     (rainbow-delimiters-mode)
 	     (highlight-sexp-mode)
 	     (highlight-blocks-mode)
-	     ))
-
-
-;;
-;; emacs lisp mode
-;;
-(add-hook 'emacs-lisp-mode-hook
-	  '(lambda ()
-	     (rainbow-delimiters-mode)
-	     (highlight-sexp-mode)
-	     (highlight-blocks-mode)))
+	     (rainbow-delimiters-mode)))
