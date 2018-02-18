@@ -1,2 +1,3 @@
 # dotemacs
-.emacs
+.emacs conf
+
