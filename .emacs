@@ -17,9 +17,41 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (discover-my-major helm-descbinds editorconfig ac-geiser geiser quack scheme-complete chicken-scheme rainbow-blocks rainbow-delimiters rainbow-identifiers rainbow-mode highlight-sexp context-coloring highlight highlight-blocks highlight-chars highlight-cl highlight-context-line highlight-defined highlight-escape-sequences highlight-function-calls highlight-indent-guides highlight-indentation highlight-leading-spaces highlight-numbers highlight-operators highlight-parentheses highlight-quoted highlight-refontification highlight-stages highlight-symbol highlight-tail highlight-thing highlight-unique-symbol highlight2clipboard hl-anything hl-defined hl-indent hl-sentence hl-sexp hl-spotlight hl-todo slime tss web-mode ac-html ac-html-bootstrap ng2-mode ac-html-angular multiple-cursors powerline sr-speedbar smartparens moe-theme noctilux-theme nzenburn-theme ukrainian-holidays paganini-theme hamburg-theme ac-etags)))
+    (flycheck flycheck-lilypond discover-my-major helm-descbinds editorconfig ac-geiser geiser quack scheme-complete chicken-scheme rainbow-blocks rainbow-delimiters rainbow-identifiers rainbow-mode highlight-sexp context-coloring highlight highlight-blocks highlight-chars highlight-cl highlight-context-line highlight-defined highlight-escape-sequences highlight-function-calls highlight-indent-guides highlight-indentation highlight-leading-spaces highlight-numbers highlight-operators highlight-parentheses highlight-quoted highlight-refontification highlight-stages highlight-symbol highlight-tail highlight-thing highlight-unique-symbol highlight2clipboard hl-anything hl-defined hl-indent hl-sentence hl-sexp hl-spotlight hl-todo slime tss web-mode ac-html ac-html-bootstrap ng2-mode ac-html-angular multiple-cursors powerline sr-speedbar smartparens moe-theme noctilux-theme nzenburn-theme ukrainian-holidays paganini-theme hamburg-theme ac-etags)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
+
+
+;;
+;; load paths
+;;
+
+(setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode")) load-path))
+(setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode/lilypond-init.el")) load-path))
+(setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp/uim-el")) load-path))
+(setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
+;; (setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode")) load-path))
+;; (setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode")) load-path))
+
+
+;;
+;; lilypond
+;;
+
+(autoload 'LilyPond-mode "lilypond-mode" "LilyPond Editing Mode" t)
+(add-to-list 'auto-mode-alist '("\\.ly$" . LilyPond-mode))
+(add-to-list 'auto-mode-alist '("\\.ily$" . LilyPond-mode)) 
+
+
+
+
+;;
+;; uim
+;;
+;;
+
+(require 'uim)
+
 
 ;;
 ;;typescript usage
@@ -174,3 +206,20 @@
 	     (highlight-sexp-mode)
 	     (highlight-blocks-mode)
 	     (rainbow-delimiters-mode)))
+
+;;
+;; geiser
+;;
+(setq geiser-active-implementations '(racket))
+
+
+;;
+;;scheme mode
+;;
+
+(add-hook 'scheme-mode-hook
+	  '(lambda ()
+	     (highlight-sexp-mode)
+	     (highlight-blocks-mode)
+	     (rainbow-delimiters-mode)
+	     (geiser-mode)))
