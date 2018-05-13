@@ -12,12 +12,10 @@
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
-     ("melpa-stable" . "https://stable.melpa.org/packages/")
-     ("marmalade-repo" . "https://marmalade-repo.org/packages/")
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (flycheck flycheck-lilypond discover-my-major helm-descbinds editorconfig ac-geiser geiser quack scheme-complete chicken-scheme rainbow-blocks rainbow-delimiters rainbow-identifiers rainbow-mode highlight-sexp context-coloring highlight highlight-blocks highlight-chars highlight-cl highlight-context-line highlight-defined highlight-escape-sequences highlight-function-calls highlight-indent-guides highlight-indentation highlight-leading-spaces highlight-numbers highlight-operators highlight-parentheses highlight-quoted highlight-refontification highlight-stages highlight-symbol highlight-tail highlight-thing highlight-unique-symbol highlight2clipboard hl-anything hl-defined hl-indent hl-sentence hl-sexp hl-spotlight hl-todo slime tss web-mode ac-html ac-html-bootstrap ng2-mode ac-html-angular multiple-cursors powerline sr-speedbar smartparens moe-theme noctilux-theme nzenburn-theme ukrainian-holidays paganini-theme hamburg-theme ac-etags)))
+    (highlight-blocks flycheck flycheck-lilypond discover-my-major editorconfig geiser rainbow-blocks rainbow-delimiters rainbow-mode slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
 
@@ -25,13 +23,27 @@
 ;;
 ;; load paths
 ;;
+(let ((default-directory  "~/.emacs.d/git/"))
+  (normal-top-level-add-subdirs-to-load-path))
 
 (setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode")) load-path))
 (setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode/lilypond-init.el")) load-path))
 (setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp/uim-el")) load-path))
 (setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
-;; (setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode")) load-path))
-;; (setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode")) load-path))
+
+;;
+;;   ==========       requires      =========
+;;
+(require 'highlight-sexp)
+(require 'powerline)
+(require 'moe-theme)
+
+;;
+;;moe theme
+;;
+
+(moe-dark)
+(powerline-moe-theme)
 
 
 ;;
@@ -56,27 +68,23 @@
 ;;
 ;;typescript usage
 ;;
-(require 'typescript)
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+;; (require 'typescript)
+;; (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 
-(require 'tss)
+;; (require 'tss)
 
 ;;key bindings
-(add-hook 'typescript-mode
-	  '(lambda ()
-	     (local-set-key (kbd "C-t C-:") 'tss-popup-help)
-	     (local-set-key (kbd "C-t C->") 'tss-jump-to-definition)
-	     (local-set-key (kbd "C-t C-c i") 'tss-implement-definition)
-	     )
-	  )
+;; (add-hook 'typescript-mode
+;; 	  '(lambda ()
+;; 	     (local-set-key (kbd "C-t C-:") 'tss-popup-help)
+;; 	     (local-set-key (kbd "C-t C->") 'tss-jump-to-definition)
+;; 	     (local-set-key (kbd "C-t C-c i") 'tss-implement-definition)
+;; 	     )
+;; 	  )
 
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda()
-	    (rainbow-delimiters-mode)
-	    (highlight-sexp-mode)
-	    (highlight-blocks-mode)))
 
-(tss-config-default)
+
+;; (tss-config-default)
 
 ;;
 ;; typescript end
@@ -107,8 +115,8 @@
 
 
 ;;
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+;; (require 'web-mode)
+;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 
 ;; Replace "sbcl" with the path to your implementation
@@ -151,17 +159,14 @@
       auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
       )
 
-(require 'auto-complete-config)
+;; (require 'auto-complete-config)
 
-(ac-config-default)
+;; (ac-config-default)
 
-(require 'auto-complete)
+;; (require 'auto-complete)
 
-(require 'powerline)
-(require 'moe-theme)
-(moe-dark)
-(powerline-moe-theme)
 
+     
 
 ;;multiple cursors keybindings
 (require 'multiple-cursors)
@@ -223,3 +228,13 @@
 	     (highlight-blocks-mode)
 	     (rainbow-delimiters-mode)
 	     (geiser-mode)))
+
+;;
+;;   emacs lisp mode hook
+;;
+
+(add-hook 'emacs-lisp-mode-hook
+	  '(lambda ()
+	     (highlight-sexp-mode)
+	     (highlight-blocks-mode)
+	     (rainbow-delimiters-mode)))
