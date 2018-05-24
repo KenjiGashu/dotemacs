@@ -15,7 +15,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (highlight-blocks flycheck flycheck-lilypond discover-my-major editorconfig geiser rainbow-blocks rainbow-delimiters rainbow-mode slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
+    (helm-describe-modes counsel ivy helm use-package which-key evil highlight-blocks flycheck flycheck-lilypond discover-my-major editorconfig geiser rainbow-blocks rainbow-delimiters rainbow-mode slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
 
@@ -54,7 +54,71 @@
 (add-to-list 'auto-mode-alist '("\\.ly$" . LilyPond-mode))
 (add-to-list 'auto-mode-alist '("\\.ily$" . LilyPond-mode)) 
 
+;;
+(use-package which-key :ensure t
+  :init
+  (which-key-mode)
+  :config
+  (which-key-setup-side-window-right-bottom)
+  (setq which-key-sort-order 'which-key-key-order-alpha
+        which-key-side-window-max-width 0.33
+        which-key-idle-delay 0.05)
+  )
+(use-package ranger :ensure t
+  :commands (ranger)
+  :bind (("C-x d" . deer))
+  :config
+  (setq ranger-cleanup-eagerly t)
+  )
+(use-package general :ensure t
+  :config
+  (general-evil-setup t)
 
+  (general-define-key
+   :states '(normal insert emacs)
+   :prefix "C-SPC"
+   :non-normal-prefix "C-SPC"
+   "l" '(avy-goto-line)
+   "a" 'align-regexp
+   )
+  (general-def :states '(normal motion emacs) "SPC" nil)
+  (general-define-key
+   :states '(normal motion emacs)
+   :prefix "SPC"
+   "ar" '(ranger :which-key "call ranger")
+   "g"  '(:ignore t :which-key "Git")
+   "gs" '(magit-status :which-key "git status")
+   "ff" '(find-file :which-key "find file")
+   "w TAB" '(other-window :which-key "other window c-x o")
+   "bb" '(switch-to-buffer :which-key "switch buffer")
+   "w1" '(delete-other-windows :which-key "delete-other-windows - buffer tela cheia")
+   "w0" '(delete-window :which-key "delete-window - fecha tela atual")
+   "w2" '(split-window-below :which-key "split-window-below - splita em cima e embaixo")
+   "w3" '(split-window-right :which-key "split-window-right - splita lado a lado")
+   )
+)
+(use-package ivy :ensure t
+  :diminish (ivy-mode . "") ; does not display ivy in the modeline
+  :init (ivy-mode 1)        ; enable ivy globally at startup
+  :bind (:map ivy-mode-map  ; bind in the ivy buffer
+         ("C-'" . ivy-avy)) ; C-' to ivy-avy
+  :config
+  (setq ivy-use-virtual-buffers t)   ; extend searching to bookmarks and …
+  (setq ivy-height 20)               ; set height of the ivy window
+  (setq ivy-count-format "(%d/%d) ") ; count format, from the ivy help page
+  )
+
+(use-package counsel :ensure t
+  :bind*                           ; load counsel when pressed
+  (("M-x"     . counsel-M-x)       ; M-x use counsel
+   ("C-x C-f" . counsel-find-file) ; C-x C-f use counsel-find-file
+   ("C-x C-r" . counsel-recentf)   ; search recently edited files
+   ("C-c f"   . counsel-git)       ; search for files in git repo
+   ("C-c s"   . counsel-git-grep)  ; search for regexp in git repo
+   ("C-c /"   . counsel-ag)        ; search for regexp in git repo using ag
+   ("C-c l"   . counsel-locate))   ; search for files or else using locate
+  )
+;;
 
 
 ;;
@@ -238,3 +302,10 @@
 	     (highlight-sexp-mode)
 	     (highlight-blocks-mode)
 	     (rainbow-delimiters-mode)))
+
+;;
+;;
+;; general translation
+;;
+
+(evil-mode)
