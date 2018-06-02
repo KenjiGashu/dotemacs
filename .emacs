@@ -15,7 +15,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (helm-describe-modes counsel ivy helm use-package which-key evil highlight-blocks flycheck flycheck-lilypond discover-my-major editorconfig geiser rainbow-blocks rainbow-delimiters rainbow-mode slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
+    (general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser rainbow-blocks rainbow-delimiters rainbow-mode slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
 
@@ -95,6 +95,7 @@
    "w0" '(delete-window :which-key "delete-window - fecha tela atual")
    "w2" '(split-window-below :which-key "split-window-below - splita em cima e embaixo")
    "w3" '(split-window-right :which-key "split-window-right - splita lado a lado")
+   "fs" '(save-buffer :which-key "save-buffer - salva file")
    )
 )
 (use-package ivy :ensure t
