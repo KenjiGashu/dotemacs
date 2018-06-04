@@ -15,7 +15,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser rainbow-blocks rainbow-delimiters rainbow-mode slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
+    (auto-complete magit company general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser rainbow-blocks rainbow-delimiters rainbow-mode slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
 
@@ -226,10 +226,10 @@
 
 ;; (require 'auto-complete-config)
 
-;; (ac-config-default)
+(ac-config-default)
 
-;; (require 'auto-complete)
-
+(use-package auto-complete)
+(auto-complete-mode)
 
      
 
