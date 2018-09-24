@@ -15,7 +15,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (company spaceline spacemacs-theme magit general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser rainbow-blocks rainbow-delimiters rainbow-mode slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
+    (evil-mc evil-mc-extras treemacs treemacs-evil treemacs-projectile counsel-projectile projectile rainbow-blocks rainbow-delimiters rainbow-mode cider company magit general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
 
@@ -32,12 +32,19 @@
 (setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
 
 
+
+;; ================= fix dead keys   ===========================
+(require 'iso-transl)
+
+
 ;;
 ;;   ==========       requires      =========
 ;;
 (require 'highlight-sexp)
 (require 'powerline)
 (require 'moe-theme)
+(require 'treemacs-evil)
+(global-set-key [f8] 'treemacs)
 
 ;;
 ;;moe theme
@@ -104,6 +111,7 @@
    "ff" '(find-file :which-key "find file")
    "w TAB" '(other-window :which-key "other window c-x o")
    "bb" '(switch-to-buffer :which-key "switch buffer")
+   "bk" '(kill-buffer :which-key "kill-buffer")
    "w1" '(delete-other-windows :which-key "delete-other-windows - buffer tela cheia")
    "w0" '(delete-window :which-key "delete-window - fecha tela atual")
    "w2" '(split-window-below :which-key "split-window-below - splita em cima e embaixo")
@@ -140,7 +148,8 @@
 ;;
 ;;
 
-(require 'uim)
+
+;;(require 'uim)
 
 
 ;;
@@ -254,11 +263,52 @@
      
 
 ;;multiple cursors keybindings
-(require 'multiple-cursors)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;; (require 'multiple-cursors)
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+
+;; multiple cursors evil mode
+(require 'evil-mc)
+
+;; (evil-define-local-var evil-mc-custom-paused nil
+;;   "Paused functionality when there are multiple cursors active.")
+
+;; (defun evil-mc-pause-smartchr-for-mode (mode)
+;;   "Temporarily disables the smartchr keys for MODE."
+;;   (let ((m-mode (if (atom mode) mode (car mode)))
+;;         (s-mode (if (atom mode) mode (cdr mode))))
+;;     (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
+;;           (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
+;;       (when (eq major-mode m-mode)
+;;         (funcall undo)
+;;         (push `(lambda () (,init)) evil-mc-custom-paused)))))
+
+;; (defun evil-mc-before-cursors-setup-hook ()
+;;   "Hook to run before any cursor is created.
+;; Can be used to temporarily disable any functionality that doesn't
+;; play well with `evil-mc'."
+;;   (mapc 'evil-mc-pause-smartchr-for-mode
+;;         '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
+;;   (when (boundp whitespace-cleanup-disabled)
+;;     (setq whitespace-cleanup-disabled t)
+;;     (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
+
+;; (defun evil-mc-after-cursors-teardown-hook ()
+;;   "Hook to run after all cursors are deleted."
+;;   (dolist (fn evil-mc-custom-paused) (funcall fn))
+;;   (setq evil-mc-custom-paused nil))
+
+;; (add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
+;; (add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
+
+(defvar evil-mc-mode-line-prefix "ⓜ"
+  "Override of the default mode line string for `evil-mc-mode'.")
+
+(global-evil-mc-mode 1)
+
 
 ;; commands binding
 (global-set-key [24 10] (quote sr-speedbar-toggle))
@@ -296,6 +346,17 @@
 	     (highlight-sexp-mode)
 	     (highlight-blocks-mode)
 	     (rainbow-delimiters-mode)))
+
+;;
+;;
+;; clojure mode hook
+;;
+(add-hook 'clojure-mode-hook
+	  '(lambda ()
+	     (rainbow-delimiters-mode)
+	     (highlight-sexp-mode)
+	     (highlight-blocks-mode)))
+
 
 ;;
 ;; geiser
