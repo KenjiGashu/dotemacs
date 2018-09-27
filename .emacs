@@ -15,7 +15,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (evil-mc evil-mc-extras treemacs treemacs-evil treemacs-projectile counsel-projectile projectile rainbow-blocks rainbow-delimiters rainbow-mode cider company magit general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
+    (dante haskell-mode evil-mc evil-mc-extras counsel-projectile projectile rainbow-blocks rainbow-delimiters rainbow-mode cider company magit general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
 
@@ -389,5 +389,20 @@
 ;;
 ;; general translation
 ;;
+
+
+;; -------------------------------------------------
+;; Haskell
+(use-package dante
+  :ensure t
+  :after haskell-mode
+  :commands 'dante-mode
+  :init
+  (add-hook 'haskell-mode-hook 'dante-mode)
+  
+  (add-hook 'haskell-mode-hook 'flycheck-mode)
+  ;; OR:
+  ;; (add-hook 'haskell-mode-hook 'flymake-mode)
+  )
 
 (evil-mode)
