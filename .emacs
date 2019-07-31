@@ -15,7 +15,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (dante haskell-mode evil-mc evil-mc-extras counsel-projectile projectile rainbow-blocks rainbow-delimiters rainbow-mode cider company magit general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
+    (slime-autoloads dante haskell-mode evil-mc evil-mc-extras counsel-projectile projectile rainbow-blocks rainbow-delimiters rainbow-mode cider company magit general ranger counsel ivy use-package which-key evil highlight-blocks flycheck flycheck-lilypond editorconfig geiser slime multiple-cursors powerline sr-speedbar smartparens moe-theme)))
  '(speedbar-show-unknown-files t))
 (package-initialize)
 
@@ -34,17 +34,27 @@
 
 
 ;; ================= fix dead keys   ===========================
-(require 'iso-transl)
+;;(use-package iso-transl :ensure t)
 
 
 ;;
 ;;   ==========       requires      =========
 ;;
-(require 'highlight-sexp)
-(require 'powerline)
-(require 'moe-theme)
-(require 'treemacs-evil)
+;;(use-package highlight-sexp :ensure t)
+(use-package powerline :ensure t)
+(use-package moe-theme :ensure t)
+(use-package treemacs-evil :ensure t)
 (global-set-key [f8] 'treemacs)
+(use-package org :ensure t)
+(use-package evil-org :ensure t)
+(use-package ggtags :ensure t)
+(use-package company :ensure t)
+(use-package yasnippet :ensure t)
+(use-package yasnippet-snippets :ensure t)
+(use-package helm :ensure t)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(use-package ensime :ensure t)
+(use-package scala-mode :ensure t)
 
 ;;
 ;;moe theme
@@ -149,16 +159,16 @@
 ;;
 
 
-;;(require 'uim)
+;;(use-package  uim :enseure t)
 
 
 ;;
 ;;typescript usage
 ;;
-;; (require 'typescript)
+;; (use-package typescript :ensure t)
 ;; (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 
-;; (require 'tss)
+;; (use-package tss :ensure t)
 
 ;;key bindings
 ;; (add-hook 'typescript-mode
@@ -184,7 +194,7 @@
 ;; ===================
 ;; Setup load-path and autoloads
 ;; (add-to-list 'load-path "~/dir/to/cloned/slime")
-(require 'slime-autoloads)
+;;(use-package slime-autoloads :ensure t)
 
 ;; Set your lisp system and some contribs
 (setq inferior-lisp-program "/usr/bin/sbcl")
@@ -202,14 +212,14 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/theme/") 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/theme/")
-;;(require 'tomorrow-night-paradise-theme) 
+;;(use-package tomorrow-night-paradise-theme) :ensure t 
 ;;(load-theme 'tomorrow-night-paradise)
 ;; (add-to-list 'load-path "~/.emacs.d/sr-speedbar-master/")
 ;; (add-to-list 'load-path "~/.emacs.d/emacs-rails-reloaded-master/")
 
 
 ;;
-;; (require 'web-mode)
+;; (use-package web-mode :ensure t)
 ;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 
@@ -217,12 +227,12 @@
 
 
 
-(require 'sr-speedbar)
+(use-package sr-speedbar :ensure t)
 (sr-speedbar-refresh-turn-off)
 
 
 
-;; (require 'rails-autoload)
+;; (use-package rails-autoload :ensure t)
 
 
 
@@ -253,7 +263,7 @@
       auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
       )
 
-;; (require 'auto-complete-config)
+;; (use-package auto-complete-config :ensure t)
 
 ;; (ac-config-default)
 
@@ -263,7 +273,7 @@
      
 
 ;;multiple cursors keybindings
-;; (require 'multiple-cursors)
+;; (use-package multiple-cursors :ensure t)
 ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 ;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 ;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
@@ -271,38 +281,38 @@
 
 
 ;; multiple cursors evil mode
-(require 'evil-mc)
+(use-package evil-mc :ensure t)
 
-;; (evil-define-local-var evil-mc-custom-paused nil
-;;   "Paused functionality when there are multiple cursors active.")
+(evil-define-local-var evil-mc-custom-paused nil
+  "Paused functionality when there are multiple cursors active.")
 
-;; (defun evil-mc-pause-smartchr-for-mode (mode)
-;;   "Temporarily disables the smartchr keys for MODE."
-;;   (let ((m-mode (if (atom mode) mode (car mode)))
-;;         (s-mode (if (atom mode) mode (cdr mode))))
-;;     (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
-;;           (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
-;;       (when (eq major-mode m-mode)
-;;         (funcall undo)
-;;         (push `(lambda () (,init)) evil-mc-custom-paused)))))
+(defun evil-mc-pause-smartchr-for-mode (mode)
+  "Temporarily disables the smartchr keys for MODE."
+  (let ((m-mode (if (atom mode) mode (car mode)))
+        (s-mode (if (atom mode) mode (cdr mode))))
+    (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
+          (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
+      (when (eq major-mode m-mode)
+        (funcall undo)
+        (push `(lambda () (,init)) evil-mc-custom-paused)))))
 
-;; (defun evil-mc-before-cursors-setup-hook ()
-;;   "Hook to run before any cursor is created.
-;; Can be used to temporarily disable any functionality that doesn't
-;; play well with `evil-mc'."
-;;   (mapc 'evil-mc-pause-smartchr-for-mode
-;;         '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
-;;   (when (boundp whitespace-cleanup-disabled)
-;;     (setq whitespace-cleanup-disabled t)
-;;     (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
+(defun evil-mc-before-cursors-setup-hook ()
+  "Hook to run before any cursor is created.
+Can be used to temporarily disable any functionality that doesn't
+play well with `evil-mc'."
+  (mapc 'evil-mc-pause-smartchr-for-mode
+        '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
+  (when (boundp whitespace-cleanup-disabled)
+    (setq whitespace-cleanup-disabled t)
+    (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
 
-;; (defun evil-mc-after-cursors-teardown-hook ()
-;;   "Hook to run after all cursors are deleted."
-;;   (dolist (fn evil-mc-custom-paused) (funcall fn))
-;;   (setq evil-mc-custom-paused nil))
+(defun evil-mc-after-cursors-teardown-hook ()
+  "Hook to run after all cursors are deleted."
+  (dolist (fn evil-mc-custom-paused) (funcall fn))
+  (setq evil-mc-custom-paused nil))
 
-;; (add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
-;; (add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
+(add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
+(add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
 
 (defvar evil-mc-mode-line-prefix "ⓜ"
   "Override of the default mode line string for `evil-mc-mode'.")
@@ -343,7 +353,7 @@
 
 (add-hook 'lisp-mode-hook
 	  '(lambda ()
-	     (highlight-sexp-mode)
+	     ;;(highlight-sexp-mode)
 	     (highlight-blocks-mode)
 	     (rainbow-delimiters-mode)))
 
@@ -354,7 +364,7 @@
 (add-hook 'clojure-mode-hook
 	  '(lambda ()
 	     (rainbow-delimiters-mode)
-	     (highlight-sexp-mode)
+	     ;;(highlight-sexp-mode)
 	     (highlight-blocks-mode)))
 
 
@@ -370,7 +380,7 @@
 
 (add-hook 'scheme-mode-hook
 	  '(lambda ()
-	     (highlight-sexp-mode)
+	     ;;(highlight-sexp-mode)
 	     (highlight-blocks-mode)
 	     (rainbow-delimiters-mode)
 	     (geiser-mode)))
@@ -381,7 +391,7 @@
 
 (add-hook 'emacs-lisp-mode-hook
 	  '(lambda ()
-	     (highlight-sexp-mode)
+	     ;;(highlight-sexp-mode)
 	     (highlight-blocks-mode)
 	     (rainbow-delimiters-mode)))
 
