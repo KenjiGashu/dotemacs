@@ -1,4 +1,5 @@
-;; inicializacao package manage
+;;; emacs conf --- configuration
+;;; inicializacao package manage
 (require 'package)
 ;;(custom-set-variables
 ;; ;; custom-set-variables was added by Custom.
@@ -18,14 +19,11 @@
 ;;    (dante evil-mc sr-speedbar counsel ivy general which-key async company ggtags evil-org treemacs-evil moe-theme powerline popup)))
 ;; '(speedbar-show-unknown-files t))
 ;;(package-initialize)
-
-
-; list the packages you want
 (setq package-list '(use-package moe-theme))
 
 ; list the repositories containing them
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-						 ("melpa" . "https://melpa.org/packages/")))
+			 ("melpa" . "https://melpa.org/packages/")))
 
 ; activate all the packages (in particular autoloads)
 (package-initialize)
@@ -38,7 +36,49 @@
 (dolist (package package-list)
   (unless (package-installed-p package)
     (package-install package)))
+(use-package moe-theme)
+(use-package evil)
 
+;; Enable defer and ensure by default for use-package
+(setq use-package-always-defer t
+      use-package-always-ensure t)
+
+
+;; ==================================================================
+;;
+;; scala config
+;;
+;; ==================================================================
+
+;; Enable scala-mode and sbt-mode
+(use-package scala-mode
+  :mode "\\.s\\(cala\\|bt\\)$")
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map))
+
+;; Enable nice rendering of diagnostics like compile errors.
+(use-package flycheck
+  :init (global-flycheck-mode))
+
+(use-package lsp-mode
+  ;; Optional - enable lsp-mode automatically in scala files
+  :hook (scala-mode . lsp)
+  :config (setq lsp-prefer-flymake nil))
+
+(use-package lsp-ui)
+
+;; Add company-lsp backend for metals
+(use-package company-lsp)
+
+;; ==================================================================
 
 
 ;;
@@ -53,35 +93,178 @@
 (setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
 
 
+;; lsp config teste
+(require 'cc-mode)
+
+;; check use-package
+(condition-case nil
+    (require 'use-package)
+  (file-error
+   (require 'package)
+   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+   (package-initialize)
+   (package-refresh-contents)
+   (package-install 'use-package)
+   (require 'use-package)))
+
+(use-package projectile )
+(use-package yasnippet )
+(use-package hydra )
+(use-package lsp-java  :after lsp
+  :config (add-hook 'java-mode-hook 'lsp))
+
+(use-package dap-mode
+   :after lsp-mode
+  :config
+  (dap-mode t)
+  (dap-ui-mode t))
+
+;;(use-package dap-java :after (lsp-java))
+(require 'dap-java)
+(use-package gradle-mode )
+(use-package flycheck-gradle )
+(use-package groovy-mode )
+
+
+(defun cquery//enable ()
+  (condition-case nil
+      (lsp)
+    (user-error nil)))
+(use-package cquery 
+  :init
+  :commands lsp
+  :init
+  (add-hook 'c-mode-hook #'cquery//enable)
+  (add-hook 'c++-mode-hook #'cquery//enable)
+  (setq cquery-executable "/usr/bin/cquery"))
+
+
+
 
 ;; ================= fix dead keys   ===========================
-;;(use-package iso-transl :ensure t)
+;;(use-package iso-transl )
 
 
 ;;
 ;;   ==========       requires      =========
 ;;
-;;(use-package highlight-sexp :ensure t)
-(use-package powerline :ensure t)
-(use-package moe-theme :ensure t)
-(use-package treemacs-evil :ensure t)
+;;(use-package highlight-sexp )
+(use-package powerline )
+(use-package moe-theme )
+(use-package treemacs-evil :demand t)
 (global-set-key [f8] 'treemacs)
-(use-package org :ensure t)
-(use-package evil-org :ensure t)
-(use-package ggtags :ensure t)
-(use-package company :ensure t)
-(use-package yasnippet :ensure t)
-(use-package yasnippet-snippets :ensure t)
-(use-package popup :ensure t)
-(use-package async :ensure t)
-(use-package highlight-blocks :ensure t)
-(use-package rainbow-delimiters :ensure t)
-;;(use-package helm :ensure t)
-(use-package ag :ensure t)
-(use-package ack :ensure t)
+(use-package org )
+(use-package evil-org )
+(use-package ggtags )
+(use-package counsel-gtags 
+  :config
+  (add-hook 'c-mode-hook 'counsel-gtags-mode))
+(use-package company )
+;;(use-package yasnippet )
+(use-package yasnippet-snippets )
+(use-package popup )
+(use-package async )
+(use-package highlight-blocks )
+(use-package rainbow-delimiters )
+;;(use-package helm )
+(use-package ag )
 ;;(global-set-key (kbd "M-x") 'helm-M-x)
-(use-package ensime :ensure t)
-(use-package scala-mode :ensure t)
+(use-package ensime )
+;; (use-package hydra :ensure t)
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :init
+;;   (setq lsp-prefer-flymake nil)
+;;   :demand t
+;;   :after jmi-init-platform-paths)
+
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :config
+;;   (setq lsp-ui-doc-enable nil
+;;         lsp-ui-sideline-enable nil
+;;         lsp-ui-flycheck-enable t)
+;;   :after lsp-mode)
+
+;; (use-package dap-mode
+;;   :ensure t
+;;   :config
+;;   (dap-mode t)
+;;   (dap-ui-mode t))
+
+;; (use-package dap-java :after (lsp-java))
+
+;; (use-package lsp-java
+;;   :ensure t
+;;   :init
+;;   (defun jmi/java-mode-config ()
+;;     (setq-local tab-width 4
+;;                 c-basic-offset 4)
+;;     (toggle-truncate-lines 1)
+;;     (setq-local tab-width 4)
+;;     (setq-local c-basic-offset 4)
+;;     (lsp))
+
+;;   :config
+;;   ;; Enable dap-java
+;;   (require 'dap-java)
+
+;;   ;; Support Lombok in our projects, among other things
+;;   (setq lsp-java-vmargs
+;;         (list "-noverify"
+;;               "-Xmx2G"
+;;               "-XX:+UseG1GC"
+;;               "-XX:+UseStringDeduplication"
+;;               (concat "-javaagent:" jmi/lombok-jar)
+;;               (concat "-Xbootclasspath/a:" jmi/lombok-jar))
+;;         lsp-file-watch-ignored
+;;         '(".idea" ".ensime_cache" ".eunit" "node_modules"
+;;           ".git" ".hg" ".fslckout" "_FOSSIL_"
+;;           ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
+;;           "build")
+
+;;         lsp-java-import-order '["" "java" "javax" "#"]
+;;         ;; Don't organize imports on save
+;;         lsp-java-save-action-organize-imports nil
+
+;;         ;; Formatter profile
+;;         lsp-java-format-settings-url
+;;         (concat "file://" jmi/java-format-settings-file))
+
+;;   :hook (java-mode   . jmi/java-mode-config)
+
+;;   :demand t
+;;   :after (lsp lsp-mode dap-mode jmi-init-platform-paths))
+
+;; (use-package company-lsp
+;;   :ensure t)
+;; ;; (use-package meghanada
+;; ;;     :ensure t)
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+;;
+;; Meghanada config
+;;
+;; (add-hook 'java-mode-hook
+;;           (lambda ()
+;;             ;; meghanada-mode on
+;;             (meghanada-mode t)
+;;             ;; enable telemetry
+;;             (meghanada-telemetry-enable t)
+;;             (flycheck-mode +1)
+;;             (setq c-basic-offset 2)
+;;             ;; use code format
+;;             (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
+;; (cond
+;;    ((eq system-type 'windows-nt)
+;;     (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
+;;     (setq meghanada-maven-path "mvn.cmd"))
+;;    (t
+;;     (setq meghanada-java-path "java")
+;;     (setq meghanada-maven-path "mvn")))
+
 
 ;;
 ;;moe theme
@@ -155,7 +338,21 @@
    "w3" '(split-window-right :which-key "split-window-right - splita lado a lado")
    "fs" '(save-buffer :which-key "save-buffer - salva file")
    )
-)
+  )
+
+(general-define-key
+ :keymaps 'counsel-gtags-mode-map
+    :states '(normal motion emacs)
+    :prefix "SPC"
+    "gfd" '(counsel-gtags-find-definition :which-key "find definition gtags")
+    "gfr" '(counsel-gtags-find-reference :which-key "find reference gtags")
+    "gfs" '(counsel-gtags-find-symbol :which-key "find symbol gtags")
+    "gff" '(counsel-gtags--find-file :which-key "find file gtags")
+    "g>" '(counsel-gtags-go-forward :which-key "gtags go forward")
+    "g<" '(counsel-gtags-go-backward :which-key "gtags go backward")
+    "gdd" '(counsel-gtags-dwim :which-key "gtags dwin")
+    )
+
 (use-package ivy :ensure t
   :diminish (ivy-mode . "") ; does not display ivy in the modeline
   :init (ivy-mode 1)        ; enable ivy globally at startup
@@ -254,8 +451,8 @@
 
 
 
-(use-package sr-speedbar :ensure t)
-(sr-speedbar-refresh-turn-off)
+;;(use-package sr-speedbar :ensure t)
+;;(sr-speedbar-refresh-turn-off)
 
 
 
@@ -450,4 +647,4 @@ play well with `evil-mc'."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (dante evil-mc sr-speedbar counsel ivy general which-key yasnippet-snippets use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key yasnippet-snippets use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
