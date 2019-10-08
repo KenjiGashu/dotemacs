@@ -46,6 +46,7 @@
 
 ;;can't download yasnippet-snippets because it makes package install crash
 (use-package yasnippet
+  :demand t
   :config (yas-global-mode 1))
 ;; (use-package yasnippet-snippets
 ;;   :config (yas-reload-all))
@@ -54,6 +55,7 @@
 (use-package popup)
 (use-package powerline)
 (use-package moe-theme
+  :demand t
   :after  (powerline)
   :config (moe-dark)
   (powerline-moe-theme))
@@ -74,6 +76,7 @@
 (use-package evil :ensure t :demand t
   :config (evil-mode))
 (use-package flycheck
+  :demand t
   :ensure t
   :init (global-flycheck-mode)
   :demand t)
@@ -83,6 +86,7 @@
 (use-package org )
 (use-package evil-org )
 (use-package company
+  :demand t
   :init (global-company-mode))
 
 
