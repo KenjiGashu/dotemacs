@@ -53,7 +53,8 @@
 
 (use-package async)
 (use-package popup)
-(use-package powerline)
+(use-package powerline
+  :demand t)
 (use-package moe-theme
   :demand t
   :after  (powerline)
@@ -76,7 +77,6 @@
 (use-package evil :ensure t :demand t
   :config (evil-mode))
 (use-package flycheck
-  :demand t
   :ensure t
   :init (global-flycheck-mode)
   :demand t)
