@@ -44,12 +44,14 @@
 (setq use-package-always-defer t
       use-package-always-ensure t)
 
-;;can't download yasnippet-snippets because it makes package install crash
+;;can't download asnippet-snippets because it makes package install crash
 (use-package yasnippet
   :demand t
   :config (yas-global-mode 1))
-;; (use-package yasnippet-snippets
-;;   :config (yas-reload-all))
+ (use-package yasnippet-snippets
+   :after (yas-global-mode)
+   :config (yas-reload-all)
+   :ensure nil)
 
 (use-package async)
 (use-package popup)
@@ -74,30 +76,103 @@
 (use-package highlight-blocks)
 (use-package rainbow-delimiters )
 (use-package ag :demand t)
-(use-package evil :ensure t :demand t
-  :config (evil-mode))
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode)
   :demand t)
+(use-package hydra)
 
-(use-package treemacs-evil :demand t)
-(global-set-key [f8] 'treemacs)
 (use-package org )
-(use-package evil-org )
 (use-package company
   :demand t
   :init (global-company-mode))
 
 
 
-;; debugger package
-(use-package dap-mode
-   :after lsp-mode
-  :config
-  (dap-mode t)
-  (dap-ui-mode t))
+;; ;; debugger package
+;; (use-package dap-mode
+;;    :after lsp-mode
+;;   :config
+;;   (dap-mode t)
+;;   (dap-ui-mode t))
 
+;; ===================================================
+;;
+;; evil config
+;;
+;; =================================================
+
+(use-package evil :ensure t :demand t
+  :config (evil-mode))
+(use-package smartparens :demand t
+    :init (require 'smartparens-config))
+(use-package paredit :demand t)
+(use-package evil-smartparens :after evil
+  ;;:init (add-hook 'evil-mode 'evil-smartparens-mode)
+  :config (evil-smartparens-mode))
+(use-package evil-paredit :after evil
+  ;;:init(add-hook 'evil-mode #'evil-paredit-mode))
+  :config (evil-paredit-mode))
+;; (use-package evil-cleverparens
+;;   :after evil
+;;   :config (evil-cleverparens-mode))
+(use-package evil-org )
+
+;;treemacs 
+(use-package treemacs-evil :demand t)
+(global-set-key [f8] 'treemacs)
+
+;; multiple cursors evil mode
+(use-package evil-mc :ensure t)
+
+(evil-define-local-var evil-mc-custom-paused nil
+  "Paused functionality when there are multiple cursors active.")
+
+(defun evil-mc-pause-smartchr-for-mode (mode)
+  "Temporarily disables the smartchr keys for MODE."
+  (let ((m-mode (if (atom mode) mode (car mode)))
+        (s-mode (if (atom mode) mode (cdr mode))))
+    (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
+          (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
+      (when (eq major-mode m-mode)
+        (funcall undo)
+        (push `(lambda () (,init)) evil-mc-custom-paused)))))
+
+(defun evil-mc-before-cursors-setup-hook ()
+  "Hook to run before any cursor is created.
+Can be used to temporarily disable any functionality that doesn't
+play well with `evil-mc'."
+  (mapc 'evil-mc-pause-smartchr-for-mode
+        '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
+  (when (boundp whitespace-cleanup-disabled)
+    (setq whitespace-cleanup-disabled t)
+    (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
+
+(defun evil-mc-after-cursors-teardown-hook ()
+  "Hook to run after all cursors are deleted."
+  (dolist (fn evil-mc-custom-paused) (funcall fn))
+  (setq evil-mc-custom-paused nil))
+
+(add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
+(add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
+
+(global-evil-mc-mode 1)
+
+;; =================================================
+
+
+
+
+;;==============================================================
+;;
+;; Yaml
+;;
+;;==============================================================
+(use-package yaml-mode
+  :mode "\\y\\(aml\\|ml\\)$")
+(use-package flycheck-yamllint
+  :after yaml-mode)
+;;==============================================================
 
 
 
@@ -227,8 +302,46 @@
 ;; Java
 ;;
 ;;===================================================================
-(use-package lsp-java  :after lsp
-  :config (add-hook 'java-mode-hook 'lsp))
+(use-package cc-mode)
+
+(use-package lsp-mode
+  :init (add-hook 'java-mode-hook #'lsp-deferred)
+  :commands (lsp lsp-deferred))
+;; optionally
+(use-package lsp-ui
+  :demand t
+  :commands lsp-ui-mode)
+(use-package company-lsp
+  :demand t
+  :commands company-lsp)
+(use-package helm-lsp
+  :demand t
+  :commands helm-lsp-workspace-symbol)
+(use-package lsp-treemacs
+  :demand t
+  :commands lsp-treemacs-errors-list)
+(use-package hydra
+  :demand t)
+(use-package company-lsp
+  :demand t)
+(use-package lsp-java 
+  :demand t)
+
+;; optionally if you want to use debugger
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+(use-package dap-mode
+  :demand t
+  :config
+  (dap-mode 1)
+  (dap-ui-mode 1)
+  (dap-tooltip-mode 1))
+
+(use-package dap-java
+  :demand t
+  :ensure nil)
+
+;; (use-package lsp-java  :after lsp
+;;   :config (add-hook 'java-mode-hook 'lsp))
 ;===================================================================
 
 
@@ -450,50 +563,6 @@
 ;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 ;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-
-;; ===================================================
-;;
-;; evil-mc
-;;
-;; =================================================
-
-;; multiple cursors evil mode
-(use-package evil-mc :ensure t)
-
-(evil-define-local-var evil-mc-custom-paused nil
-  "Paused functionality when there are multiple cursors active.")
-
-(defun evil-mc-pause-smartchr-for-mode (mode)
-  "Temporarily disables the smartchr keys for MODE."
-  (let ((m-mode (if (atom mode) mode (car mode)))
-        (s-mode (if (atom mode) mode (cdr mode))))
-    (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
-          (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
-      (when (eq major-mode m-mode)
-        (funcall undo)
-        (push `(lambda () (,init)) evil-mc-custom-paused)))))
-
-(defun evil-mc-before-cursors-setup-hook ()
-  "Hook to run before any cursor is created.
-Can be used to temporarily disable any functionality that doesn't
-play well with `evil-mc'."
-  (mapc 'evil-mc-pause-smartchr-for-mode
-        '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
-  (when (boundp whitespace-cleanup-disabled)
-    (setq whitespace-cleanup-disabled t)
-    (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
-
-(defun evil-mc-after-cursors-teardown-hook ()
-  "Hook to run after all cursors are deleted."
-  (dolist (fn evil-mc-custom-paused) (funcall fn))
-  (setq evil-mc-custom-paused nil))
-
-(add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
-(add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
-
-(global-evil-mc-mode 1)
-
-;; =================================================
 
 ;; commands binding
 ;; (global-set-key [24 10] (quote sr-speedbar-toggle))
