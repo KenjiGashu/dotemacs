@@ -41,8 +41,10 @@
     (package-install package)))
 
 ;; Enable defer and ensure by default for use-package
-(setq use-package-always-defer t
-      use-package-always-ensure t)
+;; (setq use-package-always-defer t
+;;       use-package-always-ensure t)
+(setq use-package-always-ensure t)
+
 
 ;;can't download asnippet-snippets because it makes package install crash
 (use-package yasnippet
@@ -53,6 +55,13 @@
    :config (yas-reload-all)
    :ensure nil)
 
+(use-package helm-c-yasnippet
+  :init
+  (setq helm-yas-space-match-any-greedy t)
+  (global-set-key (kbd "C-c y") 'helm-yas-complete))
+
+
+
 (use-package async)
 (use-package popup)
 (use-package powerline
@@ -62,8 +71,6 @@
   :after  (powerline)
   :config (moe-dark)
   (powerline-moe-theme))
-
-
 (use-package which-key :ensure t
   :init
   (which-key-mode)
@@ -82,12 +89,17 @@
   :demand t)
 (use-package hydra)
 
+(use-package helm
+  :config (require 'helm-config)
+  (helm-mode 1)
+    :bind*                           ; load counsel when pressed
+  (("M-x"     . helm-M-x)       ; M-x use counsel
+   ) ; C-x C-f use counsel-find-file
+)
 (use-package org )
 (use-package company
   :demand t
-  :init (global-company-mode))
-
-
+  :config (global-company-mode))
 
 ;; ;; debugger package
 ;; (use-package dap-mode
@@ -95,6 +107,25 @@
 ;;   :config
 ;;   (dap-mode t)
 ;;   (dap-ui-mode t))
+
+
+;; ===================================================
+;;
+;; web config
+;;
+;; =================================================
+(use-package web-mode
+  :mode "\\.blade.php")
+(use-package vue-mode
+  :mode "\\.vue")
+
+;; ===================================================
+;;
+;; php config
+;;
+;; =================================================
+(use-package php-mode
+  :mode "\\php")
 
 ;; ===================================================
 ;;
@@ -123,38 +154,39 @@
 (global-set-key [f8] 'treemacs)
 
 ;; multiple cursors evil mode
-(use-package evil-mc :ensure t)
+(use-package evil-mc :demand t
+  :ensure t)
 
-(evil-define-local-var evil-mc-custom-paused nil
-  "Paused functionality when there are multiple cursors active.")
+;; (evil-define-local-var evil-mc-custom-paused nil
+;;   "Paused functionality when there are multiple cursors active.")
 
-(defun evil-mc-pause-smartchr-for-mode (mode)
-  "Temporarily disables the smartchr keys for MODE."
-  (let ((m-mode (if (atom mode) mode (car mode)))
-        (s-mode (if (atom mode) mode (cdr mode))))
-    (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
-          (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
-      (when (eq major-mode m-mode)
-        (funcall undo)
-        (push `(lambda () (,init)) evil-mc-custom-paused)))))
+;; (defun evil-mc-pause-smartchr-for-mode (mode)
+;;   "Temporarily disables the smartchr keys for MODE."
+;;   (let ((m-mode (if (atom mode) mode (car mode)))
+;;         (s-mode (if (atom mode) mode (cdr mode))))
+;;     (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
+;;           (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
+;;       (when (eq major-mode m-mode)
+;;         (funcall undo)
+;;         (push `(lambda () (,init)) evil-mc-custom-paused)))))
 
-(defun evil-mc-before-cursors-setup-hook ()
-  "Hook to run before any cursor is created.
-Can be used to temporarily disable any functionality that doesn't
-play well with `evil-mc'."
-  (mapc 'evil-mc-pause-smartchr-for-mode
-        '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
-  (when (boundp whitespace-cleanup-disabled)
-    (setq whitespace-cleanup-disabled t)
-    (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
+;; (defun evil-mc-before-cursors-setup-hook ()
+;;   "Hook to run before any cursor is created.
+;; Can be used to temporarily disable any functionality that doesn't
+;; play well with `evil-mc'."
+;;   (mapc 'evil-mc-pause-smartchr-for-mode
+;;         '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
+;;   (when (boundp whitespace-cleanup-disabled)
+;;     (setq whitespace-cleanup-disabled t)
+;;     (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
 
-(defun evil-mc-after-cursors-teardown-hook ()
-  "Hook to run after all cursors are deleted."
-  (dolist (fn evil-mc-custom-paused) (funcall fn))
-  (setq evil-mc-custom-paused nil))
+;; (defun evil-mc-after-cursors-teardown-hook ()
+;;   "Hook to run after all cursors are deleted."
+;;   (dolist (fn evil-mc-custom-paused) (funcall fn))
+;;   (setq evil-mc-custom-paused nil))
 
-(add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
-(add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
+;; (add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
+;; (add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
 
 (global-evil-mc-mode 1)
 
@@ -215,6 +247,7 @@ play well with `evil-mc'."
 ;; ==================================================================
 
 ;; Enable scala-mode and sbt-mode
+
 (use-package scala-mode
   :mode "\\.s\\(cala\\|bt\\)$")
 
@@ -230,20 +263,97 @@ play well with `evil-mc'."
 
 ;; Enable nice rendering of diagnostics like compile errors.
 
+;; ;;ensime for scala
+;; (use-package ensime :demand t)
+
+;; ==================================================================
+
+
+
+;; =================================================================
+;;
+;; LSP config
+;;
+;; =================================================================
 (use-package lsp-mode
   ;; Optional - enable lsp-mode automatically in scala files
-  :hook (scala-mode . lsp)
+  :demand t
+  :hook
+  (scala-mode . lsp)
   :config (setq lsp-prefer-flymake nil))
 
-(use-package lsp-ui)
+(use-package lsp-ui
+  :config
+  (setq lsp-ui-doc-enable nil
+        lsp-ui-sideline-enable nil
+        lsp-ui-flycheck-enable t)
+  :after lsp-mode)
 
 ;; Add company-lsp backend for metals
 (use-package company-lsp)
 
-;;ensime for scala
-(use-package ensime :demand t)
+(use-package dap-mode
+  :config
+  (dap-mode t)
+  (dap-ui-mode t))
 
-;; ==================================================================
+(use-package lsp-java
+  :init
+  (defun jmi/java-mode-config ()
+    (toggle-truncate-lines 1)
+    (setq-local tab-width 4)
+    (setq-local c-basic-offset 4)
+    (lsp))
+
+  :config
+  ;; Enable dap-java
+  (require 'dap-java)
+
+  ;; Support Lombok in our projects, among other things
+  (setq
+   ;; lsp-java-vmargs
+   ;; (list "-noverify"
+   ;; 	 "-Xmx2G"
+   ;; 	 "-XX:+UseG1GC"
+   ;; 	 "-XX:+UseStringDeduplication"
+   ;; 	 "-javaagent:~/.emacs.d/jmi/lombok.jar"
+   ;; 	 "-Xbootclasspath/a:~/.emacs.d/jmi/lombok.jar")
+   ;; lsp-java-vmargs
+   ;;          `("-noverify"
+   ;;            "-Xmx1G"
+   ;;            "-XX:+UseG1GC"
+   ;;            "-XX:+UseStringDeduplication"
+   ;;            ,(concat "-javaagent:" "~/.emacs.d/jmi/lombok.jar")
+   ;;            ,(concat "-Xbootclasspath/a:" "~/.emacs.d/jmi/lombok.jar")
+   lsp-file-watch-ignored
+   '(".idea" ".ensime_cache" ".eunit" "node_modules"
+  	   ".git" ".hg" ".fslckout" "_FOSSIL_"
+           ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
+           "build")
+   
+   lsp-java-import-order '["" "java" "javax" "#"]
+   ;; Don't organize imports on save
+   lsp-java-save-action-organize-imports nil
+   
+   ;; Formatter profile
+   ;;lsp-java-format-settings-url
+   ;;(concat "file://" jmi/java-format-settings-file)
+   )
+  
+  :hook (java-mode   . jmi/java-mode-config)
+
+  :demand t
+  :after (lsp lsp-mode dap-mode))
+
+(use-package helm-lsp
+  :demand t
+  :commands helm-lsp-workspace-symbol)
+(use-package lsp-treemacs
+  :demand t
+  :commands lsp-treemacs-errors-list)
+(use-package company-lsp
+  :demand t)
+
 
 
 
@@ -253,9 +363,11 @@ play well with `evil-mc'."
 ;;
 ;; ================================================================
 (use-package ggtags )
-(use-package counsel-gtags 
-  :config
-  (add-hook 'c-mode-hook 'counsel-gtags-mode))
+(use-package helm-gtags
+  :init (add-hook 'c-mode-hook 'helm-gtags-mode))
+;; (use-package counsel-gtags 
+;;   :config
+;;   (add-hook 'c-mode-hook 'counsel-gtags-mode))
 (use-package irony
   :init
   (add-hook 'c++-mode-hook 'irony-mode)
@@ -302,44 +414,41 @@ play well with `evil-mc'."
 ;; Java
 ;;
 ;;===================================================================
-(use-package cc-mode)
 
-(use-package lsp-mode
-  :init (add-hook 'java-mode-hook #'lsp-deferred)
-  :commands (lsp lsp-deferred))
-;; optionally
-(use-package lsp-ui
-  :demand t
-  :commands lsp-ui-mode)
-(use-package company-lsp
-  :demand t
-  :commands company-lsp)
-(use-package helm-lsp
-  :demand t
-  :commands helm-lsp-workspace-symbol)
-(use-package lsp-treemacs
-  :demand t
-  :commands lsp-treemacs-errors-list)
-(use-package hydra
-  :demand t)
-(use-package company-lsp
-  :demand t)
-(use-package lsp-java 
-  :demand t)
+;; (use-package cc-mode)
 
-;; optionally if you want to use debugger
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-(use-package dap-mode
-  :demand t
-  :config
-  (dap-mode 1)
-  (dap-ui-mode 1)
-  (dap-tooltip-mode 1))
+;; (use-package lsp-mode
+;;   :init (add-hook 'java-mode-hook #'lsp-deferred)
+;;   :commands (lsp lsp-deferred))
+;; ;; optionally
+;; (use-package lsp-ui
+;;   :demand t
+;;   :commands lsp-ui-mode)
+;; (use-package company-lsp
+;;   :demand t
+;;   :commands company-lsp)
+;; (use-package lsp-java 
+;;   :demand t)
 
-(use-package dap-java
-  :demand t
-  :ensure nil)
+;; ;; optionally if you want to use debugger
+;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+;; (use-package dap-mode
+;;   :demand t
+;;   :config
+;;   (dap-mode 1)
+;;   (dap-ui-mode 1)
+;;   (dap-tooltip-mode 1))
 
+;; (use-package dap-java
+;;   :demand t
+;;   :ensure nil)
+
+;; STS4 support
+;; (require 'lsp-java-boot)
+
+;; ;; to enable the lenses
+;; (add-hook 'lsp-mode-hook #'lsp-lens-mode)
+;; (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
 ;; (use-package lsp-java  :after lsp
 ;;   :config (add-hook 'java-mode-hook 'lsp))
 ;===================================================================
@@ -377,9 +486,9 @@ play well with `evil-mc'."
 ;;   "ar" '(ranger :which-key "call ranger")
    "g"  '(:ignore t :which-key "Git")
    "gs" '(magit-status :which-key "git status")
-   "ff" '(find-file :which-key "find file")
+   "ff" '(helm-find-files :which-key "helm find file")
+   "bb" '(helm-buffers-list :which-key "helm buffer list")
    "w TAB" '(other-window :which-key "other window c-x o")
-   "bb" '(switch-to-buffer :which-key "switch buffer")
    "bk" '(kill-buffer :which-key "kill-buffer")
    "w1" '(delete-other-windows :which-key "delete-other-windows - buffer tela cheia")
    "w0" '(delete-window :which-key "delete-window - fecha tela atual")
@@ -389,40 +498,40 @@ play well with `evil-mc'."
    )
   )
 
-(general-define-key
- :keymaps 'counsel-gtags-mode-map
-    :states '(normal motion emacs)
-    :prefix "SPC"
-    "gfd" '(counsel-gtags-find-definition :which-key "find definition gtags")
-    "gfr" '(counsel-gtags-find-reference :which-key "find reference gtags")
-    "gfs" '(counsel-gtags-find-symbol :which-key "find symbol gtags")
-    "gff" '(counsel-gtags--find-file :which-key "find file gtags")
-    "g>" '(counsel-gtags-go-forward :which-key "gtags go forward")
-    "g<" '(counsel-gtags-go-backward :which-key "gtags go backward")
-    "gdd" '(counsel-gtags-dwim :which-key "gtags dwin")
-    )
+;; (general-define-key
+;;  :keymaps 'counsel-gtags-mode-map
+;;     :states '(normal motion emacs)
+;;     :prefix "SPC"
+;;     "gfd" '(counsel-gtags-find-definition :which-key "find definition gtags")
+;;     "gfr" '(counsel-gtags-find-reference :which-key "find reference gtags")
+;;     "gfs" '(counsel-gtags-find-symbol :which-key "find symbol gtags")
+;;     "gff" '(counsel-gtags--find-file :which-key "find file gtags")
+;;     "g>" '(counsel-gtags-go-forward :which-key "gtags go forward")
+;;     "g<" '(counsel-gtags-go-backward :which-key "gtags go backward")
+;;     "gdd" '(counsel-gtags-dwim :which-key "gtags dwin")
+;;     )
 
-(use-package ivy :ensure t
-  :diminish (ivy-mode . "") ; does not display ivy in the modeline
-  :init (ivy-mode 1)        ; enable ivy globally at startup
-  :bind (:map ivy-mode-map  ; bind in the ivy buffer
-         ("C-'" . ivy-avy)) ; C-' to ivy-avy
-  :config
-  (setq ivy-use-virtual-buffers t)   ; extend searching to bookmarks and …
-  (setq ivy-height 20)               ; set height of the ivy window
-  (setq ivy-count-format "(%d/%d) ") ; count format, from the ivy help page
-  )
+;; (use-package ivy :ensure t
+;;   :diminish (ivy-mode . "") ; does not display ivy in the modeline
+;;   :init (ivy-mode 1)        ; enable ivy globally at startup
+;;   :bind (:map ivy-mode-map  ; bind in the ivy buffer
+;;          ("C-'" . ivy-avy)) ; C-' to ivy-avy
+;;   :config
+;;   (setq ivy-use-virtual-buffers t)   ; extend searching to bookmarks and …
+;;   (setq ivy-height 20)               ; set height of the ivy window
+;;   (setq ivy-count-format "(%d/%d) ") ; count format, from the ivy help page
+;;   )
 
-(use-package counsel :ensure t
-  :bind*                           ; load counsel when pressed
-  (("M-x"     . counsel-M-x)       ; M-x use counsel
-   ("C-x C-f" . counsel-find-file) ; C-x C-f use counsel-find-file
-   ("C-x C-r" . counsel-recentf)   ; search recently edited files
-   ("C-c f"   . counsel-git)       ; search for files in git repo
-   ("C-c s"   . counsel-git-grep)  ; search for regexp in git repo
-   ("C-c /"   . counsel-ag)        ; search for regexp in git repo using ag
-   ("C-c l"   . counsel-locate))   ; search for files or else using locate
-  )
+;; (use-package counsel :ensure t
+;;   :bind*                           ; load counsel when pressed
+;;   (("M-x"     . counsel-M-x)       ; M-x use counsel
+;;    ("C-x C-f" . counsel-find-file) ; C-x C-f use counsel-find-file
+;;    ("C-x C-r" . counsel-recentf)   ; search recently edited files
+;;    ("C-c f"   . counsel-git)       ; search for files in git repo
+;;    ("C-c s"   . counsel-git-grep)  ; search for regexp in git repo
+;;    ("C-c /"   . counsel-ag)        ; search for regexp in git repo using ag
+;;    ("C-c l"   . counsel-locate))   ; search for files or else using locate
+;;   )
 
 
 
@@ -525,9 +634,9 @@ play well with `evil-mc'."
 ;;
 ;; ============================================================
 
-(if (not (file-exists-p ".emacs-backups"))
-    (make-directory ".emacs-backups" t))
-(setq backup-directory-alist `(("." . , ".emacs-backups")))
+;; (if (not (file-exists-p ".emacs-backups"))
+;;     (make-directory ".emacs-backups" t))
+;; (setq backup-directory-alist `(("." . , ".emacs-backups")))
 ;; (defun make-backup-file-name (FILE)                                             
 ;;   (let ((dirname (concat "~/.backups/emacs/"                                    
 ;;                           (file-name-directory FILE))))                    
@@ -545,6 +654,8 @@ play well with `evil-mc'."
       auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
       auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+      backup-directory-alist `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
       )
 
 ;; (use-package auto-complete-config :ensure t)
@@ -657,9 +768,10 @@ play well with `evil-mc'."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key yasnippet-snippets use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key yasnippet-snippets use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
