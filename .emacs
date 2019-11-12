@@ -55,6 +55,12 @@
    :config (yas-reload-all)
    :ensure nil)
 
+(use-package avy
+  :config (avy-setup-default))
+
+(use-package frog-jump-buffer
+  :bind (("C-x x" . frog-jump-buffer)))
+
 (use-package helm-c-yasnippet
   :init
   (setq helm-yas-space-match-any-greedy t)
@@ -99,7 +105,8 @@
 (use-package org )
 (use-package company
   :demand t
-  :config (global-company-mode))
+  :config (global-company-mode)
+  (add-to-list 'company-backends 'company-tern))
 
 ;; ;; debugger package
 ;; (use-package dap-mode
@@ -126,6 +133,26 @@
 ;; =================================================
 (use-package php-mode
   :mode "\\php")
+
+
+;; ===================================================
+;;
+;; javascript config
+;;
+;; =================================================
+(use-package rjsx-mode
+	     :mode "\\.js"
+	     :hook (rjsx-mode lsp))
+;; (use-package js2-mode)
+;; (use-package tide)
+(use-package js2-refactor
+  :hook (rjsx-mode js2-refactor-mode))
+(use-package js2-highlight-vars)
+(use-package eslint-fix)
+(use-package xref-js2)
+(use-package indium)
+;; (use-package company-tern
+;;   :hook (rjsx-mode tern-mode))
 
 ;; ===================================================
 ;;
@@ -654,8 +681,8 @@
       auto-save-default t               ; auto-save every buffer that visits a file
       auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
       auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
-      backup-directory-alist `((".*" . ,temporary-file-directory))
-      auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+      backup-directory-alist `((".*" . "~/.backups-emacs"))
+      auto-save-file-name-transforms `((".*" "~/.backups-emacs" t))
       )
 
 ;; (use-package auto-complete-config :ensure t)
@@ -771,7 +798,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key yasnippet-snippets use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
