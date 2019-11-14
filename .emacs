@@ -118,6 +118,25 @@
 
 ;; ===================================================
 ;;
+;; rust config
+;;
+;; =================================================
+(use-package rust-mode)
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
+(use-package racer
+  :init
+  (setq racer-cmd "~/.cargo/bin/racer") ;; Rustup binaries PATH
+  (setq racer-rust-src-path "~/git/projetos/rust/src") ;; Rust source code PATH)
+  :hook (rust-mode . racer-mode))
+(use-package eldoc
+  :hook (racer-mode . eldoc-mode))
+(use-package company-racer
+  :hook (racer-mode . company-mode))
+(use-package flycheck-rust)
+
+;; ===================================================
+;;
 ;; web config
 ;;
 ;; =================================================
@@ -500,10 +519,13 @@
   (general-evil-setup t)
 
   (general-define-key
-   :states '(normal insert emacs)
+   :states '(insert emacs)
    :prefix "C-SPC"
    :non-normal-prefix "C-SPC"
-   "l" '(avy-goto-line)
+   "c" '(evil-avy-goto-char2 :which-key "avy goto char")
+   "l" '(evil-avy-goto-line :which-key "avy goto line")
+   "w" '(evil-avy-goto-word-0 :which-key "avy goto word0")
+   "n" '(evil-avy-goto-word-1 :which-key "avy goto word1")
    "a" 'align-regexp
    )
   (general-def :states '(normal motion emacs) "SPC" nil)
@@ -511,6 +533,10 @@
    :states '(normal motion emacs)
    :prefix "SPC"
 ;;   "ar" '(ranger :which-key "call ranger")
+   "ac" '(evil-avy-goto-char2 :which-key "avy goto char")
+   "al" '(evil-avy-goto-line :which-key "avy goto line")
+   "aw" '(evil-avy-goto-word-0 :which-key "avy goto word0")
+   "an" '(evil-avy-goto-word-1 :which-key "avy goto word1")
    "g"  '(:ignore t :which-key "Git")
    "gs" '(magit-status :which-key "git status")
    "ff" '(helm-find-files :which-key "helm find file")
