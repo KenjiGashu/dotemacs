@@ -1,4 +1,4 @@
-;;; emacs conf --- configuration
+;; emacs conf --- configuration
 ;;; inicializacao package manage
 (require 'package)
 ;;(custom-set-variables
@@ -103,6 +103,7 @@
    ) ; C-x C-f use counsel-find-file
 )
 (use-package org )
+(use-package company-tern)
 (use-package company
   :demand t
   :config (global-company-mode)
@@ -115,6 +116,33 @@
 ;;   (dap-mode t)
 ;;   (dap-ui-mode t))
 
+
+;; ===================================================
+;;
+;; python config
+;;
+;; =================================================
+(use-package elpy
+  :ensure t
+  :defer t
+  :init
+  (advice-add 'python-mode :before 'elpy-enable))
+
+;; ===================================================
+;;
+;; flutter config
+;;
+;; =================================================
+;; Assuming usage with dart-mode
+(use-package dart-mode
+  :hook  (dart-mode . lsp)
+  :config
+  (dart-format-on-save t))
+
+(use-package flutter
+  :after dart-mode
+  :bind (:map dart-mode-map
+              ("C-M-x" . #'flutter-run-or-hot-reload)))
 
 ;; ===================================================
 ;;
@@ -160,14 +188,17 @@
 ;;
 ;; =================================================
 (use-package rjsx-mode
-	     :mode "\\.js"
-	     :hook (rjsx-mode lsp))
+  :mode "\\.js"
+  :hook (rjsx-mode lsp))
 ;; (use-package js2-mode)
 ;; (use-package tide)
 (use-package js2-refactor
   :hook (rjsx-mode js2-refactor-mode))
 (use-package js2-highlight-vars)
-(use-package eslint-fix)
+(use-package eslint-fix
+  :init (add-hook 'rjsx-mode-hook 
+          (lambda () 
+             (add-hook 'after-save-hook 'eslint-fix nil 'make-it-local))))
 (use-package xref-js2)
 (use-package indium)
 ;; (use-package company-tern
@@ -279,7 +310,7 @@
 (use-package cider
   :mode "\\.clj\\$")
 (use-package cider-decompile)
-(use-package cider-eval-sexp-fu)
+;; (use-package cider-eval-sexp-fu)
 (use-package cider-hydra)
 
 ;=================================================================
@@ -533,7 +564,7 @@
    :states '(normal motion emacs)
    :prefix "SPC"
 ;;   "ar" '(ranger :which-key "call ranger")
-   "ac" '(evil-avy-goto-char2 :which-key "avy goto char")
+   "ac" '(evil-avy-goto-char :which-key "avy goto char")
    "al" '(evil-avy-goto-line :which-key "avy goto line")
    "aw" '(evil-avy-goto-word-0 :which-key "avy goto word0")
    "an" '(evil-avy-goto-word-1 :which-key "avy goto word1")
@@ -638,6 +669,12 @@
 (use-package slime
   :init (setq inferior-lisp-program "/usr/bin/sbcl")
   (setq slime-contribs '(slime-asdf slime-scratch slime-editing-commands)))
+(use-package slime-repl-ansi-color
+  :after (slime))
+(use-package slime-company
+  :after (slime))
+(use-package helm-slime
+  :after (slime))
 
 
 
