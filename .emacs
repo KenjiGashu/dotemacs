@@ -46,6 +46,21 @@
 (setq use-package-always-ensure t)
 
 
+;; ==================================================================
+;;
+;; load paths
+;;
+;; =================================================================
+;;(let ((default-directory  "~/.emacs.d/git/"))
+;;  (normal-top-level-add-subdirs-to-load-path))
+
+(setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode")) load-path))
+(setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode/lilypond-init.el")) load-path))
+(setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp/uim-el")) load-path))
+(setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
+;=======================================================================
+
+
 ;; can't download asnippet-snippets because it makes package install crash
 (use-package yasnippet
   :demand t
@@ -204,6 +219,16 @@
 ;; (use-package company-tern
 ;;   :hook (rjsx-mode tern-mode))
 
+
+;; ===================================================
+;;
+;; angular  config
+;;
+;; =================================================
+(use-package typescript-mode
+  :hook (typescript-mode . lsp))
+(use-package ng2-mode)
+
 ;; ===================================================
 ;;
 ;; evil config
@@ -214,13 +239,13 @@
   :config (evil-mode))
 (use-package smartparens :demand t
     :init (require 'smartparens-config))
-(use-package paredit :demand t)
-(use-package evil-smartparens :after evil
-  ;;:init (add-hook 'evil-mode 'evil-smartparens-mode)
-  :config (evil-smartparens-mode))
-(use-package evil-paredit :after evil
-  ;;:init(add-hook 'evil-mode #'evil-paredit-mode))
-  :config (evil-paredit-mode))
+;; (use-package paredit :demand t)
+;; (use-package evil-smartparens :after evil
+;;   ;;:init (add-hook 'evil-mode 'evil-smartparens-mode)
+;;   :config (evil-smartparens-mode))
+;; (use-package evil-paredit :after evil
+;;   ;;:init(add-hook 'evil-mode #'evil-paredit-mode))
+;;   :config (evil-paredit-mode))
 ;; (use-package evil-cleverparens
 ;;   :after evil
 ;;   :config (evil-cleverparens-mode))
@@ -470,19 +495,6 @@
 
 
 
-;; ==================================================================
-;;
-;; load paths
-;;
-;; =================================================================
-;;(let ((default-directory  "~/.emacs.d/git/"))
-;;  (normal-top-level-add-subdirs-to-load-path))
-
-(setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode")) load-path))
-(setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode/lilypond-init.el")) load-path))
-(setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp/uim-el")) load-path))
-(setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
-;=======================================================================
 
 
 
@@ -545,42 +557,42 @@
 (add-to-list 'auto-mode-alist '("\\.ily$" . LilyPond-mode)) 
 
 
-(use-package general :ensure t
-  :config
-  (general-evil-setup t)
+;; (use-package general :ensure t
+;;   :config
+;;   (general-evil-setup t)
 
-  (general-define-key
-   :states '(insert emacs)
-   :prefix "C-SPC"
-   :non-normal-prefix "C-SPC"
-   "c" '(evil-avy-goto-char2 :which-key "avy goto char")
-   "l" '(evil-avy-goto-line :which-key "avy goto line")
-   "w" '(evil-avy-goto-word-0 :which-key "avy goto word0")
-   "n" '(evil-avy-goto-word-1 :which-key "avy goto word1")
-   "a" 'align-regexp
-   )
-  (general-def :states '(normal motion emacs) "SPC" nil)
-  (general-define-key
-   :states '(normal motion emacs)
-   :prefix "SPC"
-;;   "ar" '(ranger :which-key "call ranger")
-   "ac" '(evil-avy-goto-char :which-key "avy goto char")
-   "al" '(evil-avy-goto-line :which-key "avy goto line")
-   "aw" '(evil-avy-goto-word-0 :which-key "avy goto word0")
-   "an" '(evil-avy-goto-word-1 :which-key "avy goto word1")
-   "g"  '(:ignore t :which-key "Git")
-   "gs" '(magit-status :which-key "git status")
-   "ff" '(helm-find-files :which-key "helm find file")
-   "bb" '(helm-buffers-list :which-key "helm buffer list")
-   "w TAB" '(other-window :which-key "other window c-x o")
-   "bk" '(kill-buffer :which-key "kill-buffer")
-   "w1" '(delete-other-windows :which-key "delete-other-windows - buffer tela cheia")
-   "w0" '(delete-window :which-key "delete-window - fecha tela atual")
-   "w2" '(split-window-below :which-key "split-window-below - splita em cima e embaixo")
-   "w3" '(split-window-right :which-key "split-window-right - splita lado a lado")
-   "fs" '(save-buffer :which-key "save-buffer - salva file")
-   )
-  )
+;;   (general-define-key
+;;    :states '(insert emacs)
+;;    :prefix "C-SPC"
+;;    :non-normal-prefix "C-SPC"
+;;    "c" '(evil-avy-goto-char2 :which-key "avy goto char")
+;;    "l" '(evil-avy-goto-line :which-key "avy goto line")
+;;    "w" '(evil-avy-goto-word-0 :which-key "avy goto word0")
+;;    "n" '(evil-avy-goto-word-1 :which-key "avy goto word1")
+;;    "a" 'align-regexp
+;;    )
+;;   (general-def :states '(normal motion emacs) "SPC" nil)
+;;   (general-define-key
+;;    :states '(normal motion emacs)
+;;    :prefix "SPC"
+;; ;;   "ar" '(ranger :which-key "call ranger")
+;;    "ac" '(evil-avy-goto-char :which-key "avy goto char")
+;;    "al" '(evil-avy-goto-line :which-key "avy goto line")
+;;    "aw" '(evil-avy-goto-word-0 :which-key "avy goto word0")
+;;    "an" '(evil-avy-goto-word-1 :which-key "avy goto word1")
+;;    "g"  '(:ignore t :which-key "Git")
+;;    "gs" '(magit-status :which-key "git status")
+;;    "ff" '(helm-find-files :which-key "helm find file")
+;;    "bb" '(helm-buffers-list :which-key "helm buffer list")
+;;    "w TAB" '(other-window :which-key "other window c-x o")
+;;    "bk" '(kill-buffer :which-key "kill-buffer")
+;;    "w1" '(delete-other-windows :which-key "delete-other-windows - buffer tela cheia")
+;;    "w0" '(delete-window :which-key "delete-window - fecha tela atual")
+;;    "w2" '(split-window-below :which-key "split-window-below - splita em cima e embaixo")
+;;    "w3" '(split-window-right :which-key "split-window-right - splita lado a lado")
+;;    "fs" '(save-buffer :which-key "save-buffer - salva file")
+;;    )
+;;   )
 
 ;; (general-define-key
 ;;  :keymaps 'counsel-gtags-mode-map
@@ -605,6 +617,42 @@
 ;;   (setq ivy-height 20)               ; set height of the ivy window
 ;;   (setq ivy-count-format "(%d/%d) ") ; count format, from the ivy help page
 ;;   )
+
+
+;;================================================================
+;;
+;; hydra keymap
+;;
+;;================================================================
+(defhydra hydra-evil-normal (:color red
+			     :hint nil)
+   "
+
+   ^Avy^                     ^Misc^                   ^Window
+    ^^^^^^------------------------------------------------------
+  [_ac_] avy goto char  [_bk_] kill buffer        [_w TAB_] other window
+  [_al_] avy goto line  [_gs_] git status toggle  [_w2_] split window below
+  [_aw_] avy goto word0 [_ff_] counsel-find-file  [_w1_]   delete other window
+  [_an_] avy goto word1 [_bb_] helm-buffer        [_w0_]   delete window
+                        [_fs_] save buffer        [_w3_] split right
+  "
+   ("ac" evil-avy-goto-char)
+   ("al" evil-avy-goto-line)
+   ("aw" evil-avy-goto-word-0 )
+   ("an" evil-avy-goto-word-1 )
+   ("gs" magit-status )
+   ("ff" counsel-find-file )
+   ("bb" helm-buffers-list )
+   ("w TAB" other-window )
+   ("bk" kill-buffer )
+   ("w1" delete-other-windows )
+   ("w0" delete-window )
+   ("w2" split-window-below )
+   ("w3" split-window-right )
+   ("fs" save-buffer ))
+
+ (define-key evil-normal-state-map (kbd "SPC") 'hydra-evil-normal/body)
+
 
 (use-package counsel :ensure t
   :bind*                           ; load counsel when pressed
@@ -668,8 +716,20 @@
 ;; Set your lisp system and some contribs
 (use-package slime
   :demand t
-  :init (setq inferior-lisp-program "sbcl")
-  (setq slime-contribs '(slime-asdf slime-scratch slime-editing-commands)))
+  :init
+    ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (when (string= system-type "windows-nt")
+    (load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
+    (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
+    (add-to-list 'exec-path "C:/Users/lkenji/Downloads/roswell/")
+    (setq inferior-lisp-program "C:/Users/lkenji/Downloads/roswell/ros.exe -Q run"))
+  (when (string= system-type "gnu/linux")
+    (setq inferior-lisp-program "sbcl"))
+  (setq slime-contribs
+        '(slime-fancy slime-asdf slime-quicklisp slime-cl-indent))
+
+ ) 
+  
  (use-package slime-repl-ansi-color
    :after (slime))
  (use-package slime-company
@@ -862,7 +922,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
