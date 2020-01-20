@@ -101,6 +101,8 @@
         which-key-side-window-max-width 0.33
         which-key-idle-delay 0.05)
   )
+(use-package magit :ensure t)
+(use-package evil-magit :ensure t)
 (use-package highlight-blocks)
 (use-package rainbow-delimiters )
 (use-package ag :demand t)
@@ -465,18 +467,77 @@
 ;;
 ;; ================================================================
 (use-package ggtags )
-(use-package helm-gtags
-  :init (add-hook 'c-mode-hook 'helm-gtags-mode))
+;; (use-package helm-gtags
+;;   :init (add-hook 'c-mode-hook 'helm-gtags-mode))
 ;; (use-package counsel-gtags 
 ;;   :config
 ;;   (add-hook 'c-mode-hook 'counsel-gtags-mode))
-(use-package irony
-  :init
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'objc-mode-hook 'irony-mode)
+;; (use-package irony
+;;   :init
+;;   (add-hook 'c++-mode-hook 'irony-mode)
+;;   (add-hook 'c-mode-hook 'irony-mode)
+;;   (add-hook 'objc-mode-hook 'irony-mode)
   
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+;; (when (boundp 'w32-pipe-read-delay)
+;;   (setq w32-pipe-read-delay 0))
+;; ;; Set the buffer size to 64K on Windows (from the original 4K)
+;; (when (boundp 'w32-pipe-buffer-size)
+;;   (setq irony-server-w32-pipe-buffer-size (* 64 1024)))
+
+(use-package rtags
+  :config
+  (progn
+    (unless (rtags-executable-find "rc") (error "Binary rc is not installed!"))
+    (unless (rtags-executable-find "rdm") (error "Binary rdm is not installed!"))
+
+    (define-key c-mode-base-map (kbd "M-.") 'rtags-find-symbol-at-point)
+    (define-key c-mode-base-map (kbd "M-,") 'rtags-find-references-at-point)
+    (define-key c-mode-base-map (kbd "M-?") 'rtags-display-summary)
+    (rtags-enable-standard-keybindings)
+
+    (setq rtags-use-helm t)
+
+    ;; Shutdown rdm when leaving emacs.
+    (add-hook 'kill-emacs-hook 'rtags-quit-rdm)
+    ))
+
+;; ;; TODO: Has no coloring! How can I get coloring?
+;; ;; (req-package helm-rtags
+;; ;;   :require helm rtags
+;; ;;   :config
+;; ;;   (progn
+;; ;;     (setq rtags-display-result-backend 'helm)
+;; ;;     ))
+
+;; ;; Use rtags for auto-completion.
+;; (use-package company-rtags
+;;   :config
+;;   (progn
+;;     (setq rtags-autostart-diagnostics t)
+;;     (rtags-diagnostics)
+;;     (setq rtags-completions-enabled t)
+;;     (push 'company-rtags company-backends)
+;;     ))
+
+;; Live code checking.
+(use-package flycheck-rtags
+  :config
+  (progn
+    ;; ensure that we use only rtags checking
+    ;; https://github.com/Andersbakken/rtags#optional-1
+    (defun setup-flycheck-rtags ()
+      (flycheck-select-checker 'rtags)
+      (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+      (setq-local flycheck-check-syntax-automatically nil)
+      (rtags-set-periodic-reparse-timeout 2.0)  ;; Run flycheck 2 seconds after being idle.
+      )
+    (add-hook 'c-mode-hook #'setup-flycheck-rtags)
+    (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
+    ))
+
+
 (use-package company-c-headers)
 
 ;;cquery backend
@@ -484,13 +545,16 @@
 ;;   (condition-case nil
 ;;       (lsp)
 ;;     (user-error nil)))
-;; (use-package cquery 
-;;   :init
-;;   :commands lsp
-;;   :init
-;;   (add-hook 'c-mode-hook #'cquery//enable)
-;;   (add-hook 'c++-mode-hook #'cquery//enable)
-;;   (setq cquery-executable "/usr/bin/cquery"))
+(use-package cquery 
+  :ensure t
+  ;; :commands lsp
+  ;; :init
+  ;; (add-hook 'c-mode-hook 'cquery//enable)
+  ;; (add-hook 'c++-mode-hook 'cquery//enable)
+  ;; (setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/np30-2/cquery/build/release/bin/cquery")
+  )
+(require 'cquery)
+(setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/np30-2/cquery/build/release/bin/cquery")
 ;; ==================================================================
 
 
@@ -652,6 +716,7 @@
    ("fs" save-buffer ))
 
  (define-key evil-normal-state-map (kbd "SPC") 'hydra-evil-normal/body)
+(define-key evil-motion-state-map (kbd "SPC") 'hydra-evil-normal/body)
 
 
 (use-package counsel :ensure t
@@ -729,6 +794,19 @@
         '(slime-fancy slime-asdf slime-quicklisp slime-cl-indent))
 
  ) 
+
+(use-package sly
+  :demand t
+  :init (when (string= system-type "windows-nt")
+    (load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
+    (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
+    (add-to-list 'exec-path "C:/Users/lkenji/Downloads/roswell/")
+    ;;(setq inferior-lisp-program "C:/Users/lkenji/Downloads/roswell/ros.exe -Q run")
+    (setq inferior-lisp-program "sbcl")
+    )
+  (when (string= system-type "gnu/linux")
+    (setq inferior-lisp-program "sbcl"))
+  )
   
  (use-package slime-repl-ansi-color
    :after (slime))
@@ -922,7 +1000,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (rtags magit sly typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
