@@ -240,6 +240,20 @@
 (use-package evil :ensure t :demand t
   :config (evil-mode))
 (use-package smartparens :demand t
+  :bind
+  (("C-M-f" . sp-forward-sexp)
+   ("C-M-b" . sp-backward-sexp)
+   ("C-M-d" . sp-down-sexp)
+   ("C-M-d" . sp-backward-down-sexp)
+   ("C-S-u" . sp-up-sexp)
+   ("C-M-u" . sp-backward-up-sexp)
+   ("C-S-a" . sp-beginning-of-sexp)
+   ("C-M-e" . sp-end-of-sexp)
+   ("C-M-n" . sp-next-sexp)
+   ("C-M-p" . sp-previous-sexp)
+   ("C-S-b" . sp-backward-symbol)
+   ("C-S-f" . sp-forward-symbol))
+  
     :init (require 'smartparens-config))
 ;; (use-package paredit :demand t)
 ;; (use-package evil-smartparens :after evil
@@ -486,22 +500,22 @@
 ;; (when (boundp 'w32-pipe-buffer-size)
 ;;   (setq irony-server-w32-pipe-buffer-size (* 64 1024)))
 
-(use-package rtags
-  :config
-  (progn
-    (unless (rtags-executable-find "rc") (error "Binary rc is not installed!"))
-    (unless (rtags-executable-find "rdm") (error "Binary rdm is not installed!"))
+;; (use-package rtags
+;;   :config
+;;   (progn
+;;     (unless (rtags-executable-find "rc") (error "Binary rc is not installed!"))
+;;     (unless (rtags-executable-find "rdm") (error "Binary rdm is not installed!"))
 
-    (define-key c-mode-base-map (kbd "M-.") 'rtags-find-symbol-at-point)
-    (define-key c-mode-base-map (kbd "M-,") 'rtags-find-references-at-point)
-    (define-key c-mode-base-map (kbd "M-?") 'rtags-display-summary)
-    (rtags-enable-standard-keybindings)
+;;     (define-key c-mode-base-map (kbd "M-.") 'rtags-find-symbol-at-point)
+;;     (define-key c-mode-base-map (kbd "M-,") 'rtags-find-references-at-point)
+;;     (define-key c-mode-base-map (kbd "M-?") 'rtags-display-summary)
+;;     (rtags-enable-standard-keybindings)
 
-    (setq rtags-use-helm t)
+;;     (setq rtags-use-helm t)
 
-    ;; Shutdown rdm when leaving emacs.
-    (add-hook 'kill-emacs-hook 'rtags-quit-rdm)
-    ))
+;;     ;; Shutdown rdm when leaving emacs.
+;;     (add-hook 'kill-emacs-hook 'rtags-quit-rdm)
+;;     ))
 
 ;; ;; TODO: Has no coloring! How can I get coloring?
 ;; ;; (req-package helm-rtags
@@ -522,20 +536,20 @@
 ;;     ))
 
 ;; Live code checking.
-(use-package flycheck-rtags
-  :config
-  (progn
-    ;; ensure that we use only rtags checking
-    ;; https://github.com/Andersbakken/rtags#optional-1
-    (defun setup-flycheck-rtags ()
-      (flycheck-select-checker 'rtags)
-      (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
-      (setq-local flycheck-check-syntax-automatically nil)
-      (rtags-set-periodic-reparse-timeout 2.0)  ;; Run flycheck 2 seconds after being idle.
-      )
-    (add-hook 'c-mode-hook #'setup-flycheck-rtags)
-    (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
-    ))
+;; (use-package flycheck-rtags
+;;   :config
+;;   (progn
+;;     ;; ensure that we use only rtags checking
+;;     ;; https://github.com/Andersbakken/rtags#optional-1
+;;     (defun setup-flycheck-rtags ()
+;;       (flycheck-select-checker 'rtags)
+;;       (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+;;       (setq-local flycheck-check-syntax-automatically nil)
+;;       (rtags-set-periodic-reparse-timeout 2.0)  ;; Run flycheck 2 seconds after being idle.
+;;       )
+;;     (add-hook 'c-mode-hook #'setup-flycheck-rtags)
+;;     (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
+;;     ))
 
 
 (use-package company-c-headers)
@@ -699,7 +713,15 @@
   [_aw_] avy goto word0 [_ff_] counsel-find-file  [_w1_]   delete other window
   [_an_] avy goto word1 [_bb_] helm-buffer        [_w0_]   delete window
                         [_fs_] save buffer        [_w3_] split right
-  "
+"  
+  ;; Smart Parens:
+  ;; [_C-M-f_] forward     [_C-M-b_] backward
+  ;; [_C-d_] down        [_M-d_] back down
+  ;; [_C-u_] up            [_M-u_] back up
+  ;; [_C-M-n_] next        [_C-M-p_] previous
+  ;; [_C-M-a_] beggining   [_C-M-e_] end
+  ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
+  ;; "
    ("ac" evil-avy-goto-char)
    ("al" evil-avy-goto-line)
    ("aw" evil-avy-goto-word-0 )
@@ -713,9 +735,22 @@
    ("w0" delete-window )
    ("w2" split-window-below )
    ("w3" split-window-right )
-   ("fs" save-buffer ))
+   ("fs" save-buffer )
+   ;; ("C-M-f" sp-forward-sexp)
+   ;; ("C-M-b" sp-backward-sexp)
+   ;; ("C-d>" sp-down-sexp)
+   ;; ("M-d>" sp-backward-down-sexp)
+   ;; ("C-u>" sp-up-sexp)
+   ;; ("M-u>" sp-backward-up-sexp)
+   ;; ("C-M-n" sp-next-sexp)
+   ;; ("C-M-p" sp-previous-sexp)
+   ;; ("C-M-a" sp-beginning-of-sexp)
+   ;; ("C-M-e" sp-end-of-sexp)
+   ;; ("C-S-f" sp-forward-symbol)
+   ;; ("C-S-b" sp-backward-symbol)
+   )
 
- (define-key evil-normal-state-map (kbd "SPC") 'hydra-evil-normal/body)
+(define-key evil-normal-state-map (kbd "SPC") 'hydra-evil-normal/body)
 (define-key evil-motion-state-map (kbd "SPC") 'hydra-evil-normal/body)
 
 
@@ -730,17 +765,10 @@
    ("C-c l"   . counsel-locate))   ; search for files or else using locate
   )
 
-
-
-;;
-
-
-;;
+;
 ;; uim
 ;;
 ;;
-
-
 ;;(use-package  uim :enseure t)
 
 
@@ -784,29 +812,39 @@
   :init
     ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (when (string= system-type "windows-nt")
-    (load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
-    (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
-    (add-to-list 'exec-path "C:/Users/lkenji/Downloads/roswell/")
-    (setq inferior-lisp-program "C:/Users/lkenji/Downloads/roswell/ros.exe -Q run"))
+    ;;(load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
+    ;;(add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
+    ;;(add-to-list 'exec-path "C:/Users/lkenji/Downloads/roswell/")
+    ;;(setq inferior-lisp-program "C:/Users/lkenji/Downloads/roswell/ros.exe -Q run"))
+    ;;(add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/2.0.0/")
+    (add-to-list 'exec-path "C:/Users/lkenji/Downloads/ccl/")
+    (setq inferior-lisp-program "C:/Users/lkenji/Downloads/ccl/wx86cl64")
+    )
   (when (string= system-type "gnu/linux")
-    (setq inferior-lisp-program "sbcl"))
+    ;; (setq inferior-lisp-program "sbcl")
+    ;; (setq inferior-lisp-program "C:/Users/lkenji/Downloads/ccl/wx86cl64.exe")
+    (setq inferior-lisp-program "wx86cl64")
+    )
   (setq slime-contribs
         '(slime-fancy slime-asdf slime-quicklisp slime-cl-indent))
 
- ) 
+ )
 
-(use-package sly
-  :demand t
-  :init (when (string= system-type "windows-nt")
-    (load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
-    (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
-    (add-to-list 'exec-path "C:/Users/lkenji/Downloads/roswell/")
-    ;;(setq inferior-lisp-program "C:/Users/lkenji/Downloads/roswell/ros.exe -Q run")
-    (setq inferior-lisp-program "sbcl")
-    )
-  (when (string= system-type "gnu/linux")
-    (setq inferior-lisp-program "sbcl"))
-  )
+;; (use-package sly
+;;   :demand t
+;;   :init (when (string= system-type "windows-nt")
+;;     ;; (load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
+;;     ;; (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
+;;     ;; (add-to-list 'exec-path "C:/Users/lkenji/Downloads/roswell/")
+;;     ;;(setq inferior-lisp-program "C:/Users/lkenji/Downloads/roswell/ros.exe -Q run")
+;;     ;; (setq inferior-lisp-program "sbcl")
+;; 	  (add-to-list 'exec-path "C:/Users/lkenji/Downloads/ccl/")
+;;     )
+;;   (when (string= system-type "gnu/linux")
+;;     ;; (setq inferior-lisp-program "sbcl"))
+;;     (setq inferior-lisp-program "wx86cl64")
+;;     )
+;;   )
   
  (use-package slime-repl-ansi-color
    :after (slime))
@@ -909,21 +947,7 @@
 ;; (global-set-key [24 8] (quote sr-speedbar-refresh-toggle))
 
 
-;; smart parens key bindings
-(add-hook 'smartparens-mode-hook
-	  '(lambda ()
-	     (local-set-key (kbd "C-c C-S-f") 'sp-forward-sexp)
-	     (local-set-key (kbd "C-c C-S-b") 'sp-backward-sexp)
-	     (local-set-key (kbd "C-c C-S-n") 'sp-next-sexp)
-	     (local-set-key (kbd "C-c C-S-p") 'sp-previous-sexp)
-	     (local-set-key (kbd "C-c C-S-d") 'sp-down-sexp)
-	     (local-set-key (kbd "C-c C-S-- C-S-d") 'sp-backward-down-sexp)
-	     (local-set-key (kbd "C-c C-S-a") 'sp-beginning-of-sexp)
-	     (local-set-key (kbd "C-c C-S-e") 'sp-end-of-sexp)
-	     (local-set-key (kbd "C-c C-S-u") 'sp-up-sexp)
-	     (local-set-key (kbd "C-c C-S-k") 'sp-kill-sexp)
-	     )
-	  )
+
 ;;
 ;; lisp mode hook
 ;;
@@ -948,7 +972,10 @@
 ;;
 ;; geiser
 ;;
-(setq geiser-active-implementations '(racket))
+(use-package geiser
+  :ensure t
+  :init (setq geiser-active-implementations '(racket)))
+
 
 
 ;;
@@ -1000,7 +1027,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (rtags magit sly typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (sly geiser rtags magit typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
