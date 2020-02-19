@@ -101,6 +101,7 @@
         which-key-side-window-max-width 0.33
         which-key-idle-delay 0.05)
   )
+(use-package ztree :ensure t)
 (use-package magit :ensure t)
 (use-package evil-magit :ensure t)
 (use-package highlight-blocks)
@@ -161,6 +162,15 @@
   :bind (:map dart-mode-map
               ("C-M-x" . #'flutter-run-or-hot-reload)))
 
+
+
+;; ===================================================
+;;
+;; flutter config
+;;
+;; =================================================
+(use-package csharp-mode)
+(use-package omnisharp)
 ;; ===================================================
 ;;
 ;; rust config
@@ -239,22 +249,22 @@
 
 (use-package evil :ensure t :demand t
   :config (evil-mode))
-(use-package smartparens :demand t
-  :bind
-  (("C-M-f" . sp-forward-sexp)
-   ("C-M-b" . sp-backward-sexp)
-   ("C-M-d" . sp-down-sexp)
-   ("C-M-d" . sp-backward-down-sexp)
-   ("C-S-u" . sp-up-sexp)
-   ("C-M-u" . sp-backward-up-sexp)
-   ("C-S-a" . sp-beginning-of-sexp)
-   ("C-M-e" . sp-end-of-sexp)
-   ("C-M-n" . sp-next-sexp)
-   ("C-M-p" . sp-previous-sexp)
-   ("C-S-b" . sp-backward-symbol)
-   ("C-S-f" . sp-forward-symbol))
+;; (use-package smartparens :demand t
+;;   :bind
+;;   (("C-M-f" . sp-forward-sexp)
+;;    ("C-M-b" . sp-backward-sexp)
+;;    ("C-M-d" . sp-down-sexp)
+;;    ("C-M-d" . sp-backward-down-sexp)
+;;    ("C-S-u" . sp-up-sexp)
+;;    ("C-M-u" . sp-backward-up-sexp)
+;;    ("C-S-a" . sp-beginning-of-sexp)
+;;    ("C-M-e" . sp-end-of-sexp)
+;;    ("C-M-n" . sp-next-sexp)
+;;    ("C-M-p" . sp-previous-sexp)
+;;    ("C-S-b" . sp-backward-symbol)
+;;    ("C-S-f" . sp-forward-symbol))
   
-    :init (require 'smartparens-config))
+;;     :init (require 'smartparens-config))
 ;; (use-package paredit :demand t)
 ;; (use-package evil-smartparens :after evil
 ;;   ;;:init (add-hook 'evil-mode 'evil-smartparens-mode)
@@ -408,7 +418,8 @@
   :after lsp-mode)
 
 ;; Add company-lsp backend for metals
-(use-package company-lsp)
+(use-package company-lsp
+  :commands company-lsp)
 
 (use-package dap-mode
   :config
@@ -551,24 +562,26 @@
 ;;     (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
 ;;     ))
 
-
+(use-package ccls
+  :hook ((c-mode c++-mode objc-mode cuda-mode)
+	 (lambda () (require 'ccls) (lsp))))
 (use-package company-c-headers)
 
 ;;cquery backend
 ;; (defun cquery//enable ()
-;;   (condition-case nil
-;;       (lsp)
-;;     (user-error nil)))
-(use-package cquery 
-  :ensure t
-  ;; :commands lsp
-  ;; :init
-  ;; (add-hook 'c-mode-hook 'cquery//enable)
-  ;; (add-hook 'c++-mode-hook 'cquery//enable)
-  ;; (setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/np30-2/cquery/build/release/bin/cquery")
-  )
-(require 'cquery)
-(setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/np30-2/cquery/build/release/bin/cquery")
+;;  (condition-case nil
+;;      (lsp)
+;;    (user-error nil)))
+;; (use-package cquery 
+;;   :ensure t
+;;    :commands lsp
+;;    :init
+;;    (add-hook 'c-mode-hook 'cquery//enable)
+;;    (add-hook 'c++-mode-hook 'cquery//enable)
+;;    (setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/np30-2/cquery/build/release/bin/cquery")
+;;   )
+;; (require 'cquery)
+;; (setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/np30-2/cquery/build/release/bin/cquery")
 ;; ==================================================================
 
 
@@ -955,7 +968,7 @@
 (add-hook 'lisp-mode-hook
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
-	     (highlight-blocks-mode)
+	     ;;(highlight-blocks-mode)
 	     (rainbow-delimiters-mode)))
 
 ;;
@@ -966,7 +979,8 @@
 	  '(lambda ()
 	     (rainbow-delimiters-mode)
 	     ;;(highlight-sexp-mode)
-	     (highlight-blocks-mode)))
+	     ;;(highlight-blocks-mode)
+	     ))
 
 
 ;;
@@ -985,7 +999,7 @@
 (add-hook 'scheme-mode-hook
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
-	     (highlight-blocks-mode)
+	     ;;(highlight-blocks-mode)
 	     (rainbow-delimiters-mode)
 	     (geiser-mode)))
 
@@ -996,7 +1010,7 @@
 (add-hook 'emacs-lisp-mode-hook
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
-	     (highlight-blocks-mode)
+	     ;;(highlight-blocks-mode)
 	     (rainbow-delimiters-mode)))
 
 ;;
@@ -1024,10 +1038,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
+ '(custom-safe-themes
+   (quote
+    ("13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default)))
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (sly geiser rtags magit typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (omnisharp csharp-mode ztree geiser rtags magit typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
