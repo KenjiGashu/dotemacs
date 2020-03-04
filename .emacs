@@ -109,7 +109,9 @@
 (use-package ag :demand t)
 (use-package flycheck
   :ensure t
-  :init (global-flycheck-mode)
+  :init
+  ;;(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)
+  (global-flycheck-mode)
   :demand t)
 (use-package hydra)
 
@@ -125,7 +127,12 @@
 (use-package company
   :demand t
   :config (global-company-mode)
-  (add-to-list 'company-backends 'company-tern))
+  (add-to-list 'company-backends
+	       '(
+		company-tern
+		;;company-irony
+		;;company-irony-c-headers
+		)	       ))
 
 ;; ;; debugger package
 ;; (use-package dap-mode
@@ -166,11 +173,12 @@
 
 ;; ===================================================
 ;;
-;; flutter config
+;; omnisharp config
 ;;
 ;; =================================================
 (use-package csharp-mode)
-(use-package omnisharp)
+(use-package omnisharp
+  :init (add-hook 'csharp-mode-hook 'omnisharp-mode))
 ;; ===================================================
 ;;
 ;; rust config
@@ -421,6 +429,8 @@
 (use-package company-lsp
   :commands company-lsp)
 
+(setq lsp-prefer-capf t)
+
 (use-package dap-mode
   :config
   (dap-mode t)
@@ -497,6 +507,10 @@
 ;; (use-package counsel-gtags 
 ;;   :config
 ;;   (add-hook 'c-mode-hook 'counsel-gtags-mode))
+
+;; (use-package flycheck-irony
+;;   :ensure t)
+
 ;; (use-package irony
 ;;   :init
 ;;   (add-hook 'c++-mode-hook 'irony-mode)
@@ -505,11 +519,16 @@
   
 ;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
+;; (use-package irony-eldoc
+;;   :ensure t)
+
 ;; (when (boundp 'w32-pipe-read-delay)
 ;;   (setq w32-pipe-read-delay 0))
 ;; ;; Set the buffer size to 64K on Windows (from the original 4K)
 ;; (when (boundp 'w32-pipe-buffer-size)
 ;;   (setq irony-server-w32-pipe-buffer-size (* 64 1024)))
+
+;;(use-package company-c-headers)
 
 ;; (use-package rtags
 ;;   :config
@@ -562,26 +581,32 @@
 ;;     (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
 ;;     ))
 
-(use-package ccls
-  :hook ((c-mode c++-mode objc-mode cuda-mode)
-	 (lambda () (require 'ccls) (lsp))))
-(use-package company-c-headers)
+;; (use-package ccls
+;;   :hook ((c-mode c++-mode objc-mode cuda-mode) .
+;; 	 (lambda () (progn (require 'ccls) (lsp)))))
 
 ;;cquery backend
-;; (defun cquery//enable ()
-;;  (condition-case nil
-;;      (lsp)
-;;    (user-error nil)))
-;; (use-package cquery 
-;;   :ensure t
-;;    :commands lsp
-;;    :init
-;;    (add-hook 'c-mode-hook 'cquery//enable)
-;;    (add-hook 'c++-mode-hook 'cquery//enable)
-;;    (setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/np30-2/cquery/build/release/bin/cquery")
-;;   )
-;; (require 'cquery)
-;; (setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/np30-2/cquery/build/release/bin/cquery")
+(defun cquery//enable ()
+ (condition-case nil
+     (lsp)
+   (user-error nil)))
+(use-package cquery 
+  :ensure t
+   :commands lsp
+   :init
+   (add-hook 'c-mode-hook 'cquery//enable)
+   (add-hook 'c++-mode-hook 'cquery//enable)
+   (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/cquery_install/bin/cquery")
+  )
+(require 'cquery)
+(setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/cquery/cquery_install/bin/cquery")
+
+;;fix header not found when flycheck is enabled
+(use-package flycheck-clang-tidy
+  :after flycheck
+  :hook
+  (flycheck-mode . flycheck-clang-tidy-setup)
+  )
 ;; ==================================================================
 
 
@@ -1046,7 +1071,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (omnisharp csharp-mode ztree geiser rtags magit typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (flycheck-clang-tidy company-capf ccls omnisharp csharp-mode ztree geiser rtags magit typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
