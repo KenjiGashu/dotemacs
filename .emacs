@@ -1,4 +1,4 @@
-;; emacs conf --- configuration
+; emacs conf --- configuration
 ;;; inicializacao package manage
 (require 'package)
 ;;(custom-set-variables
@@ -132,8 +132,11 @@
 		company-tern
 		;;company-irony
 		;;company-irony-c-headers
-		)	       ))
-
+		)	       )
+  (evil-define-key nil evil-insert-state-map
+    "<C-M-y>" 'company-complete))
+(evil-define-key nil evil-insert-state-map
+    "<C-M-y>" 'company-complete)
 ;; ;; debugger package
 ;; (use-package dap-mode
 ;;    :after lsp-mode
@@ -414,6 +417,7 @@
 (use-package lsp-mode
   ;; Optional - enable lsp-mode automatically in scala files
   :demand t
+  :init (setq lsp-keymap-prefix "SPC m")
   :hook
   (scala-mode . lsp)
   :config (setq lsp-prefer-flymake nil))
@@ -596,10 +600,10 @@
    :init
    (add-hook 'c-mode-hook 'cquery//enable)
    (add-hook 'c++-mode-hook 'cquery//enable)
-   (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/cquery_install/bin/cquery")
+   (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
   )
 (require 'cquery)
-(setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/cquery/cquery_install/bin/cquery")
+(setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
 
 ;;fix header not found when flycheck is enabled
 (use-package flycheck-clang-tidy
@@ -751,6 +755,8 @@
   [_aw_] avy goto word0 [_ff_] counsel-find-file  [_w1_]   delete other window
   [_an_] avy goto word1 [_bb_] helm-buffer        [_w0_]   delete window
                         [_fs_] save buffer        [_w3_] split right
+
+  [_m_] LSP
 "  
   ;; Smart Parens:
   ;; [_C-M-f_] forward     [_C-M-b_] backward
@@ -774,6 +780,7 @@
    ("w2" split-window-below )
    ("w3" split-window-right )
    ("fs" save-buffer )
+   ("m" hydra-lsp/body :exit t)
    ;; ("C-M-f" sp-forward-sexp)
    ;; ("C-M-b" sp-backward-sexp)
    ;; ("C-d>" sp-down-sexp)
@@ -791,6 +798,33 @@
 (define-key evil-normal-state-map (kbd "SPC") 'hydra-evil-normal/body)
 (define-key evil-motion-state-map (kbd "SPC") 'hydra-evil-normal/body)
 
+(defhydra hydra-lsp (:color green
+			     :hint nil)
+   "
+
+   ^find^                     ^UI^                   ^Window
+    ^^^^^^------------------------------------------------------
+  [_gd_] find definition     [_pd_] find definition    
+  [_ga_] find declaration    [_pr_] find reference   
+  [_gs_] find implementation 
+                             
+"  
+  ;; Smart Parens:
+  ;; [_C-M-f_] forward     [_C-M-b_] backward
+  ;; [_C-d_] down        [_M-d_] back down
+  ;; [_C-u_] up            [_M-u_] back up
+  ;; [_C-M-n_] next        [_C-M-p_] previous
+  ;; [_C-M-a_] beggining   [_C-M-e_] end
+  ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
+  ;; "
+   ("gd" lsp-find-definition)
+   ("ga" lsp-find-declaration)
+   ("gs" lsp-find-implementation)
+   ("pd" lsp-ui-peek-find-definitions)
+   ;;("pa" lsp-ui-peek-find-declarations)
+   ;;("ps" lsp-ui-peek-find-implementations)
+   ("pr" lsp-ui-peek-find-references)
+   )
 
 (use-package counsel :ensure t
   :bind*                           ; load counsel when pressed
@@ -854,14 +888,15 @@
     ;;(add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
     ;;(add-to-list 'exec-path "C:/Users/lkenji/Downloads/roswell/")
     ;;(setq inferior-lisp-program "C:/Users/lkenji/Downloads/roswell/ros.exe -Q run"))
-    ;;(add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/2.0.0/")
-    (add-to-list 'exec-path "C:/Users/lkenji/Downloads/ccl/")
-    (setq inferior-lisp-program "C:/Users/lkenji/Downloads/ccl/wx86cl64")
+    (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/2.0.0/")
+    (setq inferior-lisp-program "sbcl")
+    ;;(add-to-list 'exec-path "C:/Users/lkenji/Downloads/ccl/")
+    ;;(setq inferior-lisp-program "C:/Users/lkenji/Downloads/ccl/wx86cl64")
     )
   (when (string= system-type "gnu/linux")
-    ;; (setq inferior-lisp-program "sbcl")
+    (setq inferior-lisp-program "sbcl")
     ;; (setq inferior-lisp-program "C:/Users/lkenji/Downloads/ccl/wx86cl64.exe")
-    (setq inferior-lisp-program "wx86cl64")
+    ;; (setq inferior-lisp-program "wx86cl64")
     )
   (setq slime-contribs
         '(slime-fancy slime-asdf slime-quicklisp slime-cl-indent))
