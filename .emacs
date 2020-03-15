@@ -134,9 +134,7 @@
 		;;company-irony-c-headers
 		)	       )
   (evil-define-key nil evil-insert-state-map
-    "<C-M-y>" 'company-complete))
-(evil-define-key nil evil-insert-state-map
-    "<C-M-y>" 'company-complete)
+    (kbd "C-M-y") 'company-complete))
 ;; ;; debugger package
 ;; (use-package dap-mode
 ;;    :after lsp-mode
@@ -417,7 +415,6 @@
 (use-package lsp-mode
   ;; Optional - enable lsp-mode automatically in scala files
   :demand t
-  :init (setq lsp-keymap-prefix "SPC m")
   :hook
   (scala-mode . lsp)
   :config (setq lsp-prefer-flymake nil))
@@ -436,6 +433,8 @@
 (setq lsp-prefer-capf t)
 
 (use-package dap-mode
+  :init (add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
   :config
   (dap-mode t)
   (dap-ui-mode t))
@@ -598,12 +597,17 @@
   :ensure t
    :commands lsp
    :init
-   (add-hook 'c-mode-hook 'cquery//enable)
+   (add-hook 'c-mode-hook 'cquery//enable (lambda () (require 'dap-gdb-lldb)
+			    (dap-gbd-lldb-setup)))
    (add-hook 'c++-mode-hook 'cquery//enable)
-   (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
+   (when (string= system-type "windows-nt")
+     (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
+     )
+   (when (string= system-type "gnu/linux")
+     (setq cquery-executable "/media/prog/cquery-linux/build/release/bin/cquery")
+     )
+
   )
-(require 'cquery)
-(setq cquery-executable "C:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
 
 ;;fix header not found when flycheck is enabled
 (use-package flycheck-clang-tidy
@@ -1106,7 +1110,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (flycheck-clang-tidy company-capf ccls omnisharp csharp-mode ztree geiser rtags magit typescript-mode yasnippet-snippets prettier-js vue-mode web-mode cquery iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (flycheck-clang-tidy company-capf ccls omnisharp csharp-mode ztree geiser rtags magit typescript-mode yasnippet-snippets prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
