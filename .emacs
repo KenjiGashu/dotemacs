@@ -76,12 +76,10 @@
 (use-package frog-jump-buffer
   :bind (("C-x x" . frog-jump-buffer)))
 
-(use-package helm-c-yasnippet
-  :init
-  (setq helm-yas-space-match-any-greedy t)
-  (global-set-key (kbd "C-c y") 'helm-yas-complete))
-
-
+;; (use-package helm-c-yasnippet
+;;   :init
+;;   (setq helm-yas-space-match-any-greedy t)
+;;   (global-set-key (kbd "C-c y") 'helm-yas-complete))
 
 (use-package async)
 (use-package popup)
@@ -101,7 +99,7 @@
         which-key-side-window-max-width 0.33
         which-key-idle-delay 0.05)
   )
-(use-package ztree :ensure t)
+;; (use-package ztree :ensure t)
 (use-package magit :ensure t)
 (use-package evil-magit :ensure t)
 (use-package highlight-blocks)
@@ -118,9 +116,9 @@
 (use-package helm
   :config (require 'helm-config)
   (helm-mode 1)
-  ;;   :bind*                           ; load counsel when pressed
-  ;; (("M-x"     . helm-M-x)       ; M-x use counsel
-  ;;  ) ; C-x C-f use counsel-find-file
+  :bind*                           ; load counsel when pressed
+  (("M-x"     . helm-M-x)       ; M-x use counsel
+   ) ; C-x C-f use counsel-find-file
 )
 (use-package org )
 (use-package company-tern)
@@ -450,7 +448,6 @@
   :config
   ;; Enable dap-java
   (require 'dap-java)
-
   ;; Support Lombok in our projects, among other things
   (setq
    ;; lsp-java-vmargs
@@ -482,21 +479,20 @@
    ;;(concat "file://" jmi/java-format-settings-file)
    )
   
-  :hook (java-mode   . jmi/java-mode-config)
+  :hook (java-mode . jmi/java-mode-config
+	 )
 
   :demand t
   :after (lsp lsp-mode dap-mode))
 
-(use-package helm-lsp
-  :demand t
-  :commands helm-lsp-workspace-symbol)
+;; (use-package helm-lsp
+;;   :demand t
+;;   :commands helm-lsp-workspace-symbol)
 (use-package lsp-treemacs
   :demand t
   :commands lsp-treemacs-errors-list)
 (use-package company-lsp
   :demand t)
-
-
 
 
 ;; ================================================================
@@ -592,22 +588,27 @@
 (defun cquery//enable ()
  (condition-case nil
      (lsp)
-   (user-error nil)))
-(use-package cquery 
-  :ensure t
-   :commands lsp
-   :init
-   (add-hook 'c-mode-hook 'cquery//enable (lambda () (require 'dap-gdb-lldb)
-			    (dap-gbd-lldb-setup)))
-   (add-hook 'c++-mode-hook 'cquery//enable)
-   (when (string= system-type "windows-nt")
-     (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
-     )
-   (when (string= system-type "gnu/linux")
-     (setq cquery-executable "/media/prog/cquery-linux/build/release/bin/cquery")
-     )
+   (user-error nil))
+ ;(require 'cquery)
+ )
+;; (use-package cquery 
+;;   :ensure t
+;;    :commands lsp
+;;    :init
+;;    (add-hook 'c-mode-hook 'cquery//enable (lambda () (require 'dap-gdb-lldb)
+;; 			    (dap-gbd-lldb-setup)))
+;;    (add-hook 'c++-mode-hook 'cquery//enable)
+;;    (when (string= system-type "windows-nt")
+;;      (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
+;;      )
+;;    (when (string= system-type "gnu/linux")
+;;      (setq cquery-executable "/media/prog/cquery-linux/build/release/bin/cquery")
+;;      )
 
-  )
+;;   )
+
+(add-hook 'c-mode-hook 'cquery//enable)
+(add-hook 'c++-mode-hook 'cquery//enable)
 
 ;;fix header not found when flycheck is enabled
 (use-package flycheck-clang-tidy
@@ -628,42 +629,42 @@
 ;;
 ;;===================================================================
 
-;; (use-package cc-mode)
+(use-package cc-mode)
 
-;; (use-package lsp-mode
-;;   :init (add-hook 'java-mode-hook #'lsp-deferred)
-;;   :commands (lsp lsp-deferred))
-;; ;; optionally
-;; (use-package lsp-ui
-;;   :demand t
-;;   :commands lsp-ui-mode)
-;; (use-package company-lsp
-;;   :demand t
-;;   :commands company-lsp)
-;; (use-package lsp-java 
-;;   :demand t)
+(use-package lsp-mode
+  :init (add-hook 'java-mode-hook #'lsp-deferred)
+  :commands (lsp lsp-deferred))
+;; optionally
+(use-package lsp-ui
+  :demand t
+  :commands lsp-ui-mode)
+(use-package company-lsp
+  :demand t
+  :commands company-lsp)
+(use-package lsp-java 
+  :demand t)
 
-;; ;; optionally if you want to use debugger
-;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-;; (use-package dap-mode
-;;   :demand t
-;;   :config
-;;   (dap-mode 1)
-;;   (dap-ui-mode 1)
-;;   (dap-tooltip-mode 1))
+;; optionally if you want to use debugger
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+(use-package dap-mode
+  :demand t
+  :config
+  (dap-mode 1)
+  (dap-ui-mode 1)
+  (dap-tooltip-mode 1))
 
-;; (use-package dap-java
-;;   :demand t
-;;   :ensure nil)
+(use-package dap-java
+  :demand t
+  :ensure nil)
 
-;; STS4 support
-;; (require 'lsp-java-boot)
+;STS4 support
+(require 'lsp-java-boot)
 
 ;; ;; to enable the lenses
-;; (add-hook 'lsp-mode-hook #'lsp-lens-mode)
-;; (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
-;; (use-package lsp-java  :after lsp
-;;   :config (add-hook 'java-mode-hook 'lsp))
+(add-hook 'lsp-mode-hook #'lsp-lens-mode)
+(add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
+(use-package lsp-java  :after lsp
+  :config (add-hook 'java-mode-hook 'lsp))
 ;===================================================================
 
 
@@ -756,7 +757,7 @@
     ^^^^^^------------------------------------------------------
   [_ac_] avy goto char  [_bk_] kill buffer        [_w TAB_] other window
   [_al_] avy goto line  [_gs_] git status toggle  [_w2_] split window below
-  [_aw_] avy goto word0 [_ff_] counsel-find-file  [_w1_]   delete other window
+  [_aw_] avy goto word0 [_ff_] helm-find-file  [_w1_]   delete other window
   [_an_] avy goto word1 [_bb_] helm-buffer        [_w0_]   delete window
                         [_fs_] save buffer        [_w3_] split right
 
@@ -775,7 +776,7 @@
    ("aw" evil-avy-goto-word-0 )
    ("an" evil-avy-goto-word-1 )
    ("gs" magit-status )
-   ("ff" counsel-find-file )
+   ("ff" helm-find-files )
    ("bb" helm-buffers-list )
    ("w TAB" other-window )
    ("bk" kill-buffer )
@@ -831,14 +832,15 @@
    )
 
 (use-package counsel :ensure t
-  :bind*                           ; load counsel when pressed
-  (("M-x"     . counsel-M-x)       ; M-x use counsel
-   ("C-x C-f" . counsel-find-file) ; C-x C-f use counsel-find-file
-   ("C-x C-r" . counsel-recentf)   ; search recently edited files
-   ("C-c f"   . counsel-git)       ; search for files in git repo
-   ("C-c s"   . counsel-git-grep)  ; search for regexp in git repo
-   ("C-c /"   . counsel-ag)        ; search for regexp in git repo using ag
-   ("C-c l"   . counsel-locate))   ; search for files or else using locate
+  ;; :bind*                           ; load counsel when pressed
+  ;; (("M-x"     . counsel-M-x)       ; M-x use counsel
+  ;;  ("C-x C-f" . counsel-find-file) ; C-x C-f use counsel-find-file
+  ;;  ("C-x C-r" . counsel-recentf)   ; search recently edited files
+  ;;  ("C-c f"   . counsel-git)       ; search for files in git repo
+  ;;  ("C-c s"   . counsel-git-grep)  ; search for regexp in git repo
+  ;;  ("C-c /"   . counsel-ag)        ; search for regexp in git repo using ag
+  ;;  ("C-c l"   . counsel-locate)
+  ;;  )   ; search for files or else using locate
   )
 
 ;
@@ -1110,7 +1112,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (flycheck-clang-tidy company-capf ccls omnisharp csharp-mode ztree geiser rtags magit typescript-mode yasnippet-snippets prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (flycheck-clang-tidy company-capf ccls omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
