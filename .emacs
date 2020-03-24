@@ -45,7 +45,6 @@
 ;;       use-package-always-ensure t)
 (setq use-package-always-ensure t)
 
-
 ;; ==================================================================
 ;;
 ;; load paths
@@ -112,6 +111,10 @@
   (global-flycheck-mode)
   :demand t)
 (use-package hydra)
+
+(use-package projectile
+  :init (setq projectile-project-search-path '("~/prog" "/media/prog/"))
+  :ensure t)
 
 (use-package helm
   :config (require 'helm-config)
@@ -450,20 +453,33 @@
   (require 'dap-java)
   ;; Support Lombok in our projects, among other things
   (setq
+   ;; path-to-lombok
+   ;; (expand-file-name
+   ;;      "~/.emacs.d/jmi/lombok.jar"
+   ;;    )
+   
+   lsp-java-vmargs
+            `("-noverify"
+              "-Xmx1G"
+              "-XX:+UseG1GC"
+              "-XX:+UseStringDeduplication"
+              ,(concat "-javaagent:" "/home/kenjigashu/.emacs.d/jmi/lombok.jar")
+              ,(concat "-Xbootclasspath/a:" "/home/kenjigashu/.emacs.d/jmi/"))
+
    ;; lsp-java-vmargs
    ;; (list "-noverify"
    ;; 	 "-Xmx2G"
    ;; 	 "-XX:+UseG1GC"
    ;; 	 "-XX:+UseStringDeduplication"
    ;; 	 "-javaagent:~/.emacs.d/jmi/lombok.jar"
-   ;; 	 "-Xbootclasspath/a:~/.emacs.d/jmi/lombok.jar")
+   ;; 	 "-Xbootclasspath/a:~/.emacs.d/jmi/")
    ;; lsp-java-vmargs
    ;;          `("-noverify"
    ;;            "-Xmx1G"
    ;;            "-XX:+UseG1GC"
    ;;            "-XX:+UseStringDeduplication"
-   ;;            ,(concat "-javaagent:" "~/.emacs.d/jmi/lombok.jar")
-   ;;            ,(concat "-Xbootclasspath/a:" "~/.emacs.d/jmi/lombok.jar")
+   ;;            ,(concat "-javaagent:" "~/.emacs.d/jmi/lombok-1.18.0.jar")
+   ;;            ,(concat "-Xbootclasspath/a:" "~/.emacs.d/jmi/lombok-1.18.0.jar"))
    lsp-file-watch-ignored
    '(".idea" ".ensime_cache" ".eunit" "node_modules"
   	   ".git" ".hg" ".fslckout" "_FOSSIL_"
@@ -580,35 +596,34 @@
 ;;     (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
 ;;     ))
 
-;; (use-package ccls
-;;   :hook ((c-mode c++-mode objc-mode cuda-mode) .
-;; 	 (lambda () (progn (require 'ccls) (lsp)))))
+(use-package ccls
+  :hook ((c-mode c++-mode objc-mode cuda-mode) .
+	 (lambda () (progn (require 'ccls) (lsp)))))
 
 ;;cquery backend
-(defun cquery//enable ()
- (condition-case nil
-     (lsp)
-   (user-error nil))
- ;(require 'cquery)
- )
+;; (defun cquery//enable ()
+;;  (condition-case nil
+;;      (lsp)
+;;    (user-error nil))
+;;  ;(require 'cquery)
+;;  )
+
 ;; (use-package cquery 
 ;;   :ensure t
 ;;    :commands lsp
 ;;    :init
-;;    (add-hook 'c-mode-hook 'cquery//enable (lambda () (require 'dap-gdb-lldb)
-;; 			    (dap-gbd-lldb-setup)))
-;;    (add-hook 'c++-mode-hook 'cquery//enable)
+;;    ;; (add-hook 'c-mode-hook 'cquery//enable (lambda () (require 'dap-gdb-lldb)
+;;    ;; 			    (dap-gbd-lldb-setup)))
+;;    ;; (add-hook 'c++-mode-hook 'cquery//enable)
 ;;    (when (string= system-type "windows-nt")
 ;;      (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
 ;;      )
 ;;    (when (string= system-type "gnu/linux")
 ;;      (setq cquery-executable "/media/prog/cquery-linux/build/release/bin/cquery")
 ;;      )
-
+;;    :hook ((c-mode c++-mode objc-mode cuda-mode) .
+;; 	  (lambda () (progn (require 'cquery) (lsp))))
 ;;   )
-
-(add-hook 'c-mode-hook 'cquery//enable)
-(add-hook 'c++-mode-hook 'cquery//enable)
 
 ;;fix header not found when flycheck is enabled
 (use-package flycheck-clang-tidy
@@ -762,6 +777,7 @@
                         [_fs_] save buffer        [_w3_] split right
 
   [_m_] LSP
+  [_p_] Projectile
 "  
   ;; Smart Parens:
   ;; [_C-M-f_] forward     [_C-M-b_] backward
@@ -786,6 +802,7 @@
    ("w3" split-window-right )
    ("fs" save-buffer )
    ("m" hydra-lsp/body :exit t)
+   ("p" hydra-projectile/body :exit t)
    ;; ("C-M-f" sp-forward-sexp)
    ;; ("C-M-b" sp-backward-sexp)
    ;; ("C-d>" sp-down-sexp)
@@ -803,8 +820,8 @@
 (define-key evil-normal-state-map (kbd "SPC") 'hydra-evil-normal/body)
 (define-key evil-motion-state-map (kbd "SPC") 'hydra-evil-normal/body)
 
-(defhydra hydra-lsp (:color green
-			     :hint nil)
+(defhydra hydra-lsp (:color blue
+			    :hint nil)
    "
 
    ^find^                     ^UI^                   ^Window
@@ -830,6 +847,28 @@
    ;;("ps" lsp-ui-peek-find-implementations)
    ("pr" lsp-ui-peek-find-references)
    )
+
+(defhydra hydra-projectile (:color blue
+				   :hint nil)
+   "
+   ^find^  
+    ^^^^^^------------------------------------------------------
+  [_f_] find file                             
+  [_s_] switch project
+"  
+  ;; Smart Parens:
+  ;; [_C-M-f_] forward     [_C-M-b_] backward
+  ;; [_C-d_] down        [_M-d_] back down
+  ;; [_C-u_] up            [_M-u_] back up
+  ;; [_C-M-n_] next        [_C-M-p_] previous
+  ;; [_C-M-a_] beggining   [_C-M-e_] end
+  ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
+  ;; "
+   ("f" projectile-find-file)
+   ("s" projectile-switch-project)
+   )
+
+
 
 (use-package counsel :ensure t
   ;; :bind*                           ; load counsel when pressed
@@ -1112,7 +1151,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (flycheck-clang-tidy company-capf ccls omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (ranger cquery flycheck-clang-tidy company-capf ccls omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
