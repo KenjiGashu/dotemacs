@@ -61,6 +61,8 @@
 
 
 ;; can't download asnippet-snippets because it makes package install crash
+(use-package ranger
+  :ensure t)
 (use-package yasnippet
   :demand t
   :config (yas-global-mode 1))
