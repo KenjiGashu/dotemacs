@@ -63,6 +63,7 @@
 ;; can't download asnippet-snippets because it makes package install crash
 (use-package ranger
   :ensure t)
+(global-set-key [f8] 'ranger)
 (use-package yasnippet
   :demand t
   :config (yas-global-mode 1))
@@ -126,18 +127,13 @@
    ) ; C-x C-f use counsel-find-file
 )
 (use-package org )
-(use-package company-tern)
+
 (use-package company
   :demand t
-  :config (global-company-mode)
-  (add-to-list 'company-backends
-	       '(
-		company-tern
-		;;company-irony
-		;;company-irony-c-headers
-		)	       )
+  :config (global-company-mode 1)
+  (setq company-backends '((company-files company-keywords company-capf company-dabbrev-code company-yasnippet company-dabbrev)))
   (evil-define-key nil evil-insert-state-map
-    (kbd "C-M-y") 'company-complete))
+  (kbd "C-M-y") 'company-complete))
 ;; ;; debugger package
 ;; (use-package dap-mode
 ;;    :after lsp-mode
@@ -182,7 +178,9 @@
 ;; =================================================
 (use-package csharp-mode)
 (use-package omnisharp
-  :init (add-hook 'csharp-mode-hook 'omnisharp-mode))
+  :init
+  (add-hook 'csharp-mode-hook 'omnisharp-mode)
+  (add-hook 'csharp-mode-hook #'company-mode))
 ;; ===================================================
 ;;
 ;; rust config
@@ -207,8 +205,16 @@
 ;; web config
 ;;
 ;; =================================================
+(use-package company-web
+    :ensure t)
+
 (use-package web-mode
-  :mode "\\.blade.php")
+    :mode ("\\.blade.php\\'" "\\.html\\'" "\\.css\\'")
+    :hook (web-mode . (lambda ()
+			(require 'company-web-html)
+			(require 'company-web-jade)
+			(require 'company-web-slim)
+			(add-to-list (make-local-variable 'company-backends) '(company-web-html company-web-jade company-web-slim)))))
 (use-package vue-mode
   :mode "\\.vue")
 
@@ -226,9 +232,17 @@
 ;; javascript config
 ;;
 ;; =================================================
+(use-package company-tern
+   :ensure t )
 (use-package rjsx-mode
   :mode "\\.js"
-  :hook (rjsx-mode lsp))
+  :hook (rjsx-mode lsp)
+  :init (add-hook 'python-mode-hook (lambda()
+				      (add-to-list
+				       (make-local-variable 'company-backends)
+				       'company-tern
+				       'company-lsp
+				       ))))
 ;; (use-package js2-mode)
 ;; (use-package tide)
 (use-package js2-refactor
@@ -291,7 +305,7 @@
 
 ;;treemacs 
 (use-package treemacs-evil :demand t)
-(global-set-key [f8] 'treemacs)
+
 
 ;; multiple cursors evil mode
 (use-package evil-mc :demand t
@@ -448,7 +462,9 @@
     (toggle-truncate-lines 1)
     (setq-local tab-width 4)
     (setq-local c-basic-offset 4)
-    (lsp))
+    (lsp)
+    (add-to-list (make-local-variable 'company-backends)
+		 'company-lsp))
 
   :config
   ;; Enable dap-java
@@ -518,9 +534,17 @@
 ;; c mode config
 ;;
 ;; ================================================================
-(use-package ggtags )
-;; (use-package helm-gtags
-;;   :init (add-hook 'c-mode-hook 'helm-gtags-mode))
+(use-package ggtags
+    :hook ((c-mode c++-mode) . ggtags-mode)
+    :init (add-hook 'ggtags-mode-hook (lambda ()
+					(add-to-list
+					 (make-local-variable 'company-backends)
+					 'company-gtags
+					 )
+					))
+    :config (require 'dap-gdb-lldb))
+(use-package helm-gtags
+  :hook ((ggtags-mode . helm-gtags-mode)))
 ;; (use-package counsel-gtags 
 ;;   :config
 ;;   (add-hook 'c-mode-hook 'counsel-gtags-mode))
@@ -598,9 +622,9 @@
 ;;     (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
 ;;     ))
 
-(use-package ccls
-  :hook ((c-mode c++-mode objc-mode cuda-mode) .
-	 (lambda () (progn (require 'ccls) (lsp)))))
+;; (use-package ccls
+;;   :hook ((c-mode c++-mode objc-mode cuda-mode) .
+;; 	 (lambda () (progn (require 'ccls) (lsp)))))
 
 ;;cquery backend
 ;; (defun cquery//enable ()
@@ -614,17 +638,20 @@
 ;;   :ensure t
 ;;    :commands lsp
 ;;    :init
-;;    ;; (add-hook 'c-mode-hook 'cquery//enable (lambda () (require 'dap-gdb-lldb)
-;;    ;; 			    (dap-gbd-lldb-setup)))
-;;    ;; (add-hook 'c++-mode-hook 'cquery//enable)
+;;    (add-hook 'c-mode-hook 'cquery//enable
+;; 	     (lambda () (require 'dap-gdb-lldb)
+;; 	       (dap-gbd-lldb-setup)
+;; 	       (make-local-variable 'company-backends)
+;; 	       (setq company-backends (list (cons 'company-lsp (copy-tree (car company-backends)))))))
+;;    (add-hook 'c++-mode-hook 'cquery//enable)
 ;;    (when (string= system-type "windows-nt")
 ;;      (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
 ;;      )
 ;;    (when (string= system-type "gnu/linux")
 ;;      (setq cquery-executable "/media/prog/cquery-linux/build/release/bin/cquery")
 ;;      )
-;;    :hook ((c-mode c++-mode objc-mode cuda-mode) .
-;; 	  (lambda () (progn (require 'cquery) (lsp))))
+;;    ;; :hook ((c-mode c++-mode objc-mode cuda-mode) .
+;;    ;; 	  (lambda () (progn (require 'cquery) (lsp))))
 ;;   )
 
 ;;fix header not found when flycheck is enabled
@@ -650,6 +677,9 @@
 
 (use-package lsp-mode
   :init (add-hook 'java-mode-hook #'lsp-deferred)
+  :hook (lsp-mode . (lambda ()
+		      (add-to-list (make-local-variable 'company-backends)
+				   'company-lsp)))
   :commands (lsp lsp-deferred))
 ;; optionally
 (use-package lsp-ui
@@ -778,7 +808,7 @@
   [_an_] avy goto word1 [_bb_] helm-buffer        [_w0_]   delete window
                         [_fs_] save buffer        [_w3_] split right
 
-  [_m_] LSP
+  [_m_] LSP             [_gg_] GGTAGS
   [_p_] Projectile
 "  
   ;; Smart Parens:
@@ -805,6 +835,7 @@
    ("fs" save-buffer )
    ("m" hydra-lsp/body :exit t)
    ("p" hydra-projectile/body :exit t)
+   ("gg" hydra-ggtags/body :exit t)
    ;; ("C-M-f" sp-forward-sexp)
    ;; ("C-M-b" sp-backward-sexp)
    ;; ("C-d>" sp-down-sexp)
@@ -824,7 +855,7 @@
 
 (defhydra hydra-lsp (:color blue
 			    :hint nil)
-   "
+"
 
    ^find^                     ^UI^                   ^Window
     ^^^^^^------------------------------------------------------
@@ -868,6 +899,46 @@
   ;; "
    ("f" projectile-find-file)
    ("s" projectile-switch-project)
+   )
+
+(defhydra hydra-ggtags (:color blue
+				   :hint nil)
+   "
+   ^find^  
+    ^^^^^^------------------------------------------------------
+  [_n_] next     [_g_] grep  [_ff_] find [_fh_] find-here  [_d_] delete-tag  [_r_] f-regex [_fs_] find-symbol
+  [_p_] previous [_v_] f-dwim  [_1_] f-reference [_s_] show-definition [_fr_] find-reference
+  [_SPC_] register [_hh_] history [_o_] f-other [_m_] search-history [_b_] browse-hypertext 
+  [_hn_] next-history [_hp_] prev-history [_ts_] show-stack
+" 
+  ;; Smart Parens:
+  ;; [_C-M-f_] forward     [_C-M-b_] backward
+  ;; [_C-d_] down        [_M-d_] back down
+  ;; [_C-u_] up            [_M-u_] back up
+  ;; [_C-M-n_] next        [_C-M-p_] previous
+  ;; [_C-M-a_] beggining   [_C-M-e_] end
+  ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
+  ;; "
+   ("n" ggtags-next-mark)
+   ("p" ggtags-prev-mark)
+   ("ff" helm-gtags-find-tag)
+   ("fh" helm-gtags-find-tag-from-here)
+   ("fr" helm-gtags-find-rtag)
+   ("fs" helm-gtags-find-symbol)
+   ("g" ggtags-grep)
+   ("d" ggtags-delete-tags)
+   ("r" ggtags-find-tag-regexp)
+   ("v" helm-gtags-dwim)
+   ("1" ggtags-find-reference)
+   ("s" ggtags-show-definition)
+   ("SPC" ggtags-save-to-register)
+   ("hh" ggtags-view-tag-history)
+   ("hn" helm-gtags-next-history)
+   ("hp" helm-gtags-previous-history)
+   ("o" ggtags-find-other-symbol)
+   ("m" ggtags-view-search-history)
+   ("b" ggtags-browse-file-as-hypertext)
+   ("ts" helm-gtags-show-stack)
    )
 
 
@@ -1151,9 +1222,10 @@
    (quote
     ("13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default)))
  '(lsp-ui-peek-enable t)
+ '(omnisharp-server-executable-path nil)
  '(package-selected-packages
    (quote
-    (ranger cquery flycheck-clang-tidy company-capf ccls omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (company-gtags cquery ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
