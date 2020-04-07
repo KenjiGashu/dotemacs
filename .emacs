@@ -209,11 +209,15 @@
     :ensure t)
 
 (use-package web-mode
-    :mode ("\\.blade.php\\'" "\\.html\\'" "\\.css\\'")
+    :mode ("\\.blade.php\\'" "\\.html\\'" "\\.css\\'" "\\.tsx\\'" "\\.jsx\\'")
     :hook (web-mode . (lambda ()
 			(require 'company-web-html)
 			(require 'company-web-jade)
 			(require 'company-web-slim)
+			(when (string-equal "tsx" (file-name-extension buffer-file-name))
+			  (setup-tide-mode))
+			(when (string-equal "jsx" (file-name-extension buffer-file-name))
+			  (setup-tide-mode))
 			(add-to-list (make-local-variable 'company-backends) '(company-web-html company-web-jade company-web-slim)))))
 (use-package vue-mode
   :mode "\\.vue")
@@ -245,6 +249,14 @@
 				       ))))
 ;; (use-package js2-mode)
 ;; (use-package tide)
+(use-package typescript-mode
+  :ensure t)
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
 (use-package js2-refactor
   :hook (rjsx-mode js2-refactor-mode))
 (use-package js2-highlight-vars)
@@ -1225,7 +1237,7 @@
  '(omnisharp-server-executable-path nil)
  '(package-selected-packages
    (quote
-    (company-gtags cquery ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (tide company-gtags cquery ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
