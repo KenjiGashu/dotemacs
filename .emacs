@@ -258,6 +258,8 @@
 			'company-lsp
 			)))))
 
+(use-package import-js)
+
 ;; (use-package tide)
 (use-package typescript-mode
   :ensure t)
