@@ -250,13 +250,17 @@
 (use-package js2-mode
   :ensure t
   :mode "\\.js"
-  :hook ((js2-mode lsp)
+  :hook ((js2-mode . lsp)
 	 (js2-mode . (lambda()
 		       (add-to-list
 			(make-local-variable 'company-backends)
 			'company-tern
 			'company-lsp
 			)))))
+
+(use-package tern
+  :ensure t
+  :hook (js2-mode . tern-mode))
 
 (use-package import-js)
 
@@ -270,7 +274,7 @@
 ;;          (typescript-mode . tide-hl-identifier-mode)
 ;;          (before-save . tide-format-before-save)))
 (use-package js2-refactor
-  :hook (js2-mode js2-refactor-mode))
+  :hook (js2-mode . js2-refactor-mode))
 (use-package skewer-mode
   :ensure t
   :hook ((js2-mode . skewer-mode)
@@ -288,7 +292,8 @@
   :init (add-hook 'rjsx-mode-hook 
           (lambda () 
              (add-hook 'after-save-hook 'eslint-fix nil 'make-it-local))))
-(use-package xref-js2)
+(use-package xref-js2
+  :hook (js2-mode . (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 ;; (use-package indium)
 ;; (use-package company-tern
 ;;   :hook (rjsx-mode tern-mode))
@@ -708,6 +713,36 @@
 ;; Java
 ;;
 ;;===================================================================
+
+;; eclipse-java-style is the same as the "java" style (copied from
+;; cc-styles.el) with the addition of (arglist-cont-nonempty . ++) to
+;; c-offsets-alist to make it more like default Eclipse formatting -- function
+;; arguments starting on a new line are indented by 8 characters
+;; (++ = 2 x normal offset) rather than lined up with the arguments on the
+;; previous line
+(defconst eclipse-java-style
+  '((c-basic-offset . 4)
+    (c-comment-only-line-offset . (0 . 0))
+    ;; the following preserves Javadoc starter lines
+    (c-offsets-alist . ((inline-open . 0)
+                        (topmost-intro-cont    . +)
+                        (statement-block-intro . +)
+                        (knr-argdecl-intro     . 5)
+                        (substatement-open     . +)
+                        (substatement-label    . +)
+                        (label                 . +)
+                        (statement-case-open   . +)
+                        (statement-cont        . +)
+                        (arglist-intro  . c-lineup-arglist-intro-after-paren)
+                        (arglist-close  . c-lineup-arglist)
+                        (access-label   . 0)
+                        (inher-cont     . c-lineup-java-inher)
+                        (func-decl-cont . c-lineup-java-throws)
+                        (arglist-cont-nonempty . ++)
+                        )))
+  "Eclipse Java Programming Style")
+(c-add-style "ECLIPSE" eclipse-java-style)
+(customize-set-variable 'c-default-style (quote ((java-mode . "eclipse") (awk-mode . "awk") (other . "gnu"))))
 
 (use-package cc-mode)
 
@@ -1261,7 +1296,7 @@
  '(omnisharp-server-executable-path nil)
  '(package-selected-packages
    (quote
-    (tide company-gtags cquery ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (yasnippet-snippets tide company-gtags cquery ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
