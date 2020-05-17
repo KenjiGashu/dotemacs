@@ -115,6 +115,10 @@
   :demand t)
 (use-package hydra)
 
+(use-package dockerfile-mode
+  :ensure t
+  :mode "Dockerfile\\'")
+
 (use-package projectile
   :init (setq projectile-project-search-path '("~/prog" "/media/prog/"))
   :ensure t)
@@ -180,7 +184,10 @@
 (use-package omnisharp
   :init
   (add-hook 'csharp-mode-hook 'omnisharp-mode)
-  (add-hook 'csharp-mode-hook #'company-mode))
+  (add-hook 'csharp-mode-hook #'company-mode)
+  :hook (csharp-mode . (lambda ()
+			 (add-to-list (make-local-variable 'company-backends) '(company-omnisharp))))
+  )
 ;; ===================================================
 ;;
 ;; rust config
@@ -1227,7 +1234,7 @@
 (add-hook 'clojure-mode-hook
 	  '(lambda ()
 	     (rainbow-delimiters-mode)
-	     ;;(highlight-sexp-mode)
+	
 	     ;;(highlight-blocks-mode)
 	     ))
 
@@ -1296,7 +1303,7 @@
  '(omnisharp-server-executable-path nil)
  '(package-selected-packages
    (quote
-    (yasnippet-snippets tide company-gtags cquery ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (dockerfile-mode yasnippet-snippets tide company-gtags cquery ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
