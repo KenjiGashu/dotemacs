@@ -25,6 +25,11 @@
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")))
 
+;;variables
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+
+
 ; activate all the packages (in particular autoloads)
 (package-initialize)
 
@@ -59,6 +64,7 @@
 (setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
 ;=======================================================================
 
+(global-display-line-numbers-mode)
 
 ;; can't download asnippet-snippets because it makes package install crash
 (use-package ranger
@@ -135,7 +141,10 @@
 (use-package company
   :demand t
   :config (global-company-mode 1)
-  (setq company-backends '((company-files company-keywords company-capf company-dabbrev-code company-yasnippet company-dabbrev)))
+  (setq company-backends '((company-files company-keywords company-capf company-dabbrev-code company-yasnippet company-dabbrev))
+	)
+  (setq company-minimum-prefix-length 1
+	company-idle-delay 0.0)
   (evil-define-key nil evil-insert-state-map
   (kbd "C-M-y") 'company-complete))
 ;; ;; debugger package
@@ -164,9 +173,10 @@
 ;; =================================================
 ;; Assuming usage with dart-mode
 (use-package dart-mode
-  :hook  (dart-mode . lsp-deferred)
   :config
   (dart-format-on-save t))
+(use-package lsp-dart
+  :ensure t)
 
 (use-package flutter
   :after dart-mode
@@ -182,12 +192,12 @@
 ;; =================================================
 (use-package csharp-mode)
 (use-package omnisharp
-  :init
-  (add-hook 'csharp-mode-hook 'omnisharp-mode)
-  (add-hook 'csharp-mode-hook #'company-mode)
-  :hook (csharp-mode . (lambda ()
-			 (add-to-list (make-local-variable 'company-backends) '(company-omnisharp))
-			 (omnisharp-start-omnisharp-server)))
+  ;; :init
+  ;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
+  ;; (add-hook 'csharp-mode-hook #'company-mode)
+  :hook ((csharp-mode . (lambda ()
+			  (add-to-list (make-local-variable 'company-backends) '(company-omnisharp))))
+	 (csharp-mode . omnisharp-mode))
   )
 ;; ===================================================
 ;;
@@ -258,12 +268,10 @@
 (use-package js2-mode
   :ensure t
   :mode "\\.js"
-  :hook ((js2-mode . lsp-deferred)
-	 (js2-mode . (lambda()
+  :hook ((js2-mode . (lambda()
 		       (add-to-list
 			(make-local-variable 'company-backends)
 			'company-tern
-			'company-lsp
 			)))))
 
 (use-package tern
@@ -454,6 +462,9 @@
 (use-package scala-mode
   :mode "\\.s\\(cala\\|bt\\)$")
 
+(use-package lsp-scala
+  :ensure t)
+
 (use-package sbt-mode
   :commands sbt-start sbt-command
   :config
@@ -482,8 +493,9 @@
   ;; Optional - enable lsp-mode automatically in scala files
   :demand t
   :hook
-  ((scala-mode . lsp-deferred)
-   ((c-mode c++-mode) . lsp-deferred))
+  (((c-mode c++-mode scala-mode java-mode js2-mode dart-mode) . lsp-deferred)
+   (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
+				       'company-lsp))))
   :config (setq lsp-prefer-flymake nil)
   :commands (lsp lsp-deferred))
 
@@ -757,12 +769,6 @@
 
 (use-package cc-mode)
 
-(use-package lsp-mode
-  :init (add-hook 'java-mode-hook #'lsp-deferred)
-  :hook (lsp-mode . (lambda ()
-		      (add-to-list (make-local-variable 'company-backends)
-				   'company-lsp)))
-  :commands (lsp lsp-deferred))
 ;; optionally
 (use-package lsp-ui
   :demand t
@@ -1304,10 +1310,9 @@
    (quote
     ("13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default)))
  '(lsp-ui-peek-enable t)
- '(omnisharp-server-executable-path nil)
  '(package-selected-packages
    (quote
-    (helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
