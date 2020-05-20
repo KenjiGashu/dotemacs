@@ -164,7 +164,7 @@
 ;; =================================================
 ;; Assuming usage with dart-mode
 (use-package dart-mode
-  :hook  (dart-mode . lsp)
+  :hook  (dart-mode . lsp-deferred)
   :config
   (dart-format-on-save t))
 
@@ -186,7 +186,8 @@
   (add-hook 'csharp-mode-hook 'omnisharp-mode)
   (add-hook 'csharp-mode-hook #'company-mode)
   :hook (csharp-mode . (lambda ()
-			 (add-to-list (make-local-variable 'company-backends) '(company-omnisharp))))
+			 (add-to-list (make-local-variable 'company-backends) '(company-omnisharp))
+			 (omnisharp-start-omnisharp-server)))
   )
 ;; ===================================================
 ;;
@@ -257,7 +258,7 @@
 (use-package js2-mode
   :ensure t
   :mode "\\.js"
-  :hook ((js2-mode . lsp)
+  :hook ((js2-mode . lsp-deferred)
 	 (js2-mode . (lambda()
 		       (add-to-list
 			(make-local-variable 'company-backends)
@@ -481,10 +482,13 @@
   ;; Optional - enable lsp-mode automatically in scala files
   :demand t
   :hook
-  (scala-mode . lsp)
-  :config (setq lsp-prefer-flymake nil))
+  ((scala-mode . lsp-deferred)
+   ((c-mode c++-mode) . lsp-deferred))
+  :config (setq lsp-prefer-flymake nil)
+  :commands (lsp lsp-deferred))
 
 (use-package lsp-ui
+  :commands lsp-ui-mode
   :config
   (setq lsp-ui-doc-enable nil
         lsp-ui-sideline-enable nil
@@ -567,9 +571,9 @@
   :demand t
   :after (lsp lsp-mode dap-mode))
 
-;; (use-package helm-lsp
-;;   :demand t
-;;   :commands helm-lsp-workspace-symbol)
+(use-package helm-lsp
+  :demand t
+  :commands helm-lsp-workspace-symbol)
 (use-package lsp-treemacs
   :demand t
   :commands lsp-treemacs-errors-list)
@@ -1303,7 +1307,7 @@
  '(omnisharp-server-executable-path nil)
  '(package-selected-packages
    (quote
-    (dockerfile-mode yasnippet-snippets tide company-gtags cquery ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
