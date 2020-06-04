@@ -185,6 +185,9 @@
               ("C-M-x" . #'flutter-run-or-hot-reload)))
 
 
+;; Optional Flutter packages
+(use-package hover :ensure t) ;; run app from desktop without emulator
+
 
 ;; ===================================================
 ;;
