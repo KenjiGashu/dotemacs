@@ -96,7 +96,9 @@
 (use-package moe-theme
   :demand t
   :after  (powerline)
-  :config (moe-dark)
+  :config
+  (moe-dark)
+  (moe-theme-random-color)
   (powerline-moe-theme))
 (use-package which-key :ensure t
   :init
@@ -173,8 +175,7 @@
 ;; =================================================
 ;; Assuming usage with dart-mode
 (use-package dart-mode
-  :config
-  (dart-format-on-save t))
+  :ensure t)
 (use-package lsp-dart
   :ensure t)
 
@@ -273,6 +274,8 @@
 			(make-local-variable 'company-backends)
 			'company-tern
 			)))))
+
+
 
 (use-package tern
   :ensure t
@@ -516,9 +519,30 @@
 (use-package dap-mode
   :init (add-hook 'dap-stopped-hook
           (lambda (arg) (call-interactively #'dap-hydra)))
+  :hook (
+	 (js2-mode . (lambda ()
+	 	       (require 'dap-chrome)
+	 	       (dap-chrome-setup)))
+	 (js2-mode . (lambda ()
+	 	       (require 'dap-firefox)
+	  	       (dap-firefox-setup)))
+	 )
   :config
   (dap-mode t)
-  (dap-ui-mode t))
+  (dap-ui-mode 1)
+  ;; enables mouse hover support
+  (dap-tooltip-mode 1)
+  ;; use tooltips for mouse hover
+  ;; if it is not enabled `dap-mode' will use the minibuffer.
+  (tooltip-mode 1)
+  ;; displays floating panel with debug buttons
+  ;; requies emacs 26+
+  (dap-ui-controls-mode 1))
+
+;; (require 'dap-firefox)
+;; (dap-firefox-setup)
+(require 'dap-chrome)
+(dap-chrome-setup)
 
 (use-package lsp-java
   :init
@@ -1277,6 +1301,7 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
+	     (eldoc-mode)
 	     (rainbow-delimiters-mode)))
 
 ;;
@@ -1312,7 +1337,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
