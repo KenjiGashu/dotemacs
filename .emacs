@@ -184,6 +184,7 @@
 	  
 	  (progn (setq lsp-dart-flutter-sdk-dir "E:/prog/flutter-linux/bin/cache/dart-sdk/")
 		 (setq lsp-dart-sdk-dir "E:/prog/flutter-linux/bin/cache/dart-sdk/")))
+  :config
   (or
    lsp-dart-server-command
    `(,(expand-file-name (f-join lsp-dart-sdk-dir "bin/dart"))
@@ -512,16 +513,17 @@
   :hook
   (((c-mode c++-mode scala-mode java-mode js2-mode dart-mode) . lsp-deferred)
    (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
-				       'company-lsp))))
+				       '(company-lsp)))))
   :config (setq lsp-prefer-flymake nil)
   :commands (lsp lsp-deferred))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
   :config
-  (setq lsp-ui-doc-enable nil
-        lsp-ui-sideline-enable nil
-        lsp-ui-flycheck-enable t)
+  (setq lsp-ui-doc-enable t
+        lsp-ui-sideline-enable t
+        lsp-ui-flycheck-enable t
+	lsp-ui-doc-position 'top)
   :after lsp-mode)
 
 ;; Add company-lsp backend for metals
@@ -626,7 +628,8 @@
   :commands helm-lsp-workspace-symbol)
 (use-package lsp-treemacs
   :demand t
-  :commands lsp-treemacs-errors-list)
+  :commands lsp-treemacs-errors-list
+  :config (lsp-treemacs-sync-mode 1))
 (use-package company-lsp
   :demand t)
 
