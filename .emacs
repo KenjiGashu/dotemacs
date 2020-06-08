@@ -182,8 +182,8 @@
 	    (progn (setq lsp-dart-flutter-sdk-dir "E:/prog/flutter-windows/bin/cache/dart-sdk/")
 		   (setq lsp-dart-sdk-dir "E:/prog/flutter-windows/bin/cache/dart-sdk/"))
 	  
-	  (progn (setq lsp-dart-flutter-sdk-dir "E:/prog/flutter-linux/bin/cache/dart-sdk/")
-		 (setq lsp-dart-sdk-dir "E:/prog/flutter-linux/bin/cache/dart-sdk/")))
+	  (progn (setq lsp-dart-flutter-sdk-dir "/media/dois/prog/flutter_linux/bin/cache/dart-sdk/")
+		 (setq lsp-dart-sdk-dir "/media/dois/prog/flutter_linux/bin/cache/dart-sdk/")))
   :config
   (or
    lsp-dart-server-command
@@ -515,6 +515,9 @@
    (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
 				       '(company-lsp)))))
   :config (setq lsp-prefer-flymake nil)
+  (setq lsp-idle-delay 0.500)
+  (setq lsp-ui-sideline-delay 1.1)
+  (setq lsp-ui-doc-delay 1.0)
   :commands (lsp lsp-deferred))
 
 (use-package lsp-ui
@@ -542,6 +545,12 @@
 	 (js2-mode . (lambda ()
 	 	       (require 'dap-firefox)
 	  	       (dap-firefox-setup)))
+	 (dart-mode . (lambda ()
+			(dap-dart-setup)))
+	 (c-mode . (lambda ()
+		     (require 'dap-lldb)))
+	 (java-mode . (lambda ()
+			(require 'dap-gdb-lldb)))
 	 )
   :config
   (dap-mode t)
