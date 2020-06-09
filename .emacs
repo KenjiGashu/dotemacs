@@ -111,7 +111,6 @@
   )
 ;; (use-package ztree :ensure t)
 (use-package magit :ensure t)
-(use-package evil-magit :ensure t)
 (use-package highlight-blocks)
 (use-package rainbow-delimiters )
 (use-package ag :demand t)
@@ -136,9 +135,100 @@
   (helm-mode 1)
   :bind*                           ; load counsel when pressed
   (("M-x"     . helm-M-x)       ; M-x use counsel
+   ("\t" . helm-execute-persistent-action)
    ) ; C-x C-f use counsel-find-file
 )
 (use-package org )
+
+;; ===================================================
+;;
+;; evil config
+;;
+;; =================================================
+
+(use-package evil :ensure t :demand t
+  :init (setq evil-want-keybinding nil)
+  :config (evil-mode))
+
+(use-package evil-magit :ensure t)
+(use-package evil-collection
+  :ensure t
+  :after evil
+  :config (evil-collection-init))
+;; (use-package smartparens :demand t
+;;   :bind
+;;   (("C-M-f" . sp-forward-sexp)
+;;    ("C-M-b" . sp-backward-sexp)
+;;    ("C-M-d" . sp-down-sexp)
+;;    ("C-M-d" . sp-backward-down-sexp)
+;;    ("C-S-u" . sp-up-sexp)
+;;    ("C-M-u" . sp-backward-up-sexp)
+;;    ("C-S-a" . sp-beginning-of-sexp)
+;;    ("C-M-e" . sp-end-of-sexp)
+;;    ("C-M-n" . sp-next-sexp)
+;;    ("C-M-p" . sp-previous-sexp)
+;;    ("C-S-b" . sp-backward-symbol)
+;;    ("C-S-f" . sp-forward-symbol))
+  
+;;     :init (require 'smartparens-config))
+;; (use-package paredit :demand t)
+;; (use-package evil-smartparens :after evil
+;;   ;;:init (add-hook 'evil-mode 'evil-smartparens-mode)
+;;   :config (evil-smartparens-mode))
+;; (use-package evil-paredit :after evil
+;;   ;;:init(add-hook 'evil-mode #'evil-paredit-mode))
+;;   :config (evil-paredit-mode))
+;; (use-package evil-cleverparens
+;;   :after evil
+;;   :config (evil-cleverparens-mode))
+(use-package evil-org )
+
+;;treemacs 
+(use-package treemacs-evil :demand t)
+
+
+;; multiple cursors evil mode
+(use-package evil-mc :demand t
+  :ensure t
+  :after evil
+  :config (global-evil-mc-mode 1))
+
+;; (evil-define-local-var evil-mc-custom-paused nil
+;;   "Paused functionality when there are multiple cursors active.")
+
+;; (defun evil-mc-pause-smartchr-for-mode (mode)
+;;   "Temporarily disables the smartchr keys for MODE."
+;;   (let ((m-mode (if (atom mode) mode (car mode)))
+;;         (s-mode (if (atom mode) mode (cdr mode))))
+;;     (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
+;;           (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
+;;       (when (eq major-mode m-mode)
+;;         (funcall undo)
+;;         (push `(lambda () (,init)) evil-mc-custom-paused)))))
+
+;; (defun evil-mc-before-cursors-setup-hook ()
+;;   "Hook to run before any cursor is created.
+;; Can be used to temporarily disable any functionality that doesn't
+;; play well with `evil-mc'."
+;;   (mapc 'evil-mc-pause-smartchr-for-mode
+;;         '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
+;;   (when (boundp whitespace-cleanup-disabled)
+;;     (setq whitespace-cleanup-disabled t)
+;;     (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
+
+;; (defun evil-mc-after-cursors-teardown-hook ()
+;;   "Hook to run after all cursors are deleted."
+;;   (dolist (fn evil-mc-custom-paused) (funcall fn))
+;;   (setq evil-mc-custom-paused nil))
+
+;; (add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
+;; (add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
+
+
+;; =================================================
+
+
+
 
 (use-package company
   :demand t
@@ -182,8 +272,8 @@
 	    (progn (setq lsp-dart-flutter-sdk-dir "E:/prog/flutter-windows/bin/cache/dart-sdk/")
 		   (setq lsp-dart-sdk-dir "E:/prog/flutter-windows/bin/cache/dart-sdk/"))
 	  
-	  (progn (setq lsp-dart-flutter-sdk-dir "/media/dois/prog/flutter_linux/bin/cache/dart-sdk/")
-		 (setq lsp-dart-sdk-dir "/media/dois/prog/flutter_linux/bin/cache/dart-sdk/")))
+	  (progn (setq lsp-dart-flutter-sdk-dir "E:/prog/flutter-linux/bin/cache/dart-sdk/")
+		 (setq lsp-dart-sdk-dir "E:/prog/flutter-linux/bin/cache/dart-sdk/")))
   :config
   (or
    lsp-dart-server-command
@@ -342,85 +432,6 @@
   :hook (typescript-mode . lsp))
 (use-package ng2-mode)
 
-;; ===================================================
-;;
-;; evil config
-;;
-;; =================================================
-
-(use-package evil :ensure t :demand t
-  :config (evil-mode))
-;; (use-package smartparens :demand t
-;;   :bind
-;;   (("C-M-f" . sp-forward-sexp)
-;;    ("C-M-b" . sp-backward-sexp)
-;;    ("C-M-d" . sp-down-sexp)
-;;    ("C-M-d" . sp-backward-down-sexp)
-;;    ("C-S-u" . sp-up-sexp)
-;;    ("C-M-u" . sp-backward-up-sexp)
-;;    ("C-S-a" . sp-beginning-of-sexp)
-;;    ("C-M-e" . sp-end-of-sexp)
-;;    ("C-M-n" . sp-next-sexp)
-;;    ("C-M-p" . sp-previous-sexp)
-;;    ("C-S-b" . sp-backward-symbol)
-;;    ("C-S-f" . sp-forward-symbol))
-  
-;;     :init (require 'smartparens-config))
-;; (use-package paredit :demand t)
-;; (use-package evil-smartparens :after evil
-;;   ;;:init (add-hook 'evil-mode 'evil-smartparens-mode)
-;;   :config (evil-smartparens-mode))
-;; (use-package evil-paredit :after evil
-;;   ;;:init(add-hook 'evil-mode #'evil-paredit-mode))
-;;   :config (evil-paredit-mode))
-;; (use-package evil-cleverparens
-;;   :after evil
-;;   :config (evil-cleverparens-mode))
-(use-package evil-org )
-
-;;treemacs 
-(use-package treemacs-evil :demand t)
-
-
-;; multiple cursors evil mode
-(use-package evil-mc :demand t
-  :ensure t)
-
-;; (evil-define-local-var evil-mc-custom-paused nil
-;;   "Paused functionality when there are multiple cursors active.")
-
-;; (defun evil-mc-pause-smartchr-for-mode (mode)
-;;   "Temporarily disables the smartchr keys for MODE."
-;;   (let ((m-mode (if (atom mode) mode (car mode)))
-;;         (s-mode (if (atom mode) mode (cdr mode))))
-;;     (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
-;;           (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
-;;       (when (eq major-mode m-mode)
-;;         (funcall undo)
-;;         (push `(lambda () (,init)) evil-mc-custom-paused)))))
-
-;; (defun evil-mc-before-cursors-setup-hook ()
-;;   "Hook to run before any cursor is created.
-;; Can be used to temporarily disable any functionality that doesn't
-;; play well with `evil-mc'."
-;;   (mapc 'evil-mc-pause-smartchr-for-mode
-;;         '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
-;;   (when (boundp whitespace-cleanup-disabled)
-;;     (setq whitespace-cleanup-disabled t)
-;;     (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
-
-;; (defun evil-mc-after-cursors-teardown-hook ()
-;;   "Hook to run after all cursors are deleted."
-;;   (dolist (fn evil-mc-custom-paused) (funcall fn))
-;;   (setq evil-mc-custom-paused nil))
-
-;; (add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
-;; (add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
-
-(global-evil-mc-mode 1)
-
-;; =================================================
-
 
 
 
@@ -515,9 +526,6 @@
    (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
 				       '(company-lsp)))))
   :config (setq lsp-prefer-flymake nil)
-  (setq lsp-idle-delay 0.500)
-  (setq lsp-ui-sideline-delay 1.1)
-  (setq lsp-ui-doc-delay 1.0)
   :commands (lsp lsp-deferred))
 
 (use-package lsp-ui
@@ -545,12 +553,6 @@
 	 (js2-mode . (lambda ()
 	 	       (require 'dap-firefox)
 	  	       (dap-firefox-setup)))
-	 (dart-mode . (lambda ()
-			(dap-dart-setup)))
-	 (c-mode . (lambda ()
-		     (require 'dap-lldb)))
-	 (java-mode . (lambda ()
-			(require 'dap-gdb-lldb)))
 	 )
   :config
   (dap-mode t)
@@ -1363,7 +1365,7 @@
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
