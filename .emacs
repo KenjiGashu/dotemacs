@@ -272,8 +272,9 @@
 	    (progn (setq lsp-dart-flutter-sdk-dir "E:/prog/flutter-windows/bin/cache/dart-sdk/")
 		   (setq lsp-dart-sdk-dir "E:/prog/flutter-windows/bin/cache/dart-sdk/"))
 	  
-	  (progn (setq lsp-dart-flutter-sdk-dir "E:/prog/flutter-linux/bin/cache/dart-sdk/")
-		 (setq lsp-dart-sdk-dir "E:/prog/flutter-linux/bin/cache/dart-sdk/")))
+	  (progn (setq lsp-dart-flutter-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))
+
+		 (setq lsp-dart-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))))
   :config
   (or
    lsp-dart-server-command
@@ -360,8 +361,8 @@
 ;; javascript config
 ;;
 ;; =================================================
-(use-package company-tern
-   :ensure t )
+;; (use-package company-tern
+;;    :ensure t )
 ;; (use-package rjsx-mode
 ;;   :mode "\\.js"
 ;;   :hook (rjsx-mode lsp)
@@ -549,10 +550,12 @@
   :hook (
 	 (js2-mode . (lambda ()
 	 	       (require 'dap-chrome)
-	 	       (dap-chrome-setup)))
+	 	       ;;(dap-chrome-setup)
+		       ))
 	 (js2-mode . (lambda ()
 	 	       (require 'dap-firefox)
-	  	       (dap-firefox-setup)))
+	  	       ;;(dap-firefox-setup)
+		       ))
 	 )
   :config
   (dap-mode t)
@@ -568,8 +571,6 @@
 
 ;; (require 'dap-firefox)
 ;; (dap-firefox-setup)
-(require 'dap-chrome)
-(dap-chrome-setup)
 
 (use-package lsp-java
   :init
