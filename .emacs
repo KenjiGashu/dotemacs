@@ -25,7 +25,7 @@
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")))
 
-;;variables
+;; important variables for lsp
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
@@ -64,7 +64,13 @@
 (setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
 ;=======================================================================
 
-(global-display-line-numbers-mode)
+
+(use-package nlinum-relative
+  :ensure t
+  :config
+  ;; something else you want
+  (nlinum-relative-setup-evil)
+  (add-hook 'prog-mode-hook 'nlinum-relative-mode))
 
 ;; can't download asnippet-snippets because it makes package install crash
 (use-package ranger
@@ -77,6 +83,17 @@
    :after (yas-global-mode)
    :config (yas-reload-all)
    :ensure nil)
+
+(use-package color-identifiers-mode
+  :ensure t
+  :hook (c-mode . color-identifiers-mode))
+
+(use-package auto-highlight-symbol
+  :ensure t
+  :config (auto-highlight-symbol-mode))
+
+(use-package rainbow-identifiers
+  :ensure t)
 
 (use-package avy
   :config (avy-setup-default))
@@ -268,13 +285,9 @@
   :ensure t)
 (use-package lsp-dart
   :ensure t
-  :init (if (string= system-type "windows-nt")
-	    (progn (setq lsp-dart-flutter-sdk-dir "E:/prog/flutter-windows/bin/cache/dart-sdk/")
-		   (setq lsp-dart-sdk-dir "E:/prog/flutter-windows/bin/cache/dart-sdk/"))
-	  
-	  (progn (setq lsp-dart-flutter-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))
-
-		 (setq lsp-dart-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))))
+  :init
+  (setq lsp-dart-flutter-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))
+  (setq lsp-dart-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))
   :config
   (or
    lsp-dart-server-command
@@ -526,16 +539,24 @@
   (((c-mode c++-mode scala-mode java-mode js2-mode dart-mode) . lsp-deferred)
    (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
 				       '(company-lsp)))))
-  :config (setq lsp-prefer-flymake nil)
+  :config
+  (setq lsp-prefer-flymake nil)
+  (setq lsp-print-performance t)
+  (setq lsp-prefer-capf t)
+  (setq lsp-idle-delay 0.500)
+
   :commands (lsp lsp-deferred))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
   :config
-  (setq lsp-ui-doc-enable t
-        lsp-ui-sideline-enable t
-        lsp-ui-flycheck-enable t
-	lsp-ui-doc-position 'top)
+  (let ((should-display-ui (if (string= system-type "windows-nt")
+			       nil
+			     t)))
+    (setq lsp-ui-doc-enable should-display-ui
+	  lsp-ui-sideline-enable should-display-ui
+	  lsp-ui-flycheck-enable t
+	  lsp-ui-doc-position 'top))
   :after lsp-mode)
 
 ;; Add company-lsp backend for metals
@@ -651,6 +672,27 @@
 ;; c mode config
 ;;
 ;; ================================================================
+
+;; C-Like
+;; (face-remap-add-relative 'font-lock-function-usage-face '(:foreground "PaleTurquoise"))
+;; (face-remap-add-relative 'font-lock-attribute-access-face '(:foreground "Indianred2"))
+
+;; (dolist (mode-iter '(c-mode c++-mode glsl-mode java-mode javascript-mode rust-mode))
+;;   (font-lock-add-keywords
+;;     mode-iter
+;;     '(("\\([~^&\|!<>=,.\\+*/%-]\\)" 0 'font-lock-operator-face keep)))
+;;   (font-lock-add-keywords
+;;     mode-iter
+;;     '(("\\([\]\[}{)(:;]\\)" 0 'font-lock-delimit-face keep)))
+;;   ;; functions
+;;   (font-lock-add-keywords
+;;     mode-iter
+;;     '(("\\([_a-z][_a-zA-Z0-9]*\\)\s*(" 1 'font-lock-function-usage-face keep)))
+;;   ;;MACROS
+;;   (font-lock-add-keywords
+;;     mode-iter
+;;     '(("\\([_A-Z][_a-zA-Z0-9]*\\)\s*(" 1 'font-lock-builtin-face keep))))
+
 (use-package ggtags
     :hook ((c-mode c++-mode) . ggtags-mode)
     :init (add-hook 'ggtags-mode-hook (lambda ()
@@ -1360,13 +1402,18 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
+ '(c-default-style
+   (quote
+    ((java-mode . "eclipse")
+     (awk-mode . "awk")
+     (other . "gnu"))))
  '(custom-safe-themes
    (quote
-    ("13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default)))
+    ("816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default)))
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    (quote
-    (evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+    (nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
