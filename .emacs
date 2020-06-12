@@ -90,7 +90,9 @@
 
 (use-package auto-highlight-symbol
   :ensure t
-  :config (auto-highlight-symbol-mode))
+  :config (auto-highlight-symbol-mode)
+  :hook (prog-mode . auto-highlight-symbol-mode)
+  :commands (auto-highlight-symbol-mode))
 
 (use-package rainbow-identifiers
   :ensure t)
@@ -166,6 +168,21 @@
 (use-package evil :ensure t :demand t
   :init (setq evil-want-keybinding nil)
   :config (evil-mode))
+
+(use-package vimish-fold
+  :ensure t
+  :after (evil))
+
+(use-package evil-vimish-fold
+  :ensure t
+  :after (evil vimish-fold))
+
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+;; (use-package origami
+;;   :ensure t
+;;   :after (evil)
+;;   :hook (prog-mode . origami-mode)
+;;   :commands (origami-mode))
 
 (use-package evil-magit :ensure t)
 (use-package evil-collection
@@ -250,7 +267,7 @@
 (use-package company
   :demand t
   :config (global-company-mode 1)
-  (setq company-backends '((company-files company-keywords company-capf company-dabbrev-code company-yasnippet company-dabbrev))
+  (setq company-backends '((company-files company-keywords))
 	)
   (setq company-minimum-prefix-length 1
 	company-idle-delay 0.0)
@@ -316,7 +333,7 @@
   ;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
   ;; (add-hook 'csharp-mode-hook #'company-mode)
   :hook ((csharp-mode . (lambda ()
-			  (add-to-list (make-local-variable 'company-backends) '(company-omnisharp))))
+			  (add-to-list (make-local-variable 'company-backends) '(company-capf company-omnisharp))))
 	 (csharp-mode . omnisharp-mode))
   )
 ;; ===================================================
@@ -356,7 +373,7 @@
 			  (setup-tide-mode))
 			(when (string-equal "jsx" (file-name-extension buffer-file-name))
 			  (setup-tide-mode))
-			(add-to-list (make-local-variable 'company-backends) '(company-web-html company-web-jade company-web-slim)))))
+			(add-to-list (make-local-variable 'company-backends) '(company-capf company-web-html company-web-jade company-web-slim)))))
 (use-package vue-mode
   :mode "\\.vue")
 
@@ -391,7 +408,7 @@
   :hook ((js2-mode . (lambda()
 		       (add-to-list
 			(make-local-variable 'company-backends)
-			'company-tern
+			'(company-capf company-tern)
 			)))))
 
 
@@ -536,9 +553,9 @@
   ;; Optional - enable lsp-mode automatically in scala files
   :demand t
   :hook
-  (((c-mode c++-mode scala-mode java-mode js2-mode dart-mode) . lsp-deferred)
+  (((scala-mode java-mode js2-mode dart-mode) . lsp-deferred)
    (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
-				       '(company-lsp)))))
+				       '(company capf company-lsp)))))
   :config
   (setq lsp-prefer-flymake nil)
   (setq lsp-print-performance t)
@@ -601,7 +618,7 @@
     (setq-local c-basic-offset 4)
     (lsp)
     (add-to-list (make-local-variable 'company-backends)
-		 'company-lsp))
+		 '(company-capf company-lsp)))
 
   :config
   ;; Enable dap-java
@@ -698,7 +715,7 @@
     :init (add-hook 'ggtags-mode-hook (lambda ()
 					(add-to-list
 					 (make-local-variable 'company-backends)
-					 'company-gtags
+					 '(company-capf company-gtags)
 					 )
 					))
     :config (require 'dap-gdb-lldb))
@@ -1403,17 +1420,14 @@
  '(ansi-color-names-vector
    ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
  '(c-default-style
-   (quote
-    ((java-mode . "eclipse")
+   '((java-mode . "eclipse")
      (awk-mode . "awk")
-     (other . "gnu"))))
+     (other . "gnu")))
  '(custom-safe-themes
-   (quote
-    ("816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default)))
+   '("816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
-   (quote
-    (nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack))))
+   '(origami evil-vimish-fold vimish-fold hide-if-def-mode nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
