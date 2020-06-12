@@ -606,6 +606,7 @@
   ;; displays floating panel with debug buttons
   ;; requies emacs 26+
   (dap-ui-controls-mode 1)
+  (setq dap-firefox-debug-program '("node" "c:/Users/kenjigashu/Downloads/home/.emacs.d/.extension/vscode/firefox-devtools.vscode-firefox-debug/extension/dist/adapter.bundle.js"))
   (dap-register-debug-template
    "Firefox::Attach"
    (list :type "firefox"
