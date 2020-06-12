@@ -588,11 +588,11 @@
   :hook (
 	 (js2-mode . (lambda ()
 	 	       (require 'dap-chrome)
-	 	       ;;(dap-chrome-setup)
+	 	       (dap-chrome-setup)
 		       ))
 	 (js2-mode . (lambda ()
 	 	       (require 'dap-firefox)
-	  	       ;;(dap-firefox-setup)
+	  	       (dap-firefox-setup)
 		       ))
 	 )
   :config
@@ -605,7 +605,13 @@
   (tooltip-mode 1)
   ;; displays floating panel with debug buttons
   ;; requies emacs 26+
-  (dap-ui-controls-mode 1))
+  (dap-ui-controls-mode 1)
+  (dap-register-debug-template
+   "Firefox::Attach"
+   (list :type "firefox"
+         :request "attach"
+         :name "Firefox::Attach"))
+  )
 
 ;; (require 'dap-firefox)
 ;; (dap-firefox-setup)
