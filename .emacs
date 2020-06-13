@@ -588,11 +588,9 @@
   :hook (
 	 (js2-mode . (lambda ()
 	 	       (require 'dap-chrome)
-	 	       (dap-chrome-setup)
 		       ))
 	 (js2-mode . (lambda ()
 	 	       (require 'dap-firefox)
-	  	       (dap-firefox-setup)
 		       ))
 	 )
   :config
@@ -1225,6 +1223,8 @@
     )
   (setq slime-contribs
         '(slime-fancy slime-asdf slime-quicklisp slime-cl-indent))
+  (setq slime-lisp-implementations
+	'((sbcl ("sbcl" "--core" "sbcl.core-for-slime"))))
 
  )
 
