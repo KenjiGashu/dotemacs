@@ -44,25 +44,24 @@ This function should only modify configuration layer settings."
      git
      helm
      (lsp :variables lsp-ui-doc-position 'top)
-     ;; markdown
+     markdown
      multiple-cursors
-     ;; org
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
-     ;; spell-checking
-     ;; syntax-checking
-     ;; version-control
+     org
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom)
+     spell-checking
+     syntax-checking
+     version-control
      (dart :variables dart-backend 'lsp
            lsp-enable-on-type-formatting t
-           lsp-dart-sdk-dir "~/develop/flutter/bin/cache/dart-sdk/"
-           lsp-dart-flutter-sdk-dir "~/develop/flutter")
+           lsp-dart-sdk-dir (concat (getenv "FLUTTER_HOME") "/bin/cache/dart-sdk/")
+           lsp-dart-flutter-sdk-dir (getenv "FLUTTER_HOME"))
      dap
      docker
      github
      gtags
      javascript
-     shell
      treemacs
      multiple-cursors
      spacemacs-completion
@@ -86,7 +85,6 @@ This function should only modify configuration layer settings."
      (scala :variables scala-backend 'scala-metals)
      typescript
      dotnet
-
      )
 
    ;; List of additional packages that will be installed without being
@@ -477,7 +475,7 @@ It should only modify the values of Spacemacs settings."
    ;; `trailing' to delete only the whitespace at end of lines, `changed' to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup "all"
 
    ;; If non nil activate `clean-aindent-mode' which tries to correct
    ;; virtual indentation of simple modes. This can interfer with mode specific
@@ -524,7 +522,7 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
-  )
+  (setq-default spacemacs-show-trailing-whitespace nil))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
