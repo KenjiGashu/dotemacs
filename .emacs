@@ -141,6 +141,24 @@
   :demand t)
 (use-package hydra)
 
+(use-package winum
+  :ensure t
+  :demand t
+  :config (winum-mode)
+  :bind (
+	 :map winum-keymap
+	 ("M-1" . winum-select-window-1)
+	 ("M-2" . winum-select-window-2)
+	 ("M-3" . winum-select-window-3)
+	 ("M-4" . winum-select-window-4)
+	 ("M-5" . winum-select-window-5)
+	 ("M-6" . winum-select-window-6)
+	 ("M-7" . winum-select-window-7)))
+
+(use-package helm-swoop
+  :ensure t
+  :commands (swoop))
+
 (use-package dockerfile-mode
   :ensure t
   :mode "Dockerfile\\'")
@@ -158,6 +176,14 @@
    ) ; C-x C-f use counsel-find-file
 )
 (use-package org )
+
+;; ==================================================
+;;
+;; eglot
+;;
+;; ==================================================
+(use-package eglot
+  :ensure t)
 
 ;; ===================================================
 ;;
@@ -305,12 +331,13 @@
   :init
   (setq lsp-dart-flutter-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))
   (setq lsp-dart-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))
-  :config
-  (or
-   lsp-dart-server-command
-   `(,(expand-file-name (f-join lsp-dart-sdk-dir "bin/dart"))
-     ,(expand-file-name (f-join lsp-dart-sdk-dir "bin/snapshots/analysis_server.dart.snapshot"))
-     "--lsp")))
+  ;; :config
+  ;; (or
+  ;;  lsp-dart-server-command
+  ;;  `(,(expand-file-name (f-join lsp-dart-sdk-dir "bin/dart"))
+  ;;    ,(expand-file-name (f-join lsp-dart-sdk-dir "bin/snapshots/analysis_server.dart.snapshot"))
+  ;;    "--lsp"))
+  )
 
 (use-package flutter
   :after dart-mode
@@ -553,7 +580,7 @@
   ;; Optional - enable lsp-mode automatically in scala files
   :demand t
   :hook
-  (((scala-mode java-mode js2-mode dart-mode) . lsp-deferred)
+  (((scala-mode java-mode js2-mode dart-mode c++-mode c-mode ) . lsp-deferred)
    (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
 				       '(company capf company-lsp)))))
   :config
@@ -570,10 +597,13 @@
   (let ((should-display-ui (if (string= system-type "windows-nt")
 			       nil
 			     t)))
-    (setq lsp-ui-doc-enable should-display-ui
-	  lsp-ui-sideline-enable should-display-ui
-	  lsp-ui-flycheck-enable t
-	  lsp-ui-doc-position 'top))
+    (setq
+     ;;lsp-ui-doc-enable should-display-ui
+     ;;lsp-ui-sideline-enable should-display-ui
+     lsp-ui-doc-enable nil
+     lsp-ui-sideline-enable nil
+     lsp-ui-flycheck-enable t
+     lsp-ui-doc-position 'top))
   :after lsp-mode)
 
 ;; Add company-lsp backend for metals
@@ -1024,23 +1054,24 @@
   ;; [_C-M-a_] beggining   [_C-M-e_] end
   ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
   ;; "
-   ("ac" evil-avy-goto-char)
-   ("al" evil-avy-goto-line)
-   ("aw" evil-avy-goto-word-0 )
-   ("an" evil-avy-goto-word-1 )
-   ("gs" magit-status )
-   ("ff" helm-find-files )
-   ("bb" helm-buffers-list )
-   ("w TAB" other-window )
-   ("bk" kill-buffer )
-   ("w1" delete-other-windows )
-   ("w0" delete-window )
-   ("w2" split-window-below )
-   ("w3" split-window-right )
-   ("fs" save-buffer )
+   ("ac" evil-avy-goto-char :exit t)
+   ("al" evil-avy-goto-line :exit t)
+   ("aw" evil-avy-goto-word-0 :exit t)
+   ("an" evil-avy-goto-word-1 :exit t)
+   ("gs" magit-status :exit t)
+   ("ff" helm-find-files :exit t)
+   ("bb" helm-buffers-list :exit t)
+   ("w TAB" other-window :exit t)
+   ("bk" kill-buffer :exit t)
+   ("w1" delete-other-windows :exit t)
+   ("w0" delete-window :exit t)
+   ("w2" split-window-below :exit t)
+   ("w3" split-window-right :exit t)
+   ("fs" save-buffer :exit t)
    ("m" hydra-lsp/body :exit t)
    ("p" hydra-projectile/body :exit t)
    ("gg" hydra-ggtags/body :exit t)
+   ("ss" helm-swoop :exit t)
    ;; ("C-M-f" sp-forward-sexp)
    ;; ("C-M-b" sp-backward-sexp)
    ;; ("C-d>" sp-down-sexp)
@@ -1222,10 +1253,8 @@
     ;; (setq inferior-lisp-program "wx86cl64")
     )
   (setq slime-contribs
-        '(slime-fancy slime-asdf slime-quicklisp slime-cl-indent))
-  (setq slime-lisp-implementations
-	'((sbcl ("sbcl" "--core" "sbcl.core-for-slime"))))
-
+        '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
+  :config (slime-setup '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
  )
 
 ;; (use-package sly
@@ -1247,7 +1276,9 @@
  (use-package slime-repl-ansi-color
    :after (slime))
  (use-package slime-company
-   :after (slime))
+   :after (slime company)
+   :config (setq slime-company-completion 'fuzzy
+                slime-company-after-completion 'slime-company-just-one-space))
 (use-package helm-slime
   :after (slime))
 
@@ -1434,7 +1465,7 @@
    '("816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
-   '(origami evil-vimish-fold vimish-fold hide-if-def-mode nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack)))
+   '(eglot winum emacs-winum origami evil-vimish-fold vimish-fold hide-if-def-mode nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
