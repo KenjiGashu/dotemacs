@@ -65,12 +65,14 @@
 ;=======================================================================
 
 
-(use-package nlinum-relative
-  :ensure t
-  :config
-  ;; something else you want
-  (nlinum-relative-setup-evil)
-  (add-hook 'prog-mode-hook 'nlinum-relative-mode))
+
+;; ==================================================================
+;;
+;; init some things
+;;
+;; =================================================================
+(setq display-line-numbers-type 'relative)
+(global-display-line-numbers-mode)
 
 ;; can't download asnippet-snippets because it makes package install crash
 (use-package ranger
@@ -144,7 +146,7 @@
 (use-package winum
   :ensure t
   :demand t
-  :config (winum-mode)
+  :config (winum-mode 1)
   :bind (
 	 :map winum-keymap
 	 ("M-1" . winum-select-window-1)
@@ -244,7 +246,10 @@
 (use-package evil-org )
 
 ;;treemacs 
-(use-package treemacs-evil :demand t)
+(use-package treemacs-evil :demand t
+  :after winum
+  :init
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
 
 
 ;; multiple cursors evil mode
