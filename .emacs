@@ -86,6 +86,10 @@
    :config (yas-reload-all)
    :ensure nil)
 
+(use-package modern-cpp-font-lock
+  :ensure t
+  :hook ((c-mode c++-mode) . modern-c++-font-lock-mode))
+
 (use-package color-identifiers-mode
   :ensure t
   :hook (c-mode . color-identifiers-mode))
@@ -172,6 +176,7 @@
 (use-package helm
   :config (require 'helm-config)
   (helm-mode 1)
+  (define-key helm-find-files-map "\t" 'helm-execute-persistent-action)
   :bind*                           ; load counsel when pressed
   (("M-x"     . helm-M-x)       ; M-x use counsel
    ("\t" . helm-execute-persistent-action)
@@ -365,7 +370,7 @@
   ;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
   ;; (add-hook 'csharp-mode-hook #'company-mode)
   :hook ((csharp-mode . (lambda ()
-			  (add-to-list (make-local-variable 'company-backends) '(company-capf company-omnisharp))))
+			  (add-to-list (make-local-variable 'company-backends) 'company-omnisharp company-capf)))
 	 (csharp-mode . omnisharp-mode))
   )
 ;; ===================================================
@@ -405,7 +410,7 @@
 			  (setup-tide-mode))
 			(when (string-equal "jsx" (file-name-extension buffer-file-name))
 			  (setup-tide-mode))
-			(add-to-list (make-local-variable 'company-backends) '(company-capf company-web-html company-web-jade company-web-slim)))))
+			(add-to-list (make-local-variable 'company-backends) 'company-capf 'company-web-html 'company-web-jade 'company-web-slim))))
 (use-package vue-mode
   :mode "\\.vue")
 
@@ -440,7 +445,7 @@
   :hook ((js2-mode . (lambda()
 		       (add-to-list
 			(make-local-variable 'company-backends)
-			'(company-capf company-tern)
+			'company-capf 'company-tern
 			)))))
 
 
@@ -587,7 +592,7 @@
   :hook
   (((scala-mode java-mode js2-mode dart-mode c++-mode c-mode ) . lsp-deferred)
    (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
-				       '(company capf company-lsp)))))
+				       'company-lsp 'company-capf))))
   :config
   (setq lsp-prefer-flymake nil)
   (setq lsp-print-performance t)
@@ -658,7 +663,7 @@
     (setq-local c-basic-offset 4)
     (lsp)
     (add-to-list (make-local-variable 'company-backends)
-		 '(company-capf company-lsp)))
+		 'company-capf 'company-lsp))
 
   :config
   ;; Enable dap-java
@@ -755,7 +760,7 @@
     :init (add-hook 'ggtags-mode-hook (lambda ()
 					(add-to-list
 					 (make-local-variable 'company-backends)
-					 '(company-capf company-gtags)
+					 'company-gtags 'company-capf
 					 )
 					))
     :config (require 'dap-gdb-lldb))
@@ -1470,7 +1475,7 @@
    '("816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
-   '(eglot winum emacs-winum origami evil-vimish-fold vimish-fold hide-if-def-mode nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack)))
+   '(modern-cpp-font-lock eglot winum emacs-winum origami evil-vimish-fold vimish-fold hide-if-def-mode nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
