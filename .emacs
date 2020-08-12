@@ -370,7 +370,7 @@
   ;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
   ;; (add-hook 'csharp-mode-hook #'company-mode)
   :hook ((csharp-mode . (lambda ()
-			  (add-to-list (make-local-variable 'company-backends) 'company-omnisharp company-capf)))
+			  (add-to-list (make-local-variable 'company-backends) 'company-omnisharp 'company-capf)))
 	 (csharp-mode . omnisharp-mode))
   )
 ;; ===================================================
