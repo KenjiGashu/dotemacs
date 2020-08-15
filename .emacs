@@ -370,7 +370,7 @@
   ;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
   ;; (add-hook 'csharp-mode-hook #'company-mode)
   :hook ((csharp-mode . (lambda ()
-			  (add-to-list (make-local-variable 'company-backends) 'company-omnisharp company-capf)))
+			  (add-to-list (make-local-variable 'company-backends) 'company-omnisharp )))
 	 (csharp-mode . omnisharp-mode))
   )
 ;; ===================================================
@@ -410,7 +410,10 @@
 			  (setup-tide-mode))
 			(when (string-equal "jsx" (file-name-extension buffer-file-name))
 			  (setup-tide-mode))
-			(add-to-list (make-local-variable 'company-backends) 'company-capf 'company-web-html 'company-web-jade 'company-web-slim))))
+			(add-to-list (make-local-variable 'company-backends) 'company-web-html t)
+			(add-to-list 'company-backends 'company-web-jade t)
+			(add-to-list 'company-backends 'company-web-slim t)
+			(lsp-deferred))))
 (use-package vue-mode
   :mode "\\.vue")
 
@@ -445,7 +448,7 @@
   :hook ((js2-mode . (lambda()
 		       (add-to-list
 			(make-local-variable 'company-backends)
-			'company-capf 'company-tern
+			'company-tern
 			)))))
 
 
@@ -497,7 +500,7 @@
 ;;
 ;; =================================================
 (use-package typescript-mode
-  :hook (typescript-mode . lsp))
+  :ensure t)
 (use-package ng2-mode)
 
 
@@ -590,14 +593,16 @@
   ;; Optional - enable lsp-mode automatically in scala files
   :demand t
   :hook
-  (((scala-mode java-mode js2-mode dart-mode c++-mode c-mode ) . lsp-deferred)
+  (((python-mode scala-mode js2-mode dart-mode c++-mode c-mode typescript-mode) . lsp-deferred)
    (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
-				       'company-lsp 'company-capf))))
+				       'company-capf))))
   :config
   (setq lsp-prefer-flymake nil)
   (setq lsp-print-performance t)
   (setq lsp-prefer-capf t)
-  (setq lsp-idle-delay 0.500)
+  (setq lsp-idle-delay 0.500
+	lsp-tcp-connection-timeout 100
+	lsp--tcp-server-wait-seconds 100)
 
   :commands (lsp lsp-deferred))
 
@@ -661,27 +666,30 @@
     (toggle-truncate-lines 1)
     (setq-local tab-width 4)
     (setq-local c-basic-offset 4)
-    (lsp)
-    (add-to-list (make-local-variable 'company-backends)
-		 'company-capf 'company-lsp))
-
+    (require 'url)
+    (ignore-errors
+      (make-directory "~/.emacs.d/jmi"))
+    (unless (file-exists-p "~/.emacs.d/jmi/lombok.jar")
+      (url-copy-file "https://projectlombok.org/downloads/lombok.jar" "~/.emacs.d/jmi/lombok.jar" :ok-if-already-exists t))
+    (lsp))
   :config
   ;; Enable dap-java
   (require 'dap-java)
   ;; Support Lombok in our projects, among other things
-  (setq
+  (let ((path (concat (getenv "HOME") "/.emacs.d/jmi/")))
+    (setq
    ;; path-to-lombok
    ;; (expand-file-name
    ;;      "~/.emacs.d/jmi/lombok.jar"
    ;;    )
-   
+
    lsp-java-vmargs
             `("-noverify"
-              "-Xmx1G"
+              "-Xmx2G"
               "-XX:+UseG1GC"
               "-XX:+UseStringDeduplication"
-              ,(concat "-javaagent:" "/home/kenjigashu/.emacs.d/jmi/lombok.jar")
-              ,(concat "-Xbootclasspath/a:" "/home/kenjigashu/.emacs.d/jmi/"))
+              ,(concat "-javaagent:" path "lombok.jar")
+              ,(concat "-Xbootclasspath/a:" path))
 
    ;; lsp-java-vmargs
    ;; (list "-noverify"
@@ -706,17 +714,12 @@
    lsp-java-import-order '["" "java" "javax" "#"]
    ;; Don't organize imports on save
    lsp-java-save-action-organize-imports nil
-   
    ;; Formatter profile
    ;;lsp-java-format-settings-url
    ;;(concat "file://" jmi/java-format-settings-file)
-   )
-  
+   )) 
   :hook (java-mode . jmi/java-mode-config
-	 )
-
-  :demand t
-  :after (lsp lsp-mode dap-mode))
+	 ))
 
 (use-package helm-lsp
   :demand t
@@ -760,7 +763,7 @@
     :init (add-hook 'ggtags-mode-hook (lambda ()
 					(add-to-list
 					 (make-local-variable 'company-backends)
-					 'company-gtags 'company-capf
+					 'company-gtags
 					 )
 					))
     :config (require 'dap-gdb-lldb))
