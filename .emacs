@@ -666,7 +666,7 @@
   (setq lsp-prefer-flymake nil)
   (setq lsp-print-performance t)
   (setq lsp-prefer-capf t)
-  (setq lsp-idle-delay 0.500
+  (setq lsp-idle-delay 1.500
 	lsp-tcp-connection-timeout 100
 	lsp--tcp-server-wait-seconds 100)
 
@@ -674,22 +674,26 @@
 
 (use-package lsp-ui
   :commands lsp-ui-mode
-  :config
+  :init
   (let ((should-display-ui (if (string= system-type "windows-nt")
 			       nil
 			     t)))
     (setq
-     ;;lsp-ui-doc-enable should-display-ui
-     ;;lsp-ui-sideline-enable should-display-ui
      lsp-ui-doc-enable nil
      lsp-ui-sideline-enable nil
      lsp-ui-flycheck-enable t
-     lsp-ui-doc-position 'top))
-  :after lsp)
+     lsp-ui-doc-show-with-cursor nil
+     lsp-ui-doc-show-with-mouse nil
+     lsp-ui-doc-position 'at-point
+     ))
+  :config
+  (lsp-ui-doc-mode 0)
+  (setq lsp-ui-doc-position 'at-point)
+  :after lsp-mode)
 
 ;; Add company-lsp backend for metals
 (use-package lsp-treemacs
-  :after lsp)
+  :after lsp-mode)
 
 
 (setq lsp-prefer-capf t)
@@ -831,17 +835,19 @@
   :ensure t
   :hook ((c-mode c++-mode) . modern-c++-font-lock-mode))
 
-(use-package ggtags
-    :hook ((c-mode c++-mode) . ggtags-mode)
-    :init (add-hook 'ggtags-mode-hook (lambda ()
-					(add-to-list
-					 (make-local-variable 'company-backends)
-					 'company-gtags
-					 )
-					))
-    :config (require 'dap-gdb-lldb))
-(use-package helm-gtags
-  :hook ((ggtags-mode . helm-gtags-mode)))
+;; (use-package ggtags
+;;     :hook ((c-mode c++-mode) . ggtags-mode)
+;;     :init (add-hook 'ggtags-mode-hook (lambda ()
+;; 					(add-to-list
+;; 					 (make-local-variable 'company-backends)
+;; 					 'company-gtags
+;; 					 )
+;; 					))
+;;     :config (require 'dap-gdb-lldb))
+
+;; (use-package helm-gtags
+;;   :hook ((ggtags-mode . helm-gtags-mode)))
+
 ;; (use-package counsel-gtags 
 ;;   :config
 ;;   (add-hook 'c-mode-hook 'counsel-gtags-mode))
@@ -1027,7 +1033,8 @@
 ;; ;; to enable the lenses
 (add-hook 'lsp-mode-hook #'lsp-lens-mode)
 (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
-(use-package lsp-java  :after lsp
+(use-package lsp-java
+  :after lsp-mode
   :config (add-hook 'java-mode-hook 'lsp))
 ;===================================================================
 
@@ -1177,10 +1184,10 @@
 
    ^find^                     ^UI^                   ^Window
     ^^^^^^------------------------------------------------------
-  [_gd_] find definition     [_pd_] find definition    
-  [_ga_] find declaration    [_pr_] find reference   
-  [_gs_] find implementation 
-                             
+  [_gd_] find definition     [_pd_] peek find definition    
+  [_ga_] find declaration    [_pr_] peek find reference   
+  [_gs_] find implementation [_sd_] show doc
+                             [_si_] show imenu
 "  
   ;; Smart Parens:
   ;; [_C-M-f_] forward     [_C-M-b_] backward
@@ -1194,6 +1201,8 @@
    ("ga" lsp-find-declaration)
    ("gs" lsp-find-implementation)
    ("pd" lsp-ui-peek-find-definitions)
+   ("sd" lsp-ui-doc-show)
+   ("si" lsp-ui-imenu)
    ;;("pa" lsp-ui-peek-find-declarations)
    ;;("ps" lsp-ui-peek-find-implementations)
    ("pr" lsp-ui-peek-find-references)
