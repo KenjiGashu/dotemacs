@@ -22,13 +22,17 @@
 
 
 ; list the repositories containing them
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("melpa" . "https://melpa.org/packages/")))
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")
+			 ("gnu" . "http://elpa.gnu.org/packages/")))
 
 ;; important variables for lsp
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
+;;temporary for package fetching
+(setq package-check-signature nil)
 
 ; activate all the packages (in particular autoloads)
 (package-initialize)
@@ -50,6 +54,23 @@
 ;;       use-package-always-ensure t)
 (setq use-package-always-ensure t)
 
+
+
+;; ==================================================================
+;;
+;; auto update
+;;
+;; =================================================================
+(use-package auto-package-update
+  :custom
+  (auto-package-update-interval 7)
+  (auto-package-update-prompt-before-update t)
+  (auto-package-update-hide-results t)
+  :config
+  (auto-package-update-maybe)
+  (auto-package-update-at-time "09:00"))
+
+
 ;; ==================================================================
 ;;
 ;; load paths
@@ -68,31 +89,55 @@
 
 ;; ==================================================================
 ;;
-;; init some things
+;; some ui configuration
 ;;
 ;; =================================================================
+(scroll-bar-mode -1)        ; Disable visible scrollbar
+(tool-bar-mode -1)          ; Disable the toolbar
+(tooltip-mode -1)           ; Disable tooltips
+(set-fringe-mode 10)        ; Give some breathing room
+
+(menu-bar-mode -1)            ; Disable the menu bar
+
+;; Set up the visible bell
+(setq visible-bell t)
+
+(column-number-mode 1)
+
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                treemacs-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
 
+
+;; ==================================================================
+;;
+;; init some things
+;;
+;; =================================================================
+
 ;; can't download asnippet-snippets because it makes package install crash
-(use-package ranger
-  :ensure t)
+;; (use-package ranger
+;;   :ensure t)
 (global-set-key [f8] 'treemacs)
 (use-package yasnippet
-  :demand t
+  ;;:demand t
   :config (yas-global-mode 1))
- (use-package yasnippet-snippets
-   :after (yas-global-mode)
-   :config (yas-reload-all)
-   :ensure nil)
+(use-package yasnippet-snippets
+    :after (yas-global-mode)
+    :config (yas-reload-all)
+    :ensure nil)
 
-(use-package modern-cpp-font-lock
-  :ensure t
-  :hook ((c-mode c++-mode) . modern-c++-font-lock-mode))
 
-(use-package color-identifiers-mode
-  :ensure t
-  :hook (c-mode . color-identifiers-mode))
+;; (use-package color-identifiers-mode
+;;   :ensure t
+;;   :hook (c-mode . color-identifiers-mode))
 
 (use-package auto-highlight-symbol
   :ensure t
@@ -100,8 +145,8 @@
   :hook (prog-mode . auto-highlight-symbol-mode)
   :commands (auto-highlight-symbol-mode))
 
-(use-package rainbow-identifiers
-  :ensure t)
+;; (use-package rainbow-identifiers
+;;   :ensure t)
 
 (use-package avy
   :config (avy-setup-default))
@@ -116,15 +161,25 @@
 
 (use-package async)
 (use-package popup)
-(use-package powerline
-  :demand t)
-(use-package moe-theme
-  :demand t
-  :after  (powerline)
-  :config
-  (moe-dark)
-  (moe-theme-random-color)
-  (powerline-moe-theme))
+;; (use-package powerline
+;;   :demand t)
+;; (use-package moe-theme
+;;   :demand t
+;;   :after  (powerline)
+;;   :config
+;;   (moe-dark)
+;;   (moe-theme-random-color)
+;;   (powerline-moe-theme))
+
+(use-package doom-themes
+  :init (load-theme 'doom-palenight t))
+  
+(use-package all-the-icons)
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
+
 (use-package which-key :ensure t
   :init
   (which-key-mode)
@@ -135,10 +190,14 @@
         which-key-idle-delay 0.05)
   )
 ;; (use-package ztree :ensure t)
-(use-package magit :ensure t)
+(use-package magit
+    :ensure t
+    :commands magit)
 (use-package highlight-blocks)
 (use-package rainbow-delimiters )
-(use-package ag :demand t)
+(use-package ag
+    ;;:demand t
+    :commands ag)
 (use-package flycheck
   :ensure t
   :init
@@ -177,9 +236,15 @@
   :config (require 'helm-config)
   (helm-mode 1)
   (define-key helm-find-files-map "\t" 'helm-execute-persistent-action)
+ (define-key helm-map (kbd "TAB") #'helm-execute-persistent-action)
+ (define-key helm-map (kbd "<tab>") #'helm-execute-persistent-action)
+ (define-key helm-map (kbd "C-z") #'helm-select-action)
+
   :bind*                           ; load counsel when pressed
   (("M-x"     . helm-M-x)       ; M-x use counsel
-   ("\t" . helm-execute-persistent-action)
+   ;; ("TAB" . helm-execute-persistent-action)
+   ;; ("<tab>" . helm-execute-persistent-action)
+   ;; ("c-z" . helm-select-action)
    ) ; C-x C-f use counsel-find-file
 )
 (use-package org )
@@ -189,8 +254,8 @@
 ;; eglot
 ;;
 ;; ==================================================
-(use-package eglot
-  :ensure t)
+;; (use-package eglot
+;;   :ensure t)
 
 ;; ===================================================
 ;;
@@ -217,7 +282,6 @@
 ;;   :hook (prog-mode . origami-mode)
 ;;   :commands (origami-mode))
 
-(use-package evil-magit :ensure t)
 (use-package evil-collection
   :ensure t
   :after evil
@@ -300,6 +364,11 @@
 
 
 
+;; ===================================================
+;;
+;; auto completion
+;;
+;; =================================================
 (use-package company
   :demand t
   :config (global-company-mode 1)
@@ -339,8 +408,8 @@
 (use-package lsp-dart
   :ensure t
   :init
-  (setq lsp-dart-flutter-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))
-  (setq lsp-dart-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/cache/dart-sdk/"))
+  (setq lsp-dart-flutter-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/"))
+  (setq lsp-dart-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/"))
   ;; :config
   ;; (or
   ;;  lsp-dart-server-command
@@ -562,9 +631,6 @@
 (use-package scala-mode
   :mode "\\.s\\(cala\\|bt\\)$")
 
-(use-package lsp-scala
-  :ensure t)
-
 (use-package sbt-mode
   :commands sbt-start sbt-command
   :config
@@ -619,11 +685,12 @@
      lsp-ui-sideline-enable nil
      lsp-ui-flycheck-enable t
      lsp-ui-doc-position 'top))
-  :after lsp-mode)
+  :after lsp)
 
 ;; Add company-lsp backend for metals
-(use-package company-lsp
-  :commands company-lsp)
+(use-package lsp-treemacs
+  :after lsp)
+
 
 (setq lsp-prefer-capf t)
 
@@ -728,8 +795,10 @@
   :demand t
   :commands lsp-treemacs-errors-list
   :config (lsp-treemacs-sync-mode 1))
+
 (use-package company-lsp
-  :demand t)
+  ;;:demand t
+  :commands company-lsp)
 
 
 ;; ================================================================
@@ -757,6 +826,10 @@
 ;;   (font-lock-add-keywords
 ;;     mode-iter
 ;;     '(("\\([_A-Z][_a-zA-Z0-9]*\\)\s*(" 1 'font-lock-builtin-face keep))))
+
+(use-package modern-cpp-font-lock
+  :ensure t
+  :hook ((c-mode c++-mode) . modern-c++-font-lock-mode))
 
 (use-package ggtags
     :hook ((c-mode c++-mode) . ggtags-mode)
@@ -930,26 +1003,22 @@
 (use-package cc-mode)
 
 ;; optionally
-(use-package lsp-ui
-  :demand t
-  :commands lsp-ui-mode)
-(use-package company-lsp
-  :demand t
-  :commands company-lsp)
+
 (use-package lsp-java 
-  :demand t)
+  ;;:demand t
+  )
 
 ;; optionally if you want to use debugger
 ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-(use-package dap-mode
-  :demand t
-  :config
-  (dap-mode 1)
-  (dap-ui-mode 1)
-  (dap-tooltip-mode 1))
+;; (use-package dap-mode
+;;   ;;:demand t
+;;   :config
+;;   (dap-mode 1)
+;;   (dap-ui-mode 1)
+;;   (dap-tooltip-mode 1))
 
 (use-package dap-java
-  :demand t
+  ;;:demand t
   :ensure nil)
 
 ;STS4 support
@@ -1247,7 +1316,8 @@
 
 ;; Set your lisp system and some contribs
 (use-package slime
-  :demand t
+  ;;:demand t
+  :commands slime
   :init
     ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (when (string= system-type "windows-nt")
@@ -1476,6 +1546,7 @@
      (other . "gnu")))
  '(custom-safe-themes
    '("816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
+ '(helm-minibuffer-history-key "M-p")
  '(lsp-ui-peek-enable t)
  '(package-selected-packages
    '(modern-cpp-font-lock eglot winum emacs-winum origami evil-vimish-fold vimish-fold hide-if-def-mode nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack)))
