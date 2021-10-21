@@ -95,6 +95,33 @@
      :desc "Load System" "s" #'sly-asdf-load-system
      :desc "Open System" "o" #'sly-asdf-open-system))))
 
+
+;; =============== unused bm bindings ================================
+;;
+;; (use-package! bm
+;;   :config
+;;   (set-face-attribute 'bm-face nil :background "RoyalBlue4" :foreground 'unspecified))
+;;
+;;
+;; bm bookmarks on evil mode bindings
+;; (map! :leader
+;;       (:prefix-map ("b" . "buffer")
+;;        :desc "toggle bm bookmark"              "t"   #'bm-toggle
+;;        :desc "next bm bookmark"                "o"   #'bm-next
+;;        :desc "previous bm bookmark"            "y"   #'bm-previous))
+;;
+;; ===============================================================
+
+(use-package! bookmark+
+  :load-path "~/.emacs.d/custom/bookmark-plus")
+
+(map! :leader
+      (:prefix-map ("b" . "buffer")
+       :desc "edit bookmarks"                "v"   #'edit-bookmarks
+       :desc "navlist bookmark+"             "t"   #'bmkp-choose-navlist-from-bookmark-list
+       :desc "next bookmark+"                "o"   #'bmkp-next-bookmark
+       :desc "previous bookmark+"            "y"   #'bmkp-previous-bookmark))
+
 ;; centaur tabs
 (map! (:when (featurep! :editor snippets)
        :i  [C-tab] nil
