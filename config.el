@@ -113,6 +113,10 @@
 ;; ===============================================================
 
 (use-package! bookmark+
+  :config
+  (setq bookmark-version-control t
+        delete-old-versions t
+        bookmark-save-flag t)
   :load-path "~/.emacs.d/custom/bookmark-plus")
 
 (map! :leader
@@ -129,3 +133,6 @@
 (map! :nv [C-tab]           #'centaur-tabs-forward-tab
       :nv [C-S-tab]         #'centaur-tabs-backward-tab
       :nv [C-S-iso-lefttab] #'centaur-tabs-backward-tab)
+
+;; make which key show up faster
+(setq which-key-idle-delay 0.5) ;; I need the help, I really do
