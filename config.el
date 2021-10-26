@@ -112,6 +112,7 @@
 ;;
 ;; ===============================================================
 
+;;=============== bookmark+ ================================
 (use-package! bookmark+
   :config
   (setq bookmark-version-control t
@@ -125,7 +126,9 @@
        :desc "navlist bookmark+"             "t"   #'bmkp-choose-navlist-from-bookmark-list
        :desc "next bookmark+"                "o"   #'bmkp-next-bookmark
        :desc "previous bookmark+"            "y"   #'bmkp-previous-bookmark))
-
+;;=============== bookmark+ ================================
+;;
+;;
 ;; centaur tabs
 (map! (:when (featurep! :editor snippets)
        :i  [C-tab] nil
@@ -135,4 +138,4 @@
       :nv [C-S-iso-lefttab] #'centaur-tabs-backward-tab)
 
 ;; make which key show up faster
-(setq which-key-idle-delay 0.5) ;; I need the help, I really do
+(setq which-key-idle-delay 0.3) ;; I need the help, I really do
