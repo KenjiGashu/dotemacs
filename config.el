@@ -137,5 +137,38 @@
       :nv [C-S-tab]         #'centaur-tabs-backward-tab
       :nv [C-S-iso-lefttab] #'centaur-tabs-backward-tab)
 
+;;=============== yascroll ================================
+(use-package! yascroll
+  :config
+  (global-yascroll-bar-mode 1)
+  (setq yascroll:delay-to-hide nil))
+;;=============== yascroll ================================
+
+(use-package! citre
+  :init
+  ;; This is needed in `:init' block for lazy load to work.
+  (require 'citre-config)
+  :config
+  (setq
+   ;; By default, when you open any file, and a tags file can be found for it,
+   ;; `citre-mode' is automatically enabled.  If you only want this to work for
+   ;; certain modes (like `prog-mode'), set it like this.
+   citre-auto-enable-citre-mode-modes '(prog-mode)))
+
+(use-package! beacon
+  :config
+  (beacon-mode 1))
+(use-package! dimmer
+  :config
+  (setq dimmer-fraction 0.4)
+  (dimmer-mode t))
+
+;; EAF
+;; (use-package! eaf
+;;   :config
+;;   (require 'eaf-browser)
+;;   :load-path "~/.emacs.d/site-lisp/emacs-application-framework")
+
+
 ;; make which key show up faster
 (setq which-key-idle-delay 0.3) ;; I need the help, I really do
