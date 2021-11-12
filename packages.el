@@ -17,6 +17,7 @@
 (package! dash)
 (package! flx)
 ;;(package! bm)
+(package! magit-section)
 
 ;; ================= install bookmark-plus =================
 
