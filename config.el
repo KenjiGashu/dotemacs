@@ -67,33 +67,20 @@
   (setq hl-todo-highlight-punctuation ":"))
 
 
-(use-package! sly-asdf
-  :after sly
-  :init
-  (add-to-list 'sly-contribs 'sly-asdf 'append)
+;; (use-package! sly-asdf
+;;   :after sly
+;;   :init
+;;   (add-to-list 'sly-contribs 'sly-asdf 'append)
 
-  :config
-  (map!
-   (:localleader
-    :map lisp-mode-map
-    (:prefix ("c" . "compile")
-     :desc "Load System" "s" #'sly-asdf-load-system
-     :desc "Open System" "o" #'sly-asdf-open-system))))
+;;   :config
+;;   (map!
+;;    (:localleader
+;;     :map lisp-mode-map
+;;     (:prefix ("c" . "compile")
+;;      :desc "Load System" "s" #'sly-asdf-load-system
+;;      :desc "Open System" "o" #'sly-asdf-open-system))))
 
 (use-package! ag)
-
-(use-package! sly-asdf
-  :after sly
-  :init
-  (add-to-list 'sly-contribs 'sly-asdf 'append)
-
-  :config
-  (map!
-   (:localleader
-    :map lisp-mode-map
-    (:prefix ("c" . "compile")
-     :desc "Load System" "s" #'sly-asdf-load-system
-     :desc "Open System" "o" #'sly-asdf-open-system))))
 
 
 ;; =============== unused bm bindings ================================
@@ -127,21 +114,31 @@
        :desc "next bookmark+"                "o"   #'bmkp-next-bookmark
        :desc "previous bookmark+"            "y"   #'bmkp-previous-bookmark))
 ;;=============== bookmark+ ================================
+
+;;=============== dired+ ================================
+;; (use-package! dired+
+;;   :config
+;;   (setq diredp-toggle-find-file-reuse-dir t)
+;;   :load-path "~/.emacs.d/custom/dired-plus")
+;;=============== dired+ ================================
+
+
 ;;
 ;;
 ;; centaur tabs
 (map! (:when (featurep! :editor snippets)
        :i  [C-tab] nil
        :nv [C-tab] nil))
-(map! :nv [C-tab]           #'centaur-tabs-forward-tab
-      :nv [C-S-tab]         #'centaur-tabs-backward-tab
-      :nv [C-S-iso-lefttab] #'centaur-tabs-backward-tab)
+(map! (:when (featurep! :ui tabs)
+       :nv [C-tab]           #'centaur-tabs-forward-tab
+       :nv [C-S-tab]         #'centaur-tabs-backward-tab
+       :nv [C-S-iso-lefttab] #'centaur-tabs-backward-tab))
 
 ;;=============== yascroll ================================
-(use-package! yascroll
-  :config
-  (global-yascroll-bar-mode 1)
-  (setq yascroll:delay-to-hide nil))
+;; (use-package! yascroll
+;;   :config
+;;   (global-yascroll-bar-mode 1)
+;;   (setq yascroll:delay-to-hide nil))
 ;;=============== yascroll ================================
 
 (use-package! citre
@@ -163,12 +160,110 @@
   (setq dimmer-fraction 0.4)
   (dimmer-mode t))
 
+(use-package! omnisharp
+  :commands omnisharp-start-omnisharp-server
+  :config
+  (set-company-backend! 'csharp-mode 'company-omnisharp))
+;; (use-package! omnisharp
+;;   :hook (csharp-mode . omnisharp-mode)
+;;    :config
+;;     (set-company-backend! 'csharp-mode 'company-omnisharp)
+;;     (omnisharp-install-server nil)
+;;     (omnisharp-start-omnisharp-server)
+;;     )
+
+(use-package! dired-subtree)
+(use-package! dired-filter)
+(use-package! dired-subtree)
+(use-package! dired-ranger)
+(use-package! dired-collapse)
+(use-package! dired-sidebar
+  :commands (dired-sidebar-toggle-sidebar)
+  :init
+  (map!
+   :leader
+   (:prefix-map ("o" . "open")
+    :desc "dired-toggle" "=" #'dired-sidebar-toggle-sidebar)
+   ))
+(use-package! all-the-icons-dired
+  :init (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
 ;; EAF
 ;; (use-package! eaf
 ;;   :config
 ;;   (require 'eaf-browser)
 ;;   :load-path "~/.emacs.d/site-lisp/emacs-application-framework")
 
+(use-package! flutter
+  :custom
+  (setq flutter-sdk-path "~/Downloads/dev/flutter/"))
+
+;; (after! eglot
+;;   (setq eglot-server-programs
+;;       `((dart-mode . ("dart"
+;;                       ,(expand-file-name "snapshots/analysis_server.dart.snapshot"
+;;                                          (file-name-directory
+;;                                           (file-truename
+;;                                            (executable-find "dart"))))
+;;                       "--lsp")))))
+
+
+(use-package! dart-server
+  :init (setq dart-server-sdk-path "/home/kenjigashu/Downloads/dev/flutter/bin/cache/dart-sdk/"))
+
+
+;; (use-package! slime
+;;   :init
+;;   (setq inferior-lisp-program "sbcl")
+;;   :config
+;;   (slime-setup '(slime-fancy slime-asdf slime-trace-dialog)))
+
+(use-package! eglot
+  :config
+  (add-to-list 'eglot-server-programs '(dart-mode . ("dart" "language-server"))))
+
+(use-package! highlight-indent-guides
+  :config
+  ;; (setq highlight-indent-guides-auto-character-face-perc 0)
+  ;; (setq highlight-indent-guides-auto-even-face-perc 0)
+  ;; (setq highlight-indent-guides-auto-odd-face-perc 0)
+  ;; (setq highlight-indent-guides-auto-character-face-perc 0)
+  ;; (setq highlight-indent-guides-auto-top-character-face-perc 0)
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-responsive 'top)
+  (setq highlight-indent-guides-auto-enabled nil)
+  (set-face-foreground 'highlight-indent-guides-character-face "dim gray")
+  (set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  )
 
 ;; make which key show up faster
 (setq which-key-idle-delay 0.3) ;; I need the help, I really do
+
+;;; change font
+;;; Add to ~/.doom.d/config.el
+(setq doom-font (font-spec :family "Iosevka" :size 18 :weight 'semi-light))
+
+;;change c style indentation
+(setq c-default-style "ellemtel"
+      c-basic-offset 2)
+
+;;fix indentation on c++ templates
+;;https://stackoverflow.com/questions/7830428/c-templates-and-emacs-customizing-indentation
+(defun c++-template-args-cont (langelem)
+"Control indentation of template parameters handling the special case of '>'.
+Possible Values:
+0   : The first non-ws character is '>'. Line it up under 'template'.
+nil : Otherwise, return nil and run next lineup function."
+  (save-excursion
+    (beginning-of-line)
+    (if (re-search-forward "^[\t ]*>" (line-end-position) t)
+        0)))
+
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (c-set-offset 'template-args-cont
+                          '(c++-template-args-cont c-lineup-template-args +))))
+
+;; disable emacs quit confimation prompt
+(setq confirm-kill-emacs nil)

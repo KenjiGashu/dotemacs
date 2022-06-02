@@ -11,6 +11,10 @@
 
 (package! ggtags)
 (package! sly-asdf)
+;; (package! sly :disable t)
+;; (package! sly-macrostep :disable t)
+;; (package! sly-repl-ansi-color :disable t)
+;; (package! slime)
 (package! ag)
 
 ;;had problem wiht this package!
@@ -33,9 +37,30 @@
                 (url-copy-file (concat emacswiki-base arg) local-file t))))
           bookmark-files)
   (byte-recompile-directory bookmarkplus-dir 0)
-  (require 'bookmark+))
+  ;;(require 'bookmark+)
+  )
 
 ;; ================= install bookmark-plus ======================
+;;
+;; ================= install dired-plus =================
+
+(let ((diredplus-dir "~/.emacs.d/custom/dired-plus/")
+      (emacswiki-base "https://www.emacswiki.org/emacs/download/")
+      (diredplus-files '("dired+.el")))
+  (require 'url)
+  (add-to-list 'load-path diredplus-dir)
+  (make-directory diredplus-dir t)
+  (mapcar (lambda (arg)
+            (let ((local-file (concat diredplus-dir arg)))
+              (unless (file-exists-p local-file)
+                (url-copy-file (concat emacswiki-base arg) local-file t))))
+          diredplus-files)
+  (byte-recompile-directory diredplus-dir 0)
+  ;;(require 'dired+)
+  )
+
+;; ================= install bookmark-plus ======================
+
 
 (package! gitconfig-mode
 	  :recipe (:host github :repo "magit/git-modes"
@@ -48,6 +73,21 @@
 (package! citre)
 (package! beacon)
 (package! dimmer)
+(package! omnisharp)
+
+(package! dired-hacks-utils)
+(package! dired-filter)
+(package! dired-subtree)
+(package! dired-ranger)
+(package! dired-collapse)
+(package! dired-sidebar)
+
+(package! all-the-icons-dired)
+
+(package! highlight-indent-guides)
+
+(package! dart-server)
+(package! lsp-dart)
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format
