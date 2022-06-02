@@ -242,7 +242,8 @@
 
 ;;; change font
 ;;; Add to ~/.doom.d/config.el
-(setq doom-font (font-spec :family "Iosevka" :size 18 :weight 'semi-light))
+(when (eq system-type 'gnu/linux)
+  (setq doom-font (font-spec :family "Iosevka" :size 18 :weight 'semi-light)))
 
 ;;change c style indentation
 (setq c-default-style "ellemtel"
@@ -267,3 +268,6 @@ nil : Otherwise, return nil and run next lineup function."
 
 ;; disable emacs quit confimation prompt
 (setq confirm-kill-emacs nil)
+
+(when (eq system-type 'windows-nt)
+  (setenv "PATH" (concat "C:\\ProgramData\\chocolatey\\bin" (getenv "PATH"))))
