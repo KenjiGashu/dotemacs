@@ -271,3 +271,8 @@ nil : Otherwise, return nil and run next lineup function."
 
 (when (eq system-type 'windows-nt)
   (setenv "PATH" (concat "C:\\ProgramData\\chocolatey\\bin" (getenv "PATH"))))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (semantic-mode 1)
+            (global-semantic-stickyfunc-mode)) )
