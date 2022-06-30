@@ -109,10 +109,11 @@
 
 (map! :leader
       (:prefix-map ("b" . "buffer")
-       :desc "edit bookmarks"                "v"   #'edit-bookmarks
-       :desc "navlist bookmark+"             "t"   #'bmkp-choose-navlist-from-bookmark-list
-       :desc "next bookmark+"                "o"   #'bmkp-next-bookmark
-       :desc "previous bookmark+"            "y"   #'bmkp-previous-bookmark))
+       :desc "list bmkp"                          "v"   #'bookmark-bmenu-list
+       :desc "switch bmkp file"                   "t"   #'bmkp-switch-bookmark-file-create
+       :desc "describe bmkp"                      "h"   #'bmkp-describe-bookmark
+       :desc "file bookmark bmkp"                 "o"   #'bmkp-set-bookmark-file-bookmark
+       :desc "edit bmkp"                          "e"   #'bmkp-edit-bookmark-record))
 ;;=============== bookmark+ ================================
 
 ;;=============== dired+ ================================
