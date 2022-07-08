@@ -116,6 +116,8 @@
        :desc "edit bmkp"                          "e"   #'bmkp-edit-bookmark-record))
 ;;=============== bookmark+ ================================
 
+(use-package! zoom-frm)
+
 ;;=============== dired+ ================================
 ;; (use-package! dired+
 ;;   :config
@@ -277,3 +279,8 @@ nil : Otherwise, return nil and run next lineup function."
           (lambda ()
             (semantic-mode 1)
             (global-semantic-stickyfunc-mode)) )
+
+(map!
+ :desc "scroll right"                          "C-M-y"   #'evil-scroll-column-right
+ :desc "scroll left"                           "C-M-g"   #'evil-scroll-column-left
+ )
