@@ -116,7 +116,8 @@
        :desc "edit bmkp"                          "e"   #'bmkp-edit-bookmark-record))
 ;;=============== bookmark+ ================================
 
-(use-package! zoom-frm)
+(use-package! zoom-frm
+  :load-path "~/.emacs.d/custom/other-el")
 
 ;;=============== dired+ ================================
 ;; (use-package! dired+
