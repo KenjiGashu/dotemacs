@@ -61,6 +61,8 @@
 
 ;; ================= install bookmark-plus ======================
 
+(package! eaf)
+
 (package! gitconfig-mode
 	  :recipe (:host github :repo "magit/git-modes"
 			 :files ("gitconfig-mode.el")))
@@ -88,6 +90,21 @@
 (package! dart-server)
 (package! lsp-dart)
 
+;; ============= THEMES ====================
+
+(package! moe-theme)
+(package! inkpot-theme)
+(package! dracula-theme)
+(package! zeno-theme)
+(package! exotica-theme)
+(package! abyss-theme)
+(package! afternoon-theme)
+(package! vs-dark-theme)
+(package! tron-legacy-theme)
+(package! tomorrow-night-paradise-theme)
+(package! darcula-theme)
+(package! melancholy-theme)
+;; =========================================
 
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:

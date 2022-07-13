@@ -127,6 +127,19 @@
 ;;=============== dired+ ================================
 
 
+(use-package! moe-theme)
+(use-package! inkpot-theme)
+(use-package! dracula-theme)
+(use-package! zeno-theme)
+(use-package! exotica-theme)
+(use-package! abyss-theme)
+(use-package! afternoon-theme)
+(use-package! vs-dark-theme)
+(use-package! tron-legacy-theme)
+(use-package! tomorrow-night-paradise-theme)
+(use-package! darcula-theme)
+(use-package! melancholy-theme)
+
 ;;
 ;;
 ;; centaur tabs
@@ -240,6 +253,60 @@
   (set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
   )
+
+(use-package! eaf
+  :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
+  :init
+  :custom
+  (eaf-browser-continue-where-left-off t)
+  (eaf-browser-enable-adblocker t)
+  (browse-url-browser-function 'eaf-open-browser) ;; Make EAF Browser my default browser
+  :config
+  (defalias 'browse-web #'eaf-open-browser)
+
+  (require 'eaf-file-manager)
+  (require 'eaf-music-player)
+  (require 'eaf-image-viewer)
+  (require 'eaf-camera)
+  (require 'eaf-demo)
+  (require 'eaf-airshare)
+  (require 'eaf-terminal)
+  (require 'eaf-markdown-previewer)
+  (require 'eaf-video-player)
+  (require 'eaf-vue-demo)
+  (require 'eaf-file-sender)
+  (require 'eaf-pdf-viewer)
+  (require 'eaf-mindmap)
+  (require 'eaf-netease-cloud-music)
+  (require 'eaf-jupyter)
+  (require 'eaf-org-previewer)
+  (require 'eaf-system-monitor)
+  (require 'eaf-rss-reader)
+  (require 'eaf-file-browser)
+  (require 'eaf-browser)
+  (require 'eaf-org)
+  (require 'eaf-mail)
+  (require 'eaf-git)
+  (when (display-graphic-p)
+    (require 'eaf-all-the-icons))
+
+  (require 'eaf-evil)
+  (define-key key-translation-map (kbd "SPC")
+    (lambda (prompt)
+      (if (derived-mode-p 'eaf-mode)
+          (pcase eaf--buffer-app-name
+            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
+                           (kbd "SPC")
+                         (kbd eaf-evil-leader-key)))
+            ("pdf-viewer" (kbd eaf-evil-leader-key))
+            ("image-viewer" (kbd eaf-evil-leader-key))
+            (_  (kbd "SPC")))
+        (kbd "SPC")))))
+
+;; (use-package! eaf-browser
+;;   :after eaf)
+;; (use-package! eaf-pdf-viewer
+;;   :after eaf)
 
 ;; make which key show up faster
 (setq which-key-idle-delay 0.3) ;; I need the help, I really do
