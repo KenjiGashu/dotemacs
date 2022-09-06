@@ -104,7 +104,8 @@
   :config
   (setq bookmark-version-control t
         delete-old-versions t
-        bookmark-save-flag t)
+        bookmark-save-flag 1
+        bmkp-count-multi-mods-as-one-flag t)
   :load-path "~/.emacs.d/custom/bookmark-plus")
 
 (map! :leader
