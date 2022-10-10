@@ -1,4 +1,4 @@
-; emacs conf --- configuration
+;;; emacs conf --- configuration
 ;;; inicializacao package manage
 (require 'package)
 ;;(custom-set-variables
@@ -20,6 +20,9 @@
 ;; '(speedbar-show-unknown-files t))
 ;;(package-initialize)
 
+
+;; call this to byte compile emacs folder
+;;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
 ; list the repositories containing them
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -50,11 +53,29 @@
     (package-install package)))
 
 ;; Enable defer and ensure by default for use-package
-;; (setq use-package-always-defer t
-;;       use-package-always-ensure t)
+;;(setq use-package-always-defer t)
+(require 'use-package-ensure)
 (setq use-package-always-ensure t)
+;;(setq use-package-always-ensure t)
 
 
+;; ==================================================================
+;;
+;; el get
+;;
+;; =================================================================
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+(unless (require 'el-get nil 'noerror)
+  (require 'package)
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.org/packages/"))
+  (package-refresh-contents)
+  (package-initialize)
+  (package-install 'el-get)
+  (require 'el-get))
+
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 
 ;; ==================================================================
 ;;
@@ -83,6 +104,9 @@
 (setq load-path (append (list (expand-file-name "~/.emacs.d/lilypond-mode/lilypond-init.el")) load-path))
 (setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp/uim-el")) load-path))
 (setq load-path (append (list (expand-file-name "/usr/share/emacs/site-lisp")) load-path))
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/theme/")
+
 ;=======================================================================
 
 
@@ -109,11 +133,103 @@
                 term-mode-hook
                 shell-mode-hook
                 treemacs-mode-hook
-                eshell-mode-hook))
+                eshell-mode-hook
+		pdf-view-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
+
+
+
+
+;; ==================================================================
+;;
+;; vertico
+;;
+;; =================================================================
+;; Enable vertico
+(use-package vertico
+  :init
+  (vertico-mode)
+
+  ;; Different scroll margin
+  ;; (setq vertico-scroll-margin 0)
+
+  ;; Show more candidates
+  ;; (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  ;; (setq vertico-cycle t)
+
+  :bind (:map vertico-map
+	      ("C-j" . vertico-next)
+	      ("C-k" . vertico-previous))
+
+  :config
+  ;; Use `consult-completion-in-region' if Vertico is enabled.
+  ;; Otherwise use the default `completion--in-region' function.
+  (setq completion-in-region-function
+	(lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+		 args))))
+
+;; Optionally use the `orderless' completion style. See
+;; `+orderless-dispatch' in the Consult wiki for an advanced Orderless style
+;; dispatcher. Additionally enable `partial-completion' for file path
+;; expansion. `partial-completion' is important for wildcard support.
+;; Multiple files can be opened at once with `find-file' if you enter a
+;; wildcard. You may also give the `initials' completion style a try.
+(use-package orderless
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; Alternatively try `consult-completing-read-multiple'.
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+
+(use-package marginalia
+  :after vertico
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init (marginalia-mode))
+
+(use-package consult
+  :after vertico)
+
 
 
 ;; ==================================================================
@@ -122,45 +238,59 @@
 ;;
 ;; =================================================================
 
-;; can't download asnippet-snippets because it makes package install crash
-;; (use-package ranger
-;;   :ensure t)
-(global-set-key [f8] 'treemacs)
-(use-package yasnippet
-  ;;:demand t
-  :config (yas-global-mode 1))
-(use-package yasnippet-snippets
-    :after (yas-global-mode)
-    :config (yas-reload-all)
-    :ensure nil)
-
-
-;; (use-package color-identifiers-mode
-;;   :ensure t
-;;   :hook (c-mode . color-identifiers-mode))
-
-(use-package auto-highlight-symbol
-  :ensure t
-  :config (auto-highlight-symbol-mode)
-  :hook (prog-mode . auto-highlight-symbol-mode)
-  :commands (auto-highlight-symbol-mode))
-
-;; (use-package rainbow-identifiers
-;;   :ensure t)
-
-(use-package avy
-  :config (avy-setup-default))
-
-(use-package frog-jump-buffer
-  :bind (("C-x x" . frog-jump-buffer)))
-
-;; (use-package helm-c-yasnippet
-;;   :init
-;;   (setq helm-yas-space-match-any-greedy t)
-;;   (global-set-key (kbd "C-c y") 'helm-yas-complete))
 
 (use-package async)
 (use-package popup)
+;; can't download asnippet-snippets because it makes package install crash
+;; (use-package ranger
+;;   :ensure t)
+(use-package yasnippet
+  ;;:demand t
+  :config
+  (yas-global-mode 1)
+  (general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "si" 'yas-insert-snippet)
+  (general-define-key
+   :states '(insert)
+   :non-normal-prefix "C-SPC"
+   "C-M-u" 'yas-expand))
+(use-package yasnippet-snippets
+    :after (yas-global-mode)
+    :config (yas-reload-all)
+    :ensure t)
+
+(use-package auto-yasnippet :ensure t
+  :config
+  (general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "sc" 'aya-create
+   "st" 'aya-persist-snippet
+   "sae" 'aya-expand
+   "sah" 'aya-expand-from-history)
+  )
+
+;; lsp bridge
+(el-get-bundle lsp-bridge
+  :url "https://github.com/manateelazycat/lsp-bridge.git"
+  :features lsp-bridge)
+(el-get 'sync)
+
+;; (global-lsp-bridge-mode)
+(setq acm-enable-quick-access 1)
+
+;; (use-package auto-highlight-symbol
+;;   :ensure t
+;;   :config (auto-highlight-symbol-mode)
+;;   :hook (prog-mode . auto-highlight-symbol-mode)
+;;   :commands (auto-highlight-symbol-mode))
+
 ;; (use-package powerline
 ;;   :demand t)
 ;; (use-package moe-theme
@@ -189,10 +319,7 @@
         which-key-side-window-max-width 0.33
         which-key-idle-delay 0.05)
   )
-;; (use-package ztree :ensure t)
-(use-package magit
-    :ensure t
-    :commands magit)
+
 (use-package highlight-blocks)
 (use-package rainbow-delimiters )
 (use-package ag
@@ -204,58 +331,220 @@
   ;;(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)
   (global-flycheck-mode)
   :demand t)
-(use-package hydra)
+
+;;(use-package hydra)
 
 (use-package winum
   :ensure t
   :demand t
   :config (winum-mode 1)
-  :bind (
-	 :map winum-keymap
-	 ("M-1" . winum-select-window-1)
-	 ("M-2" . winum-select-window-2)
-	 ("M-3" . winum-select-window-3)
-	 ("M-4" . winum-select-window-4)
-	 ("M-5" . winum-select-window-5)
-	 ("M-6" . winum-select-window-6)
-	 ("M-7" . winum-select-window-7)))
+  (general-define-key
+   :states '(normal  visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "w0" 'winum-select-window-0
+   "w1" 'winum-select-window-1
+   "w2" 'winum-select-window-2
+   "w3" 'winum-select-window-3
+   "w4" 'winum-select-window-4
+   "w5" 'winum-select-window-5
+   "w6" 'winum-select-window-6
+   "w7" 'winum-select-window-7))
 
-(use-package helm-swoop
+(use-package all-the-icons-ibuffer
   :ensure t
-  :commands (swoop))
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
 
-(use-package dockerfile-mode
-  :ensure t
-  :mode "Dockerfile\\'")
+;; Whether display the icons.
+(setq all-the-icons-ibuffer-icon t)
 
-(use-package projectile
-  :init (setq projectile-project-search-path '("~/prog" "/media/prog/"))
-  :ensure t)
+;; Whether display the colorful icons.
+;; It respects `all-the-icons-color-icons'.
+(setq all-the-icons-ibuffer-color-icon t)
 
-(use-package helm
-  :config (require 'helm-config)
-  (helm-mode 1)
-  (define-key helm-find-files-map "\t" 'helm-execute-persistent-action)
- (define-key helm-map (kbd "TAB") #'helm-execute-persistent-action)
- (define-key helm-map (kbd "<tab>") #'helm-execute-persistent-action)
- (define-key helm-map (kbd "C-z") #'helm-select-action)
+;; The default icon size in ibuffer.
+(setq all-the-icons-ibuffer-icon-size 1.0)
 
-  :bind*                           ; load counsel when pressed
-  (("M-x"     . helm-M-x)       ; M-x use counsel
-   ;; ("TAB" . helm-execute-persistent-action)
-   ;; ("<tab>" . helm-execute-persistent-action)
-   ;; ("c-z" . helm-select-action)
-   ) ; C-x C-f use counsel-find-file
-)
-(use-package org )
+;; The default vertical adjustment of the icon in ibuffer.
+(setq all-the-icons-ibuffer-icon-v-adjust 0.0)
 
-;; ==================================================
+;; Use human readable file size in ibuffer.
+(setq  all-the-icons-ibuffer-human-readable-size t)
+
+
+(use-package pdf-tools
+  :mode ("\\.pdf\\'" . pdf-view-mode))
+
+(use-package undo-tree :ensure t
+  :after evil
+  :config
+  (global-undo-tree-mode 1)
+  (evil-set-undo-system 'undo-tree))
+
+(use-package editorconfig :ensure t
+  :config
+  (editorconfig-mode 1))
+
+(use-package nav-flash :ensure t
+  :config (nav-flash-show))
+
+
+(use-package beacon :ensure t
+  :config
+  (beacon-mode 1))
+(use-package dimmer :ensure t
+  :config
+  (setq dimmer-fraction 0.6)
+  (dimmer-mode t))
+
+
+(use-package helpful :ensure t
+  :config
+  (global-set-key (kbd "C-h f") #'helpful-callable)
+  (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h k") #'helpful-key)
+  ;; Lookup the current symbol at point. C-c C-d is a common keybinding
+  ;; for this in lisp modes.
+  (global-set-key (kbd "C-c C-d") #'helpful-at-point)
+
+  ;; Look up *F*unctions (excludes macros).
+  ;;
+  ;; By default, C-h F is bound to `Info-goto-emacs-command-node'. Helpful
+  ;; already links to the manual, if a function is referenced there.
+  (global-set-key (kbd "C-h F") #'helpful-function)
+
+  ;; Look up *C*ommands.
+  ;;
+  ;; By default, C-h C is bound to describe `describe-coding-system'. I
+  ;; don't find this very useful, but it's frequently useful to only
+  ;; look at interactive functions.
+  (global-set-key (kbd "C-h C") #'helpful-command))
+
+
+(use-package avy :ensure t
+  :config
+  (general-define-key
+   :states '(normal  visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "gc" 'avy-goto-char-2
+   "gw" 'avy-goto-word-1))
+
+;; (use-package highlight-indentation)
+;; (set-face-background 'highlight-indentation-face "#e3e3d3")
+;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
+
+(use-package highlight-indent-guides
+  :config
+  ;; (setq highlight-indent-guides-auto-character-face-perc 0)
+  ;; (setq highlight-indent-guides-auto-even-face-perc 0)
+  ;; (setq highlight-indent-guides-auto-odd-face-perc 0)
+  ;; (setq highlight-indent-guides-auto-character-face-perc 0)
+  ;; (setq highlight-indent-guides-auto-top-character-face-perc 0)
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-responsive 'top)
+  (setq highlight-indent-guides-auto-enabled nil)
+  (set-face-foreground 'highlight-indent-guides-character-face "dim gray")
+  (set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  )
+
+;; make which key show up faster
+(setq which-key-idle-delay 0.3) ;; I need the help, I really do
+
+;;change default font to iosevka
+(add-to-list 'default-frame-alist '(font . "Iosevka-14"))
+
+;;change c style indentation
+(setq c-default-style "ellemtel"
+      c-basic-offset 2)
+
+
+;;fix indentation on c++ templates
+;;https://stackoverflow.com/questions/7830428/c-templates-and-emacs-customizing-indentation
+(defun c++-template-args-cont (langelem)
+"Control indentation of template parameters handling the special case of '>'.
+Possible Values:
+0   : The first non-ws character is '>'. Line it up under 'template'.
+nil : Otherwise, return nil and run next lineup function."
+  (save-excursion
+    (beginning-of-line)
+    (if (re-search-forward "^[\t ]*>" (line-end-position) t)
+        0)))
+
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (c-set-offset 'template-args-cont
+                          '(c++-template-args-cont c-lineup-template-args +))))
+
+
+
+
+;; ================= install bookmark-plus =================
+
+(let ((bookmarkplus-dir "~/.emacs.d/custom/bookmark-plus/")
+      (emacswiki-base "https://www.emacswiki.org/emacs/download/")
+      (bookmark-files '("bookmark+.el" "bookmark+-mac.el" "bookmark+-bmu.el" "bookmark+-key.el" "bookmark+-lit.el" "bookmark+-1.el")))
+  (require 'url)
+  (add-to-list 'load-path bookmarkplus-dir)
+  (make-directory bookmarkplus-dir t)
+  (mapcar (lambda (arg)
+            (let ((local-file (concat bookmarkplus-dir arg)))
+              (unless (file-exists-p local-file)
+                (url-copy-file (concat emacswiki-base arg) local-file t))))
+          bookmark-files)
+  (byte-recompile-directory bookmarkplus-dir 0)
+  (require 'bookmark+)
+  )
+
+;; ================= install bookmark-plus ======================
 ;;
-;; eglot
+;; ================= download custom el files from emacs wiki =================
+
+(let ((custom-el-dir "~/.emacs.d/custom/other-el/")
+      (emacswiki-base "https://www.emacswiki.org/emacs/download/")
+      (custom-el-files '("dired+.el" "frame-fns.el" "frame-cmds.el" "zoom-frm.el")))
+  (require 'url)
+  (add-to-list 'load-path custom-el-dir)
+  (make-directory custom-el-dir t)
+  (mapcar (lambda (arg)
+            (let ((local-file (concat custom-el-dir arg)))
+              (unless (file-exists-p local-file)
+                (url-copy-file (concat emacswiki-base arg) local-file t))))
+          custom-el-files)
+  (byte-recompile-directory custom-el-dir 0)
+  (require 'dired+)
+  )
+
+
+
+;; ================================
+;; 
+;; Dired stuff
 ;;
-;; ==================================================
-;; (use-package eglot
-;;   :ensure t)
+;; ================================
+(use-package dired-hacks-utils :ensure t )
+(use-package dired-filter :ensure t )
+(use-package dired-subtree :ensure t )
+(use-package dired-ranger :ensure t )
+(use-package dired-collapse :ensure t )
+(use-package dired-sidebar :ensure t
+  :commands (dired-sidebar-toggle-sidebar)
+  :init
+  (general-define-key
+   :states '(normal  visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "o=" 'dired-sidebar-toggle-sidebar))
+
+(use-package all-the-icons-dired :ensure t )
+
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+
+
 
 ;; ===================================================
 ;;
@@ -263,63 +552,46 @@
 ;;
 ;; =================================================
 
+(setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+(setq evil-want-keybinding nil)
 (use-package evil :ensure t :demand t
-  :init (setq evil-want-keybinding nil)
-  :config (evil-mode))
+  :init
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  :config (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :defer nil
+  :ensure t
+  :config
+  (evil-collection-init))
+
+(use-package evil-org
+  :after (evil org-mode))
 
 (use-package vimish-fold
   :ensure t
-  :after (evil))
+  :after evil)
 
 (use-package evil-vimish-fold
   :ensure t
-  :after (evil vimish-fold))
+  :after vimish-fold
+  :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
 
-(add-hook 'prog-mode-hook #'hs-minor-mode)
-;; (use-package origami
+;; (use-package vimish-fold
 ;;   :ensure t
-;;   :after (evil)
-;;   :hook (prog-mode . origami-mode)
-;;   :commands (origami-mode))
+;;   :after (evil))
 
-(use-package evil-collection
-  :ensure t
-  :after evil
-  :config (evil-collection-init))
-;; (use-package smartparens :demand t
-;;   :bind
-;;   (("C-M-f" . sp-forward-sexp)
-;;    ("C-M-b" . sp-backward-sexp)
-;;    ("C-M-d" . sp-down-sexp)
-;;    ("C-M-d" . sp-backward-down-sexp)
-;;    ("C-S-u" . sp-up-sexp)
-;;    ("C-M-u" . sp-backward-up-sexp)
-;;    ("C-S-a" . sp-beginning-of-sexp)
-;;    ("C-M-e" . sp-end-of-sexp)
-;;    ("C-M-n" . sp-next-sexp)
-;;    ("C-M-p" . sp-previous-sexp)
-;;    ("C-S-b" . sp-backward-symbol)
-;;    ("C-S-f" . sp-forward-symbol))
-  
-;;     :init (require 'smartparens-config))
-;; (use-package paredit :demand t)
-;; (use-package evil-smartparens :after evil
-;;   ;;:init (add-hook 'evil-mode 'evil-smartparens-mode)
-;;   :config (evil-smartparens-mode))
-;; (use-package evil-paredit :after evil
-;;   ;;:init(add-hook 'evil-mode #'evil-paredit-mode))
-;;   :config (evil-paredit-mode))
-;; (use-package evil-cleverparens
-;;   :after evil
-;;   :config (evil-cleverparens-mode))
-(use-package evil-org )
+;; (use-package evil-vimish-fold
+;;   :ensure t
+;;   :after (evil vimish-fold))
 
-;;treemacs 
-(use-package treemacs-evil :demand t
-  :after winum
-  :init
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 
+
+;; (evil-define-key '(normal) dired-mode-map
+;;   (kbd "RET") 'dired-find-file)
 
 ;; multiple cursors evil mode
 (use-package evil-mc :demand t
@@ -327,42 +599,45 @@
   :after evil
   :config (global-evil-mc-mode 1))
 
-;; (evil-define-local-var evil-mc-custom-paused nil
-;;   "Paused functionality when there are multiple cursors active.")
-
-;; (defun evil-mc-pause-smartchr-for-mode (mode)
-;;   "Temporarily disables the smartchr keys for MODE."
-;;   (let ((m-mode (if (atom mode) mode (car mode)))
-;;         (s-mode (if (atom mode) mode (cdr mode))))
-;;     (let ((init (intern (concat "smartchr/init-" (symbol-name s-mode))))
-;;           (undo (intern (concat "smartchr/undo-" (symbol-name s-mode)))))
-;;       (when (eq major-mode m-mode)
-;;         (funcall undo)
-;;         (push `(lambda () (,init)) evil-mc-custom-paused)))))
-
-;; (defun evil-mc-before-cursors-setup-hook ()
-;;   "Hook to run before any cursor is created.
-;; Can be used to temporarily disable any functionality that doesn't
-;; play well with `evil-mc'."
-;;   (mapc 'evil-mc-pause-smartchr-for-mode
-;;         '(web-mode js2-mode java-mode (enh-ruby-mode . ruby-mode) css-mode))
-;;   (when (boundp whitespace-cleanup-disabled)
-;;     (setq whitespace-cleanup-disabled t)
-;;     (push (lambda () (setq whitespace-cleanup-disabled nil)) evil-mc-custom-paused)))
-
-;; (defun evil-mc-after-cursors-teardown-hook ()
-;;   "Hook to run after all cursors are deleted."
-;;   (dolist (fn evil-mc-custom-paused) (funcall fn))
-;;   (setq evil-mc-custom-paused nil))
-
-;; (add-hook 'evil-mc-before-cursors-created 'evil-mc-before-cursors-setup-hook)
-;; (add-hook 'evil-mc-after-cursors-deleted 'evil-mc-after-cursors-teardown-hook)
 
 
+
+;; ===================================================
+;;
+;; other config
+;;
 ;; =================================================
 
+;; (use-package dockerfile-mode
+;;   :ensure t
+;;   :mode "\\Dockerfile")
 
+(use-package projectile
+  :init (setq projectile-project-search-path '("~/prog" "/media/prog/"))
+  :commands (projectile-find-file) 
+  :ensure t)
 
+(use-package org
+  :mode "\\.org")
+
+(use-package dired-subtree
+  :config
+  (evil-define-key '(normal) dired-mode-map
+    (kbd "TAB") 'dired-subtree-insert
+    (kbd "<backtab>") 'dired-subtree-remove)
+  )
+
+;; ==================================================
+;;
+;; eglot
+;;
+;; ==================================================
+;; (use-package eglot
+;;   :ensure t
+;;   :commands (eglot)
+;;   :hook ((c++-mode c-mode rust-mode) . eglot-ensure))
+
+;; =================================================
 
 ;; ===================================================
 ;;
@@ -371,31 +646,32 @@
 ;; =================================================
 (use-package company
   :demand t
-  :config (global-company-mode 1)
-  (setq company-backends '((company-files company-keywords))
-	)
+
+  :config 
+  (setq company-backends '(company-files company-keywords company-capf))
   (setq company-minimum-prefix-length 1
 	company-idle-delay 0.0)
   (evil-define-key nil evil-insert-state-map
-  (kbd "C-M-y") 'company-complete))
-;; ;; debugger package
-;; (use-package dap-mode
-;;    :after lsp-mode
-;;   :config
-;;   (dap-mode t)
-;;   (dap-ui-mode t))
+    (kbd "C-M-y") 'company-complete)
+
+  ;;setup backends
+  :hook ((emacs-lisp-mode . (lambda ()
+			      (set (make-local-variable 'company-backends) (push 'company-elisp company-backends)))))
+  )
+
+;; (use-package company-quickhelp :ensure t
+;;   :after company
+;;   :config (company-quickhelp-mode))
 
 
-;; ===================================================
-;;
-;; python config
-;;
-;; =================================================
-(use-package elpy
+(use-package markdown-mode
   :ensure t
-  :defer t
-  :init
-  (advice-add 'python-mode :before 'elpy-enable))
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
+
+(use-package posframe :ensure t
+  :demand t)
+
 
 ;; ===================================================
 ;;
@@ -403,29 +679,33 @@
 ;;
 ;; =================================================
 ;; Assuming usage with dart-mode
-(use-package dart-mode
-  :ensure t)
-(use-package lsp-dart
-  :ensure t
-  :init
-  (setq lsp-dart-flutter-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/"))
-  (setq lsp-dart-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/"))
-  ;; :config
-  ;; (or
-  ;;  lsp-dart-server-command
-  ;;  `(,(expand-file-name (f-join lsp-dart-sdk-dir "bin/dart"))
-  ;;    ,(expand-file-name (f-join lsp-dart-sdk-dir "bin/snapshots/analysis_server.dart.snapshot"))
-  ;;    "--lsp"))
-  )
+;; (use-package dart-mode
+;;   :mode "\\.dart\\'"
+;;   :ensure t)
+;; (use-package lsp-dart
+;;   :ensure t
+;;   :init
+;;   (setq lsp-dart-flutter-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/"))
+;;   (setq lsp-dart-sdk-dir (concat (replace-regexp-in-string "\\\\" "/" (getenv "FLUTTER_HOME")) "/bin/"))
+;;   ;; :config
+;;   ;; (or
+;;   ;;  lsp-dart-server-command
+;;   ;;  `(,(expand-file-name (f-join lsp-dart-sdk-dir "bin/dart"))
+;;   ;;    ,(expand-file-name (f-join lsp-dart-sdk-dir "bin/snapshots/analysis_server.dart.snapshot"))
+;;   ;;    "--lsp"))
+;;   )
 
-(use-package flutter
-  :after dart-mode
-  :bind (:map dart-mode-map
-              ("C-M-x" . #'flutter-run-or-hot-reload)))
+;; (use-package flutter
+;;   :after dart-mode
+;;   :bind (:map dart-mode-map
+;;               ("C-M-x" . #'flutter-run-or-hot-reload)))
 
 
 ;; Optional Flutter packages
-(use-package hover :ensure t) ;; run app from desktop without emulator
+;; (use-package hover
+;;   :after flutter
+;;   :ensure t) 
+;; run app from desktop without emulator
 
 
 ;; ===================================================
@@ -433,66 +713,90 @@
 ;; omnisharp config
 ;;
 ;; =================================================
-(use-package csharp-mode)
+(use-package csharp-mode
+  :mode "\\.cs")
 (use-package omnisharp
   ;; :init
   ;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
   ;; (add-hook 'csharp-mode-hook #'company-mode)
   :hook ((csharp-mode . (lambda ()
 			  (add-to-list (make-local-variable 'company-backends) 'company-omnisharp )))
-	 (csharp-mode . omnisharp-mode))
+	 (csharp-mode . omnisharp-mode)
+	 (csharp-mode . company-mode)
+	 (csharp-mode . (lambda () (omnisharp-start-omnisharp-server))))
   )
 ;; ===================================================
 ;;
 ;; rust config
 ;;
 ;; =================================================
-(use-package rust-mode)
-(use-package cargo
-  :hook (rust-mode . cargo-minor-mode))
-(use-package racer
-  :init
-  (setq racer-cmd "~/.cargo/bin/racer") ;; Rustup binaries PATH
-  (setq racer-rust-src-path "~/git/projetos/rust/src") ;; Rust source code PATH)
-  :hook (rust-mode . racer-mode))
-(use-package eldoc
-  :hook (racer-mode . eldoc-mode))
-(use-package company-racer
-  :hook (racer-mode . company-mode))
-(use-package flycheck-rust)
+;; (use-package rust-mode
+;;   :mode "\\.rs")
+;; (use-package cargo
+;;   :after (rust-mode)
+;;   :hook (rust-mode . cargo-minor-mode))
+;; (use-package racer
+;;   :after (rust-mode)
+;;   :init
+;;   (setq racer-cmd "~/.cargo/bin/racer") ;; Rustup binaries PATH
+;;   (setq racer-rust-src-path "~/git/projetos/rust/src") ;; Rust source code PATH)
+;;   :hook (rust-mode . racer-mode))
+;; (use-package eldoc
+;;   :after (rust-mode)
+;;   :hook (racer-mode . eldoc-mode))
+;; (use-package company-racer
+;;   :after (rust-mode)
+;;   :hook (racer-mode . company-mode))
+;; (use-package flycheck-rust
+;;   :after (rust-mode))
 
 ;; ===================================================
 ;;
 ;; web config
 ;;
 ;; =================================================
-(use-package company-web
-    :ensure t)
+;; (use-package company-web
+;;   :after (web-mode)
+;;   :ensure t)
 
-(use-package web-mode
-    :mode ("\\.blade.php\\'" "\\.html\\'" "\\.css\\'" "\\.tsx\\'" "\\.jsx\\'")
-    :hook (web-mode . (lambda ()
-			(require 'company-web-html)
-			(require 'company-web-jade)
-			(require 'company-web-slim)
-			(when (string-equal "tsx" (file-name-extension buffer-file-name))
-			  (setup-tide-mode))
-			(when (string-equal "jsx" (file-name-extension buffer-file-name))
-			  (setup-tide-mode))
-			(add-to-list (make-local-variable 'company-backends) 'company-web-html t)
-			(add-to-list 'company-backends 'company-web-jade t)
-			(add-to-list 'company-backends 'company-web-slim t)
-			(lsp-deferred))))
-(use-package vue-mode
-  :mode "\\.vue")
+;; (use-package web-mode
+;;   :mode ("\\.blade.php\\'" "\\.html\\'" "\\.css\\'" "\\.tsx\\'" "\\.jsx\\'")
+;;   :hook (web-mode . (lambda ()
+;; 		      (require 'company-web-html)
+;; 		      (require 'company-web-jade)
+;; 		      (require 'company-web-slim)
+;; 			(when (string-equal "tsx" (file-name-extension buffer-file-name))
+;; 			  (setup-tide-mode))
+;; 			(when (string-equal "jsx" (file-name-extension buffer-file-name))
+;; 			  (setup-tide-mode))
+;; 			(add-to-list (make-local-variable 'company-backends) 'company-web-html t)
+;; 			(add-to-list 'company-backends 'company-web-jade t)
+;; 			(add-to-list 'company-backends 'company-web-slim t)
+;; 			(lsp-deferred))))
+;; (use-package vue-mode
+;;   :mode "\\.vue")
 
 ;; ===================================================
 ;;
 ;; php config
 ;;
 ;; =================================================
-(use-package php-mode
-  :mode "\\php")
+;; (use-package php-mode
+;;   :mode "\\php")
+
+;; ===================================================
+;;
+;; html config
+;;
+;; =================================================
+(add-hook 'html-mode-hook (lambda () (lsp-bridge-mode)))
+
+;; ===================================================
+;;
+;; css config
+;;
+;; =================================================
+(add-hook 'css-mode-hook (lambda () (lsp-bridge-mode)))
 
 
 ;; ===================================================
@@ -500,64 +804,54 @@
 ;; javascript config
 ;;
 ;; =================================================
-;; (use-package company-tern
-;;    :ensure t )
-;; (use-package rjsx-mode
-;;   :mode "\\.js"
-;;   :hook (rjsx-mode lsp)
-;;   :init (add-hook 'python-mode-hook (lambda()
-;; 				      (add-to-list
-;; 				       (make-local-variable 'company-backends)
-;; 				       'company-tern
-;; 				       'company-lsp
-;; 				       ))))
-(use-package js2-mode
-  :ensure t
-  :mode "\\.js"
-  :hook ((js2-mode . (lambda()
-		       (add-to-list
-			(make-local-variable 'company-backends)
-			'company-tern
-			)))))
+(add-hook 'javascript-mode-hook (lambda () (lsp-bridge-mode)))
 
-
-
-(use-package tern
-  :ensure t
-  :hook (js2-mode . tern-mode))
-
-(use-package import-js)
-
-;; (use-package tide)
-(use-package typescript-mode
-  :ensure t)
-;; (use-package tide
+;; (use-package js2-mode
 ;;   :ensure t
-;;   :after (typescript-mode company flycheck)
-;;   :hook ((typescript-mode . tide-setup)
-;;          (typescript-mode . tide-hl-identifier-mode)
-;;          (before-save . tide-format-before-save)))
-(use-package js2-refactor
-  :hook (js2-mode . js2-refactor-mode))
-(use-package skewer-mode
-  :ensure t
-  :hook ((js2-mode . skewer-mode)
-	 (css-mode . skewer-css-mode)
-	 (web-mode . skewer-html-mode)))
-(use-package livid-mode
-  :ensure t
-  :after (js2-mode))
-(use-package web-beautify)
+;;   :mode "\\.js"
+;;   :hook ((js2-mode . (lambda()
+;; 		       (add-to-list
+;; 			(make-local-variable 'company-backends)
+;; 			'company-tern
+;; 			)))))
 
-(use-package nodejs-repl
-  :ensure t)
-(use-package js2-highlight-vars)
-(use-package eslint-fix
-  :init (add-hook 'rjsx-mode-hook 
-          (lambda () 
-             (add-hook 'after-save-hook 'eslint-fix nil 'make-it-local))))
-(use-package xref-js2
-  :hook (js2-mode . (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
+;; (use-package tern
+;;   :ensure t
+;;   :hook (js2-mode . tern-mode))
+
+;; (use-package import-js
+;;   :after js2-mode)
+
+;; ;; (use-package tide)
+;; (use-package typescript-mode
+;;   :ensure t)
+;; ;; (use-package tide
+;; ;;   :ensure t
+;; ;;   :after (typescript-mode company flycheck)
+;; ;;   :hook ((typescript-mode . tide-setup)
+;; ;;          (typescript-mode . tide-hl-identifier-mode)
+;; ;;          (before-save . tide-format-before-save)))
+;; (use-package js2-refactor
+;;   :hook (js2-mode . js2-refactor-mode))
+;; (use-package skewer-mode
+;;   :ensure t
+;;   :hook ((js2-mode . skewer-mode)
+;; 	 (css-mode . skewer-css-mode)
+;; 	 (web-mode . skewer-html-mode)))
+;; (use-package livid-mode
+;;   :ensure t
+;;   :after (js2-mode))
+;; (use-package web-beautify)
+
+;; (use-package nodejs-repl
+;;   :ensure t)
+;; (use-package js2-highlight-vars)
+;; (use-package eslint-fix
+;;   :init (add-hook 'rjsx-mode-hook 
+;;           (lambda () 
+;;              (add-hook 'after-save-hook 'eslint-fix nil 'make-it-local))))
+;; (use-package xref-js2
+;;   :hook (js2-mode . (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 ;; (use-package indium)
 ;; (use-package company-tern
 ;;   :hook (rjsx-mode tern-mode))
@@ -568,9 +862,9 @@
 ;; angular  config
 ;;
 ;; =================================================
-(use-package typescript-mode
-  :ensure t)
-(use-package ng2-mode)
+;; (use-package typescript-mode
+;;   :ensure t)
+;; (use-package ng2-mode)
 
 
 
@@ -580,10 +874,10 @@
 ;; Yaml
 ;;
 ;;==============================================================
-(use-package yaml-mode
-  :mode "\\y\\(aml\\|ml\\)$")
-(use-package flycheck-yamllint
-  :after yaml-mode)
+;; (use-package yaml-mode
+;;   :mode "\\y\\(aml\\|ml\\)$")
+;; (use-package flycheck-yamllint
+;;   :after yaml-mode)
 ;;==============================================================
 
 
@@ -594,9 +888,9 @@
 ;;
 ;;==============================================================
 
-(use-package gradle-mode )
-(use-package flycheck-gradle )
-(use-package groovy-mode )
+;; (use-package gradle-mode )
+;; (use-package flycheck-gradle )
+;; (use-package groovy-mode )
 ;===============================================================
 
 
@@ -612,9 +906,11 @@
   :mode "\\.clj\\'")
 (use-package cider
   :mode "\\.clj\\$")
-(use-package cider-decompile)
+(use-package cider-decompile
+  :after (clojure-mode))
 ;; (use-package cider-eval-sexp-fu)
-(use-package cider-hydra)
+(use-package cider-hydra
+  :after (clojure-mode))
 
 ;=================================================================
 
@@ -628,18 +924,19 @@
 
 ;; Enable scala-mode and sbt-mode
 
-(use-package scala-mode
-  :mode "\\.s\\(cala\\|bt\\)$")
+;; (use-package scala-mode
+;;   :mode "\\.s\\(cala\\|bt\\)$")
 
-(use-package sbt-mode
-  :commands sbt-start sbt-command
-  :config
-  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
-  ;; allows using SPACE when in the minibuffer
-  (substitute-key-definition
-   'minibuffer-complete-word
-   'self-insert-command
-   minibuffer-local-completion-map))
+;; (use-package sbt-mode
+;;   :commands sbt-start sbt-command
+;;   :after (scala-mode)
+;;   :config
+;;   ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+;;   ;; allows using SPACE when in the minibuffer
+;;   (substitute-key-definition
+;;    'minibuffer-complete-word
+;;    'self-insert-command
+;;    minibuffer-local-completion-map))
 
 ;; Enable nice rendering of diagnostics like compile errors.
 
@@ -650,312 +947,16 @@
 
 
 
-;; =================================================================
-;;
-;; LSP config
-;;
-;; =================================================================
-(use-package lsp-mode
-  ;; Optional - enable lsp-mode automatically in scala files
-  :demand t
-  :hook
-  (((python-mode scala-mode js2-mode dart-mode c++-mode c-mode typescript-mode) . lsp-deferred)
-   (lsp-mode . (lambda () (add-to-list (make-local-variable 'company-backends)
-				       'company-capf))))
-  :config
-  (setq lsp-prefer-flymake nil)
-  (setq lsp-print-performance t)
-  (setq lsp-prefer-capf t)
-  (setq lsp-idle-delay 1.500
-	lsp-tcp-connection-timeout 100
-	lsp--tcp-server-wait-seconds 100)
-
-  :commands (lsp lsp-deferred))
-
-(use-package lsp-ui
-  :commands lsp-ui-mode
-  :init
-  (let ((should-display-ui (if (string= system-type "windows-nt")
-			       nil
-			     t)))
-    (setq
-     lsp-ui-doc-enable nil
-     lsp-ui-sideline-enable nil
-     lsp-ui-flycheck-enable t
-     lsp-ui-doc-show-with-cursor nil
-     lsp-ui-doc-show-with-mouse nil
-     lsp-ui-doc-position 'at-point
-     ))
-  :config
-  (lsp-ui-doc-mode 0)
-  (setq lsp-ui-doc-position 'at-point)
-  :after lsp-mode)
-
-;; Add company-lsp backend for metals
-(use-package lsp-treemacs
-  :after lsp-mode)
-
-
-(setq lsp-prefer-capf t)
-
-(use-package dap-mode
-  :init (add-hook 'dap-stopped-hook
-          (lambda (arg) (call-interactively #'dap-hydra)))
-  :hook (
-	 (js2-mode . (lambda ()
-	 	       (require 'dap-chrome)
-		       ))
-	 (js2-mode . (lambda ()
-	 	       (require 'dap-firefox)
-		       ))
-	 )
-  :config
-  (dap-mode t)
-  (dap-ui-mode 1)
-  ;; enables mouse hover support
-  (dap-tooltip-mode 1)
-  ;; use tooltips for mouse hover
-  ;; if it is not enabled `dap-mode' will use the minibuffer.
-  (tooltip-mode 1)
-  ;; displays floating panel with debug buttons
-  ;; requies emacs 26+
-  (dap-ui-controls-mode 1)
-  (setq dap-firefox-debug-program '("node" "c:/Users/kenjigashu/Downloads/home/.emacs.d/.extension/vscode/firefox-devtools.vscode-firefox-debug/extension/dist/adapter.bundle.js"))
-  (dap-register-debug-template
-   "Firefox::Attach"
-   (list :type "firefox"
-         :request "attach"
-         :name "Firefox::Attach"))
-  )
-
-;; (require 'dap-firefox)
-;; (dap-firefox-setup)
-
-(use-package lsp-java
-  :init
-  (defun jmi/java-mode-config ()
-    (toggle-truncate-lines 1)
-    (setq-local tab-width 4)
-    (setq-local c-basic-offset 4)
-    (require 'url)
-    (ignore-errors
-      (make-directory "~/.emacs.d/jmi"))
-    (unless (file-exists-p "~/.emacs.d/jmi/lombok.jar")
-      (url-copy-file "https://projectlombok.org/downloads/lombok.jar" "~/.emacs.d/jmi/lombok.jar" :ok-if-already-exists t))
-    (lsp))
-  :config
-  ;; Enable dap-java
-  (require 'dap-java)
-  ;; Support Lombok in our projects, among other things
-  (let ((path (concat (getenv "HOME") "/.emacs.d/jmi/")))
-    (setq
-   ;; path-to-lombok
-   ;; (expand-file-name
-   ;;      "~/.emacs.d/jmi/lombok.jar"
-   ;;    )
-
-   lsp-java-vmargs
-            `("-noverify"
-              "-Xmx2G"
-              "-XX:+UseG1GC"
-              "-XX:+UseStringDeduplication"
-              ,(concat "-javaagent:" path "lombok.jar")
-              ,(concat "-Xbootclasspath/a:" path))
-
-   ;; lsp-java-vmargs
-   ;; (list "-noverify"
-   ;; 	 "-Xmx2G"
-   ;; 	 "-XX:+UseG1GC"
-   ;; 	 "-XX:+UseStringDeduplication"
-   ;; 	 "-javaagent:~/.emacs.d/jmi/lombok.jar"
-   ;; 	 "-Xbootclasspath/a:~/.emacs.d/jmi/")
-   ;; lsp-java-vmargs
-   ;;          `("-noverify"
-   ;;            "-Xmx1G"
-   ;;            "-XX:+UseG1GC"
-   ;;            "-XX:+UseStringDeduplication"
-   ;;            ,(concat "-javaagent:" "~/.emacs.d/jmi/lombok-1.18.0.jar")
-   ;;            ,(concat "-Xbootclasspath/a:" "~/.emacs.d/jmi/lombok-1.18.0.jar"))
-   lsp-file-watch-ignored
-   '(".idea" ".ensime_cache" ".eunit" "node_modules"
-  	   ".git" ".hg" ".fslckout" "_FOSSIL_"
-           ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
-           "build")
-   
-   lsp-java-import-order '["" "java" "javax" "#"]
-   ;; Don't organize imports on save
-   lsp-java-save-action-organize-imports nil
-   ;; Formatter profile
-   ;;lsp-java-format-settings-url
-   ;;(concat "file://" jmi/java-format-settings-file)
-   )) 
-  :hook (java-mode . jmi/java-mode-config
-	 ))
-
-(use-package helm-lsp
-  :demand t
-  :commands helm-lsp-workspace-symbol)
-(use-package lsp-treemacs
-  :demand t
-  :commands lsp-treemacs-errors-list
-  :config (lsp-treemacs-sync-mode 1))
-
-(use-package company-lsp
-  ;;:demand t
-  :commands company-lsp)
-
 
 ;; ================================================================
 ;;
-;; c mode config
+;; c/c++ mode config
 ;;
 ;; ================================================================
-
-;; C-Like
-;; (face-remap-add-relative 'font-lock-function-usage-face '(:foreground "PaleTurquoise"))
-;; (face-remap-add-relative 'font-lock-attribute-access-face '(:foreground "Indianred2"))
-
-;; (dolist (mode-iter '(c-mode c++-mode glsl-mode java-mode javascript-mode rust-mode))
-;;   (font-lock-add-keywords
-;;     mode-iter
-;;     '(("\\([~^&\|!<>=,.\\+*/%-]\\)" 0 'font-lock-operator-face keep)))
-;;   (font-lock-add-keywords
-;;     mode-iter
-;;     '(("\\([\]\[}{)(:;]\\)" 0 'font-lock-delimit-face keep)))
-;;   ;; functions
-;;   (font-lock-add-keywords
-;;     mode-iter
-;;     '(("\\([_a-z][_a-zA-Z0-9]*\\)\s*(" 1 'font-lock-function-usage-face keep)))
-;;   ;;MACROS
-;;   (font-lock-add-keywords
-;;     mode-iter
-;;     '(("\\([_A-Z][_a-zA-Z0-9]*\\)\s*(" 1 'font-lock-builtin-face keep))))
 
 (use-package modern-cpp-font-lock
   :ensure t
   :hook ((c-mode c++-mode) . modern-c++-font-lock-mode))
-
-;; (use-package ggtags
-;;     :hook ((c-mode c++-mode) . ggtags-mode)
-;;     :init (add-hook 'ggtags-mode-hook (lambda ()
-;; 					(add-to-list
-;; 					 (make-local-variable 'company-backends)
-;; 					 'company-gtags
-;; 					 )
-;; 					))
-;;     :config (require 'dap-gdb-lldb))
-
-;; (use-package helm-gtags
-;;   :hook ((ggtags-mode . helm-gtags-mode)))
-
-;; (use-package counsel-gtags 
-;;   :config
-;;   (add-hook 'c-mode-hook 'counsel-gtags-mode))
-
-;; (use-package flycheck-irony
-;;   :ensure t)
-
-;; (use-package irony
-;;   :init
-;;   (add-hook 'c++-mode-hook 'irony-mode)
-;;   (add-hook 'c-mode-hook 'irony-mode)
-;;   (add-hook 'objc-mode-hook 'irony-mode)
-  
-;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-
-;; (use-package irony-eldoc
-;;   :ensure t)
-
-;; (when (boundp 'w32-pipe-read-delay)
-;;   (setq w32-pipe-read-delay 0))
-;; ;; Set the buffer size to 64K on Windows (from the original 4K)
-;; (when (boundp 'w32-pipe-buffer-size)
-;;   (setq irony-server-w32-pipe-buffer-size (* 64 1024)))
-
-;;(use-package company-c-headers)
-
-;; (use-package rtags
-;;   :config
-;;   (progn
-;;     (unless (rtags-executable-find "rc") (error "Binary rc is not installed!"))
-;;     (unless (rtags-executable-find "rdm") (error "Binary rdm is not installed!"))
-
-;;     (define-key c-mode-base-map (kbd "M-.") 'rtags-find-symbol-at-point)
-;;     (define-key c-mode-base-map (kbd "M-,") 'rtags-find-references-at-point)
-;;     (define-key c-mode-base-map (kbd "M-?") 'rtags-display-summary)
-;;     (rtags-enable-standard-keybindings)
-
-;;     (setq rtags-use-helm t)
-
-;;     ;; Shutdown rdm when leaving emacs.
-;;     (add-hook 'kill-emacs-hook 'rtags-quit-rdm)
-;;     ))
-
-;; ;; TODO: Has no coloring! How can I get coloring?
-;; ;; (req-package helm-rtags
-;; ;;   :require helm rtags
-;; ;;   :config
-;; ;;   (progn
-;; ;;     (setq rtags-display-result-backend 'helm)
-;; ;;     ))
-
-;; ;; Use rtags for auto-completion.
-;; (use-package company-rtags
-;;   :config
-;;   (progn
-;;     (setq rtags-autostart-diagnostics t)
-;;     (rtags-diagnostics)
-;;     (setq rtags-completions-enabled t)
-;;     (push 'company-rtags company-backends)
-;;     ))
-
-;; Live code checking.
-;; (use-package flycheck-rtags
-;;   :config
-;;   (progn
-;;     ;; ensure that we use only rtags checking
-;;     ;; https://github.com/Andersbakken/rtags#optional-1
-;;     (defun setup-flycheck-rtags ()
-;;       (flycheck-select-checker 'rtags)
-;;       (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
-;;       (setq-local flycheck-check-syntax-automatically nil)
-;;       (rtags-set-periodic-reparse-timeout 2.0)  ;; Run flycheck 2 seconds after being idle.
-;;       )
-;;     (add-hook 'c-mode-hook #'setup-flycheck-rtags)
-;;     (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
-;;     ))
-
-;; (use-package ccls
-;;   :hook ((c-mode c++-mode objc-mode cuda-mode) .
-;; 	 (lambda () (progn (require 'ccls) (lsp)))))
-
-;;cquery backend
-;; (defun cquery//enable ()
-;;  (condition-case nil
-;;      (lsp)
-;;    (user-error nil))
-;;  ;(require 'cquery)
-;;  )
-
-;; (use-package cquery 
-;;   :ensure t
-;;    :commands lsp
-;;    :init
-;;    (add-hook 'c-mode-hook 'cquery//enable
-;; 	     (lambda () (require 'dap-gdb-lldb)
-;; 	       (dap-gbd-lldb-setup)
-;; 	       (make-local-variable 'company-backends)
-;; 	       (setq company-backends (list (cons 'company-lsp (copy-tree (car company-backends)))))))
-;;    (add-hook 'c++-mode-hook 'cquery//enable)
-;;    (when (string= system-type "windows-nt")
-;;      (setq cquery-executable "c:/Users/lkenji/Downloads/home/prog/cquery/build/release/bin/cquery")
-;;      )
-;;    (when (string= system-type "gnu/linux")
-;;      (setq cquery-executable "/media/prog/cquery-linux/build/release/bin/cquery")
-;;      )
-;;    ;; :hook ((c-mode c++-mode objc-mode cuda-mode) .
-;;    ;; 	  (lambda () (progn (require 'cquery) (lsp))))
-;;   )
 
 ;;fix header not found when flycheck is enabled
 (use-package flycheck-clang-tidy
@@ -963,6 +964,8 @@
   :hook
   (flycheck-mode . flycheck-clang-tidy-setup)
   )
+
+(add-hook 'c-mode-hook (lambda () (lsp-bridge-mode)))
 ;; ==================================================================
 
 
@@ -975,6 +978,19 @@
 ;; Java
 ;;
 ;;===================================================================
+(add-hook 'java-mode (lambda () (lsp-bridge-mode)))
+
+;; (use-package meghanada
+;;   :hook (java-mode . meghanada-mode)
+;;   :config
+;;   (flycheck-mode +1)
+;;   (cond
+;;    ((eq system-type 'windows-nt)
+;;     (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
+;;     (setq meghanada-maven-path "mvn.cmd"))
+;;    (t
+;;     (setq meghanada-java-path "java")
+;;     (setq meghanada-maven-path "mvn"))))
 
 ;; eclipse-java-style is the same as the "java" style (copied from
 ;; cc-styles.el) with the addition of (arglist-cont-nonempty . ++) to
@@ -982,60 +998,31 @@
 ;; arguments starting on a new line are indented by 8 characters
 ;; (++ = 2 x normal offset) rather than lined up with the arguments on the
 ;; previous line
-(defconst eclipse-java-style
-  '((c-basic-offset . 4)
-    (c-comment-only-line-offset . (0 . 0))
-    ;; the following preserves Javadoc starter lines
-    (c-offsets-alist . ((inline-open . 0)
-                        (topmost-intro-cont    . +)
-                        (statement-block-intro . +)
-                        (knr-argdecl-intro     . 5)
-                        (substatement-open     . +)
-                        (substatement-label    . +)
-                        (label                 . +)
-                        (statement-case-open   . +)
-                        (statement-cont        . +)
-                        (arglist-intro  . c-lineup-arglist-intro-after-paren)
-                        (arglist-close  . c-lineup-arglist)
-                        (access-label   . 0)
-                        (inher-cont     . c-lineup-java-inher)
-                        (func-decl-cont . c-lineup-java-throws)
-                        (arglist-cont-nonempty . ++)
-                        )))
-  "Eclipse Java Programming Style")
-(c-add-style "ECLIPSE" eclipse-java-style)
-(customize-set-variable 'c-default-style (quote ((java-mode . "eclipse") (awk-mode . "awk") (other . "gnu"))))
-
-(use-package cc-mode)
+;; (defconst eclipse-java-style
+;;   '((c-basic-offset . 4)
+;;     (c-comment-only-line-offset . (0 . 0))
+;;     ;; the following preserves Javadoc starter lines
+;;     (c-offsets-alist . ((inline-open . 0)
+;;                         (topmost-intro-cont    . +)
+;;                         (statement-block-intro . +)
+;;                         (knr-argdecl-intro     . 5)
+;;                         (substatement-open     . +)
+;;                         (substatement-label    . +)
+;;                         (label                 . +)
+;;                         (statement-case-open   . +)
+;;                         (statement-cont        . +)
+;;                         (arglist-intro  . c-lineup-arglist-intro-after-paren)
+;;                         (arglist-close  . c-lineup-arglist)
+;;                         (access-label   . 0)
+;;                         (inher-cont     . c-lineup-java-inher)
+;;                         (func-decl-cont . c-lineup-java-throws)
+;;                         (arglist-cont-nonempty . ++)
+;;                         )))
+;;   "Eclipse Java Programming Style")
+;; (c-add-style "ECLIPSE" eclipse-java-style)
+;; (customize-set-variable 'c-default-style (quote ((java-mode . "eclipse") (awk-mode . "awk") (other . "gnu"))))
 
 ;; optionally
-
-(use-package lsp-java 
-  ;;:demand t
-  )
-
-;; optionally if you want to use debugger
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-;; (use-package dap-mode
-;;   ;;:demand t
-;;   :config
-;;   (dap-mode 1)
-;;   (dap-ui-mode 1)
-;;   (dap-tooltip-mode 1))
-
-(use-package dap-java
-  ;;:demand t
-  :ensure nil)
-
-;STS4 support
-(require 'lsp-java-boot)
-
-;; ;; to enable the lenses
-(add-hook 'lsp-mode-hook #'lsp-lens-mode)
-(add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
-(use-package lsp-java
-  :after lsp-mode
-  :config (add-hook 'java-mode-hook 'lsp))
 ;===================================================================
 
 
@@ -1053,267 +1040,162 @@
 (add-to-list 'auto-mode-alist '("\\.ily$" . LilyPond-mode)) 
 
 
-;; (use-package general :ensure t
-;;   :config
-;;   (general-evil-setup t)
-
-;;   (general-define-key
-;;    :states '(insert emacs)
-;;    :prefix "C-SPC"
-;;    :non-normal-prefix "C-SPC"
-;;    "c" '(evil-avy-goto-char2 :which-key "avy goto char")
-;;    "l" '(evil-avy-goto-line :which-key "avy goto line")
-;;    "w" '(evil-avy-goto-word-0 :which-key "avy goto word0")
-;;    "n" '(evil-avy-goto-word-1 :which-key "avy goto word1")
-;;    "a" 'align-regexp
-;;    )
-;;   (general-def :states '(normal motion emacs) "SPC" nil)
-;;   (general-define-key
-;;    :states '(normal motion emacs)
-;;    :prefix "SPC"
-;; ;;   "ar" '(ranger :which-key "call ranger")
-;;    "ac" '(evil-avy-goto-char :which-key "avy goto char")
-;;    "al" '(evil-avy-goto-line :which-key "avy goto line")
-;;    "aw" '(evil-avy-goto-word-0 :which-key "avy goto word0")
-;;    "an" '(evil-avy-goto-word-1 :which-key "avy goto word1")
-;;    "g"  '(:ignore t :which-key "Git")
-;;    "gs" '(magit-status :which-key "git status")
-;;    "ff" '(helm-find-files :which-key "helm find file")
-;;    "bb" '(helm-buffers-list :which-key "helm buffer list")
-;;    "w TAB" '(other-window :which-key "other window c-x o")
-;;    "bk" '(kill-buffer :which-key "kill-buffer")
-;;    "w1" '(delete-other-windows :which-key "delete-other-windows - buffer tela cheia")
-;;    "w0" '(delete-window :which-key "delete-window - fecha tela atual")
-;;    "w2" '(split-window-below :which-key "split-window-below - splita em cima e embaixo")
-;;    "w3" '(split-window-right :which-key "split-window-right - splita lado a lado")
-;;    "fs" '(save-buffer :which-key "save-buffer - salva file")
-;;    )
-;;   )
-
-;; (general-define-key
-;;  :keymaps 'counsel-gtags-mode-map
-;;     :states '(normal motion emacs)
-;;     :prefix "SPC"
-;;     "gfd" '(counsel-gtags-find-definition :which-key "find definition gtags")
-;;     "gfr" '(counsel-gtags-find-reference :which-key "find reference gtags")
-;;     "gfs" '(counsel-gtags-find-symbol :which-key "find symbol gtags")
-;;     "gff" '(counsel-gtags--find-file :which-key "find file gtags")
-;;     "g>" '(counsel-gtags-go-forward :which-key "gtags go forward")
-;;     "g<" '(counsel-gtags-go-backward :which-key "gtags go backward")
-;;     "gdd" '(counsel-gtags-dwim :which-key "gtags dwin")
-;;     )
-
-;; (use-package ivy :ensure t
-;;   :diminish (ivy-mode . "") ; does not display ivy in the modeline
-;;   :init (ivy-mode 1)        ; enable ivy globally at startup
-;;   :bind (:map ivy-mode-map  ; bind in the ivy buffer
-;;          ("C-'" . ivy-avy)) ; C-' to ivy-avy
-;;   :config
-;;   (setq ivy-use-virtual-buffers t)   ; extend searching to bookmarks and …
-;;   (setq ivy-height 20)               ; set height of the ivy window
-;;   (setq ivy-count-format "(%d/%d) ") ; count format, from the ivy help page
-;;   )
-
 
 ;;================================================================
 ;;
 ;; hydra keymap
 ;;
 ;;================================================================
-(defhydra hydra-evil-normal (:color red
-			     :hint nil)
-   "
+;; (defhydra hydra-evil-normal (:color red
+;; 			     :hint nil)
+;;    "
 
-   ^Avy^                     ^Misc^                   ^Window
-    ^^^^^^------------------------------------------------------
-  [_ac_] avy goto char  [_bk_] kill buffer        [_w TAB_] other window
-  [_al_] avy goto line  [_gs_] git status toggle  [_w2_] split window below
-  [_aw_] avy goto word0 [_ff_] helm-find-file  [_w1_]   delete other window
-  [_an_] avy goto word1 [_bb_] helm-buffer        [_w0_]   delete window
-                        [_fs_] save buffer        [_w3_] split right
+;;    ^Avy^                     ^Misc^                   ^Window
+;;     ^^^^^^------------------------------------------------------
+;;   [_ac_] avy goto char  [_bk_] kill buffer        [_w TAB_] other window
+;;   [_al_] avy goto line  [_gs_] git status toggle  [_w2_] split window below
+;;   [_aw_] avy goto word0 [_ff_] helm-find-file  [_w1_]   delete other window
+;;   [_an_] avy goto word1 [_bb_] helm-buffer        [_w0_]   delete window
+;;                         [_fs_] save buffer        [_w3_] split right
+;;   [_ss_] consult line   [_sm_] consult line multi
 
-  [_m_] LSP             [_gg_] GGTAGS
-  [_p_] Projectile
-"  
-  ;; Smart Parens:
-  ;; [_C-M-f_] forward     [_C-M-b_] backward
-  ;; [_C-d_] down        [_M-d_] back down
-  ;; [_C-u_] up            [_M-u_] back up
-  ;; [_C-M-n_] next        [_C-M-p_] previous
-  ;; [_C-M-a_] beggining   [_C-M-e_] end
-  ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
-  ;; "
-   ("ac" evil-avy-goto-char :exit t)
-   ("al" evil-avy-goto-line :exit t)
-   ("aw" evil-avy-goto-word-0 :exit t)
-   ("an" evil-avy-goto-word-1 :exit t)
-   ("gs" magit-status :exit t)
-   ("ff" helm-find-files :exit t)
-   ("bb" helm-buffers-list :exit t)
-   ("w TAB" other-window :exit t)
-   ("bk" kill-buffer :exit t)
-   ("w1" delete-other-windows :exit t)
-   ("w0" delete-window :exit t)
-   ("w2" split-window-below :exit t)
-   ("w3" split-window-right :exit t)
-   ("fs" save-buffer :exit t)
-   ("m" hydra-lsp/body :exit t)
-   ("p" hydra-projectile/body :exit t)
-   ("gg" hydra-ggtags/body :exit t)
-   ("ss" helm-swoop :exit t)
-   ;; ("C-M-f" sp-forward-sexp)
-   ;; ("C-M-b" sp-backward-sexp)
-   ;; ("C-d>" sp-down-sexp)
-   ;; ("M-d>" sp-backward-down-sexp)
-   ;; ("C-u>" sp-up-sexp)
-   ;; ("M-u>" sp-backward-up-sexp)
-   ;; ("C-M-n" sp-next-sexp)
-   ;; ("C-M-p" sp-previous-sexp)
-   ;; ("C-M-a" sp-beginning-of-sexp)
-   ;; ("C-M-e" sp-end-of-sexp)
-   ;; ("C-S-f" sp-forward-symbol)
-   ;; ("C-S-b" sp-backward-symbol)
-   )
+;;   [_m_] LSP             [_gg_] GGTAGS
+;;   [_p_] Projectile
+;; "  
+;;   ;; Smart Parens:
+;;   ;; [_C-M-f_] forward     [_C-M-b_] backward
+;;   ;; [_C-d_] down        [_M-d_] back down
+;;   ;; [_C-u_] up            [_M-u_] back up
+;;   ;; [_C-M-n_] next        [_C-M-p_] previous
+;;   ;; [_C-M-a_] beggining   [_C-M-e_] end
+;;   ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
+;;   ;; "
+;;    ("ac" evil-avy-goto-char :exit t)
+;;    ("al" evil-avy-goto-line :exit t)
+;;    ("aw" evil-avy-goto-word-0 :exit t)
+;;    ("an" evil-avy-goto-word-1 :exit t)
+;;    ("gs" magit-status :exit t)
+;;    ("ff" find-file :exit t)
+;;    ("bb" switch-to-buffer :exit t)
+;;    ("w TAB" other-window :exit t)
+;;    ("bk" kill-buffer :exit t)
+;;    ("w1" delete-other-windows :exit t)
+;;    ("w0" delete-window :exit t)
+;;    ("w2" split-window-below :exit t)
+;;    ("w3" split-window-right :exit t)
+;;    ("fs" save-buffer :exit t)
+;;    ("m" hydra-lsp/body :exit t)
+;;    ("p" hydra-projectile/body :exit t)
+;;    ("gg" hydra-ggtags/body :exit t)
+;;    ("ss" consult-line :exit t)
+;;    ("sm" consult-line-multi :exit t)
+;;    ;; ("C-M-f" sp-forward-sexp)
+;;    ;; ("C-M-b" sp-backward-sexp)
+;;    ;; ("C-d>" sp-down-sexp)
+;;    ;; ("M-d>" sp-backward-down-sexp)
+;;    ;; ("C-u>" sp-up-sexp)
+;;    ;; ("M-u>" sp-backward-up-sexp)
+;;    ;; ("C-M-n" sp-next-sexp)
+;;    ;; ("C-M-p" sp-previous-sexp)
+;;    ;; ("C-M-a" sp-beginning-of-sexp)
+;;    ;; ("C-M-e" sp-end-of-sexp)
+;;    ;; ("C-S-f" sp-forward-symbol)
+;;    ;; ("C-S-b" sp-backward-symbol)
+;;    )
 
-(define-key evil-normal-state-map (kbd "SPC") 'hydra-evil-normal/body)
-(define-key evil-motion-state-map (kbd "SPC") 'hydra-evil-normal/body)
+;; ;;(evil-define-key 'normal 'global (kbd "SPC") 'hydra-evil-normal/body)
+;; (evil-define-key nil evil-normal-state-map (kbd "SPC") 'hydra-evil-normal/body)
+;; (evil-define-key 'normal dired-mode-map (kbd "SPC") 'hydra-evil-normal/body)
 
-(defhydra hydra-lsp (:color blue
-			    :hint nil)
-"
+;; (defhydra hydra-lsp (:color blue
+;; 			    :hint nil)
+;; "
 
-   ^find^                     ^UI^                   ^Window
-    ^^^^^^------------------------------------------------------
-  [_gd_] find definition     [_pd_] peek find definition    
-  [_ga_] find declaration    [_pr_] peek find reference   
-  [_gs_] find implementation [_sd_] show doc
-                             [_si_] show imenu
-"  
-  ;; Smart Parens:
-  ;; [_C-M-f_] forward     [_C-M-b_] backward
-  ;; [_C-d_] down        [_M-d_] back down
-  ;; [_C-u_] up            [_M-u_] back up
-  ;; [_C-M-n_] next        [_C-M-p_] previous
-  ;; [_C-M-a_] beggining   [_C-M-e_] end
-  ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
-  ;; "
-   ("gd" lsp-find-definition)
-   ("ga" lsp-find-declaration)
-   ("gs" lsp-find-implementation)
-   ("pd" lsp-ui-peek-find-definitions)
-   ("sd" lsp-ui-doc-show)
-   ("si" lsp-ui-imenu)
-   ;;("pa" lsp-ui-peek-find-declarations)
-   ;;("ps" lsp-ui-peek-find-implementations)
-   ("pr" lsp-ui-peek-find-references)
-   )
+;;    ^find^                     ^UI^                   ^Window
+;;     ^^^^^^------------------------------------------------------
+;;   [_gd_] find definition     [_pd_] peek find definition    
+;;   [_ga_] find declaration    [_pr_] peek find reference   
+;;   [_gs_] find implementation [_sd_] show doc
+;;                              [_si_] show imenu
+;; "  
+;;   ;; Smart Parens:
+;;   ;; [_C-M-f_] forward     [_C-M-b_] backward
+;;   ;; [_C-d_] down        [_M-d_] back down
+;;   ;; [_C-u_] up            [_M-u_] back up
+;;   ;; [_C-M-n_] next        [_C-M-p_] previous
+;;   ;; [_C-M-a_] beggining   [_C-M-e_] end
+;;   ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
+;;   ;; "
+;;    ("gd" lsp-find-definition)
+;;    ("ga" lsp-find-declaration)
+;;    ("gs" lsp-find-implementation)
+;;    ("pd" lsp-ui-peek-find-definitions)
+;;    ("sd" lsp-ui-doc-show)
+;;    ("si" lsp-ui-imenu)
+;;    ;;("pa" lsp-ui-peek-find-declarations)
+;;    ;;("ps" lsp-ui-peek-find-implementations)
+;;    ("pr" lsp-ui-peek-find-references)
+;;    )
 
-(defhydra hydra-projectile (:color blue
-				   :hint nil)
-   "
-   ^find^  
-    ^^^^^^------------------------------------------------------
-  [_f_] find file                             
-  [_s_] switch project
-"  
-  ;; Smart Parens:
-  ;; [_C-M-f_] forward     [_C-M-b_] backward
-  ;; [_C-d_] down        [_M-d_] back down
-  ;; [_C-u_] up            [_M-u_] back up
-  ;; [_C-M-n_] next        [_C-M-p_] previous
-  ;; [_C-M-a_] beggining   [_C-M-e_] end
-  ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
-  ;; "
-   ("f" projectile-find-file)
-   ("s" projectile-switch-project)
-   )
+;; (defhydra hydra-projectile (:color blue
+;; 				   :hint nil)
+;;    "
+;;    ^find^  
+;;     ^^^^^^------------------------------------------------------
+;;   [_f_] find file                             
+;;   [_s_] switch project
+;; "  
+;;   ;; Smart Parens:
+;;   ;; [_C-M-f_] forward     [_C-M-b_] backward
+;;   ;; [_C-d_] down        [_M-d_] back down
+;;   ;; [_C-u_] up            [_M-u_] back up
+;;   ;; [_C-M-n_] next        [_C-M-p_] previous
+;;   ;; [_C-M-a_] beggining   [_C-M-e_] end
+;;   ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
+;;   ;; "
+;;    ("f" projectile-find-file)
+;;    ("s" projectile-switch-project)
+;;    )
 
-(defhydra hydra-ggtags (:color blue
-				   :hint nil)
-   "
-   ^find^  
-    ^^^^^^------------------------------------------------------
-  [_n_] next     [_g_] grep  [_ff_] find [_fh_] find-here  [_d_] delete-tag  [_r_] f-regex [_fs_] find-symbol
-  [_p_] previous [_v_] f-dwim  [_1_] f-reference [_s_] show-definition [_fr_] find-reference
-  [_SPC_] register [_hh_] history [_o_] f-other [_m_] search-history [_b_] browse-hypertext 
-  [_hn_] next-history [_hp_] prev-history [_ts_] show-stack
-" 
-  ;; Smart Parens:
-  ;; [_C-M-f_] forward     [_C-M-b_] backward
-  ;; [_C-d_] down        [_M-d_] back down
-  ;; [_C-u_] up            [_M-u_] back up
-  ;; [_C-M-n_] next        [_C-M-p_] previous
-  ;; [_C-M-a_] beggining   [_C-M-e_] end
-  ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
-  ;; "
-   ("n" ggtags-next-mark)
-   ("p" ggtags-prev-mark)
-   ("ff" helm-gtags-find-tag)
-   ("fh" helm-gtags-find-tag-from-here)
-   ("fr" helm-gtags-find-rtag)
-   ("fs" helm-gtags-find-symbol)
-   ("g" ggtags-grep)
-   ("d" ggtags-delete-tags)
-   ("r" ggtags-find-tag-regexp)
-   ("v" helm-gtags-dwim)
-   ("1" ggtags-find-reference)
-   ("s" ggtags-show-definition)
-   ("SPC" ggtags-save-to-register)
-   ("hh" ggtags-view-tag-history)
-   ("hn" helm-gtags-next-history)
-   ("hp" helm-gtags-previous-history)
-   ("o" ggtags-find-other-symbol)
-   ("m" ggtags-view-search-history)
-   ("b" ggtags-browse-file-as-hypertext)
-   ("ts" helm-gtags-show-stack)
-   )
-
-
-
-(use-package counsel :ensure t
-  ;; :bind*                           ; load counsel when pressed
-  ;; (("M-x"     . counsel-M-x)       ; M-x use counsel
-  ;;  ("C-x C-f" . counsel-find-file) ; C-x C-f use counsel-find-file
-  ;;  ("C-x C-r" . counsel-recentf)   ; search recently edited files
-  ;;  ("C-c f"   . counsel-git)       ; search for files in git repo
-  ;;  ("C-c s"   . counsel-git-grep)  ; search for regexp in git repo
-  ;;  ("C-c /"   . counsel-ag)        ; search for regexp in git repo using ag
-  ;;  ("C-c l"   . counsel-locate)
-  ;;  )   ; search for files or else using locate
-  )
-
-;
-;; uim
-;;
-;;
-;;(use-package  uim :enseure t)
-
-
-;;
-;;typescript usage
-;;
-;; (use-package typescript :ensure t)
-;; (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-
-;; (use-package tss :ensure t)
-
-;;key bindings
-;; (add-hook 'typescript-mode
-;; 	  '(lambda ()
-;; 	     (local-set-key (kbd "C-t C-:") 'tss-popup-help)
-;; 	     (local-set-key (kbd "C-t C->") 'tss-jump-to-definition)
-;; 	     (local-set-key (kbd "C-t C-c i") 'tss-implement-definition)
-;; 	     )
-;; 	  )
-
-
-
-;; (tss-config-default)
-
-;;
-;; typescript end
-;;
-
+;; (defhydra hydra-ggtags (:color blue
+;; 				   :hint nil)
+;;    "
+;;    ^find^  
+;;     ^^^^^^------------------------------------------------------
+;;   [_n_] next     [_g_] grep  [_ff_] find [_fh_] find-here  [_d_] delete-tag  [_r_] f-regex [_fs_] find-symbol
+;;   [_p_] previous [_v_] f-dwim  [_1_] f-reference [_s_] show-definition [_fr_] find-reference
+;;   [_SPC_] register [_hh_] history [_o_] f-other [_m_] search-history [_b_] browse-hypertext 
+;;   [_hn_] next-history [_hp_] prev-history [_ts_] show-stack
+;; " 
+;;   ;; Smart Parens:
+;;   ;; [_C-M-f_] forward     [_C-M-b_] backward
+;;   ;; [_C-d_] down        [_M-d_] back down
+;;   ;; [_C-u_] up            [_M-u_] back up
+;;   ;; [_C-M-n_] next        [_C-M-p_] previous
+;;   ;; [_C-M-a_] beggining   [_C-M-e_] end
+;;   ;; [_C-S-f_] forward symb[_C-S-b_] backward symbol
+;;   ;; "
+;;    ("n" ggtags-next-mark)
+;;    ("p" ggtags-prev-mark)
+;;    ("ff" helm-gtags-find-tag)
+;;    ("fh" helm-gtags-find-tag-from-here)
+;;    ("fr" helm-gtags-find-rtag)
+;;    ("fs" helm-gtags-find-symbol)
+;;    ("g" ggtags-grep)
+;;    ("d" ggtags-delete-tags)
+;;    ("r" ggtags-find-tag-regexp)
+;;    ("v" helm-gtags-dwim)
+;;    ("1" ggtags-find-reference)
+;;    ("s" ggtags-show-definition)
+;;    ("SPC" ggtags-save-to-register)
+;;    ("hh" ggtags-view-tag-history)
+;;    ("hn" helm-gtags-next-history)
+;;    ("hp" helm-gtags-previous-history)
+;;    ("o" ggtags-find-other-symbol)
+;;    ("m" ggtags-view-search-history)
+;;    ("b" ggtags-browse-file-as-hypertext)
+;;    ("ts" helm-gtags-show-stack)
+;;    )
 
 
 ;; ===================
@@ -1324,6 +1206,12 @@
 ;;(use-package slime-autoloads :ensure t)
 
 ;; Set your lisp system and some contribs
+(use-package slime-company
+  :ensure t
+  :after (company)
+  :config (setq slime-company-completion 'fuzzy
+                slime-company-after-completion 'slime-company-just-one-space))
+
 (use-package slime
   ;;:demand t
   :commands slime
@@ -1349,68 +1237,14 @@
   :config (slime-setup '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
  )
 
-;; (use-package sly
-;;   :demand t
-;;   :init (when (string= system-type "windows-nt")
-;;     ;; (load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
-;;     ;; (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
-;;     ;; (add-to-list 'exec-path "C:/Users/lkenji/Downloads/roswell/")
-;;     ;;(setq inferior-lisp-program "C:/Users/lkenji/Downloads/roswell/ros.exe -Q run")
-;;     ;; (setq inferior-lisp-program "sbcl")
-;; 	  (add-to-list 'exec-path "C:/Users/lkenji/Downloads/ccl/")
-;;     )
-;;   (when (string= system-type "gnu/linux")
-;;     ;; (setq inferior-lisp-program "sbcl"))
-;;     (setq inferior-lisp-program "wx86cl64")
-;;     )
-;;   )
-  
+ 
  (use-package slime-repl-ansi-color
    :after (slime))
- (use-package slime-company
-   :after (slime company)
-   :config (setq slime-company-completion 'fuzzy
-                slime-company-after-completion 'slime-company-just-one-space))
-(use-package helm-slime
-  :after (slime))
-
-
 
 
 ;; ===================
 ;; slime end 
 ;; ===================
-
-
-
-
-
-;; (add-to-list 'load-path "~/.emacs.d/theme/") 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/theme/")
-;;(use-package tomorrow-night-paradise-theme) :ensure t 
-;;(load-theme 'tomorrow-night-paradise)
-;; (add-to-list 'load-path "~/.emacs.d/sr-speedbar-master/")
-;; (add-to-list 'load-path "~/.emacs.d/emacs-rails-reloaded-master/")
-
-
-;;
-;; (use-package web-mode :ensure t)
-;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-
-
-;; Replace "sbcl" with the path to your implementation
-
-
-
-;;(use-package sr-speedbar :ensure t)
-;;(sr-speedbar-refresh-turn-off)
-
-
-
-;; (use-package rails-autoload :ensure t)
-
-
-
 
 (electric-pair-mode 1)
 (setq vc-make-backup-files t)
@@ -1421,16 +1255,6 @@
 ;; emacs backups
 ;;
 ;; ============================================================
-
-;; (if (not (file-exists-p ".emacs-backups"))
-;;     (make-directory ".emacs-backups" t))
-;; (setq backup-directory-alist `(("." . , ".emacs-backups")))
-;; (defun make-backup-file-name (FILE)                                             
-;;   (let ((dirname (concat "~/.backups/emacs/"                                    
-;;                           (file-name-directory FILE))))                    
-;;     (if (not (file-exists-p dirname))                                           
-;;         (make-directory dirname t))                                             
-;;     (concat dirname (file-name-nondirectory (concat FILE "~")))))
 
 (setq make-backup-files t               ; backup of a file the first time it is saved.
       backup-by-copying t               ; don't clobber symlinks
@@ -1445,29 +1269,6 @@
       backup-directory-alist `((".*" . "~/.backups-emacs"))
       auto-save-file-name-transforms `((".*" "~/.backups-emacs" t))
       )
-
-;; (use-package auto-complete-config :ensure t)
-
-;; (ac-config-default)
-
-;; (use-package auto-complete)
-;; (auto-complete-mode)
-
-     
-
-;;multiple cursors keybindings
-;; (use-package multiple-cursors :ensure t)
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-
-;; commands binding
-;; (global-set-key [24 10] (quote sr-speedbar-toggle))
-;; (global-set-key [24 8] (quote sr-speedbar-refresh-toggle))
-
-
 
 ;;
 ;; lisp mode hook
@@ -1519,28 +1320,79 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
+	     (lsp-bridge-mode)
 	     (eldoc-mode)
 	     (rainbow-delimiters-mode)))
 
-;;
-;;
-;; general translation
-;;
+(use-package general :ensure t
+  :config
+  (general-create-definer my-leader-def
+    ;; :prefix my-leader
+    :prefix "SPC")
+
+  (general-create-definer my-local-leader-def
+    ;; :prefix my-local-leader
+    :prefix "SPC m")
+
+  ;; (general-override-mode)
+  ;; (my-leader-def
+  ;;  :keymaps 'normal
+  ;;  :keymaps 'override
+  ;;  ;; bind "SPC a"
+  ;;  "a" 'org-agenda
+  ;;  "b" 'counsel-bookmark
+  ;;  "c" 'org-capture)
+  (general-define-key
+   :states '(normal  visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+
+    ;; simple command
+    "'"   '(iterm-focus :which-key "iterm")
+    "?"   '(iterm-goto-filedir-or-home :which-key "iterm - goto dir")
+    "/"   'counsel-ag
+    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+    "gc"  '(avy-goto-char-2  :which-key "go to char 2")
+
+    "f" '(:ignore t :which-key "Files")
+    "ff" 'find-file
+
+    "s" '(:ignore t :which-key "Search")
+    "ss" 'consult-line
+
+    "b" '(:ignore t :which-key "Buffer")
+    "bb" 'switch-to-buffer
+    "bd" 'kill-buffer
+    "bi" 'ibuffer
+
+    "w" '(:ignore t :which-key "Window")
+    "wmm" 'delete-other-windows
+    "wv"  'split-window-horizontally
+    "w-"  'split-window-vertically
+    "wh"  'windmove-left
+    "wl"  'windmove-right
+    "wj"  'windmove-down
+    "wk"  'windmove-up
 
 
-;; -------------------------------------------------
-;; Haskell
-;; (use-package dante
-;;   :ensure t
-;;   :after haskell-mode
-;;   :commands 'dante-mode
-;;   :init
-;;   (add-hook 'haskell-mode-hook 'dante-mode)
-  
-;;   (add-hook 'haskell-mode-hook 'flycheck-mode)
-;;   ;; OR:
-;;   ;; (add-hook 'haskell-mode-hook 'flymake-mode)
-;;   )
+    "o" '(:ignore t :which-key "toggle")
+
+    ;; Applications
+    "a" '(:ignore t :which-key "Applications")
+    "ar" 'ranger
+    "ad" 'dired)
+  )
+
+
+
+(general-define-key
+ :states '(normal  visual insert emacs)
+ :prefix "SPC"
+ :keymaps '(override pdf-view-mode)
+ :non-normal-prefix "C-SPC"
+ "za" 'find-file
+)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -1549,19 +1401,15 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
- '(c-default-style
-   '((java-mode . "eclipse")
-     (awk-mode . "awk")
-     (other . "gnu")))
+ '(c-default-style '((awk-mode . "awk") (other . "gnu")))
  '(custom-safe-themes
-   '("816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
- '(helm-minibuffer-history-key "M-p")
- '(lsp-ui-peek-enable t)
+   '("7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
  '(package-selected-packages
-   '(modern-cpp-font-lock eglot winum emacs-winum origami evil-vimish-fold vimish-fold hide-if-def-mode nlinum-relative auto-highlight-symbol zenburn-theme highlight-symbol rainbow-identifiers color-identifiers-mode color-identifier color-identifiers evil-collection evil-colletion lsp-docker lsp-intellij lsp-mode lsp-dart lsp-scala helm-lsp dockerfile-mode yasnippet-snippets tide company-gtags ranger flycheck-clang-tidy company-capf omnisharp csharp-mode ztree geiser rtags magit typescript-mode prettier-js vue-mode web-mode iedit anzu comment-dwim-2 ws-butler dtrt-indent clean-aindent-mode volatile-highlights helm-gtags helm-projectile helm-swoop zygospore groovy-mode flycheck-gradle gradle-mode dante evil-mc sr-speedbar counsel ivy general which-key use-package treemacs-evil rainbow-delimiters powerline moe-theme highlight-blocks ggtags evil-org ensime async ag ack)))
+   '(highlight-indentation omnisharp csharp-mode el-get use-package-git avy posframe markdown-mode company-quickhelp helpful auto-yasnippet highlight-indent-guides dimmer beacon evil-vimish-fold nav-flash editorconfig pdf-tools all-the-icons-dired dired-sidebar dired-collapse dired-ranger dired-filter all-the-icons-ibuffer slime-company general yasnippet-snippets dired-subtree meghanada magit ag)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'dired-find-alternate-file 'disabled nil)
