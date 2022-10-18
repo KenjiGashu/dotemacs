@@ -285,6 +285,16 @@
 ;; (global-lsp-bridge-mode)
 (setq acm-enable-quick-access 1)
 
+(general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "ld" 'lsp-bridge-find-define
+   "li" 'lsp-bridge-find-impl
+   "lr" 'lsp-bridge-find-references
+   "la" 'lsp-bridge-code-action)
+
 ;; (use-package auto-highlight-symbol
 ;;   :ensure t
 ;;   :config (auto-highlight-symbol-mode)
@@ -382,6 +392,10 @@
   (global-undo-tree-mode 1)
   (evil-set-undo-system 'undo-tree))
 
+(use-package vundo
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols))
+
 (use-package editorconfig :ensure t
   :config
   (editorconfig-mode 1))
@@ -451,6 +465,16 @@
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
   )
 
+;;customize search
+(setq lazy-highlight-cleanup nil)
+(setq lazy-highlight-max-at-a-time nil)
+(setq lazy-highlight-initial-delay 0)
+
+(use-package anzu
+  :config (global-anzu-mode +1))
+(use-package evil-anzu
+  :after evil)
+
 ;; make which key show up faster
 (setq which-key-idle-delay 0.3) ;; I need the help, I really do
 
@@ -497,6 +521,21 @@ nil : Otherwise, return nil and run next lineup function."
           bookmark-files)
   (byte-recompile-directory bookmarkplus-dir 0)
   (require 'bookmark+)
+
+  (general-define-key
+   :states '(normal  visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "bm" 'bookmark-set
+   "bv" 'list-bookmarks
+   "bt" 'bmkp-switch-bookmark-file-create
+   "bn" 'bmkp-next-bookmark
+   "bp" 'bmkp-previous-bookmark)
+
+  ;; config
+  (setq bookmark-save-flag 1
+	bmkp-count-multi-mods-as-one-flag t)
   )
 
 ;; ================= install bookmark-plus ======================
@@ -659,9 +698,9 @@ nil : Otherwise, return nil and run next lineup function."
 			      (set (make-local-variable 'company-backends) (push 'company-elisp company-backends)))))
   )
 
-;; (use-package company-quickhelp :ensure t
-;;   :after company
-;;   :config (company-quickhelp-mode))
+(use-package company-quickhelp :ensure t
+  :after company
+  :config (company-quickhelp-mode))
 
 
 (use-package markdown-mode
@@ -714,17 +753,20 @@ nil : Otherwise, return nil and run next lineup function."
 ;;
 ;; =================================================
 (use-package csharp-mode
-  :mode "\\.cs")
+  :mode "\\.cs"
+  )
 (use-package omnisharp
-  ;; :init
-  ;; (add-hook 'csharp-mode-hook 'omnisharp-mode)
-  ;; (add-hook 'csharp-mode-hook #'company-mode)
+  :init
+  (add-hook 'csharp-mode-hook 'omnisharp-mode)
+  (add-hook 'csharp-mode-hook #'company-mode)
   :hook ((csharp-mode . (lambda ()
 			  (add-to-list (make-local-variable 'company-backends) 'company-omnisharp )))
 	 (csharp-mode . omnisharp-mode)
 	 (csharp-mode . company-mode)
 	 (csharp-mode . (lambda () (omnisharp-start-omnisharp-server))))
   )
+
+;;(add-hook 'csharp-mode-hook (lambda () (lsp-bridge-mode)))
 ;; ===================================================
 ;;
 ;; rust config
@@ -1401,11 +1443,12 @@ nil : Otherwise, return nil and run next lineup function."
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(c-default-style '((awk-mode . "awk") (other . "gnu")))
  '(custom-safe-themes
    '("7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
  '(package-selected-packages
-   '(highlight-indentation omnisharp csharp-mode el-get use-package-git avy posframe markdown-mode company-quickhelp helpful auto-yasnippet highlight-indent-guides dimmer beacon evil-vimish-fold nav-flash editorconfig pdf-tools all-the-icons-dired dired-sidebar dired-collapse dired-ranger dired-filter all-the-icons-ibuffer slime-company general yasnippet-snippets dired-subtree meghanada magit ag)))
+   '(vundo evil-anzu anzu highlight-indentation omnisharp csharp-mode el-get use-package-git avy posframe markdown-mode company-quickhelp helpful auto-yasnippet highlight-indent-guides dimmer beacon evil-vimish-fold nav-flash editorconfig pdf-tools all-the-icons-dired dired-sidebar dired-collapse dired-ranger dired-filter all-the-icons-ibuffer slime-company general yasnippet-snippets dired-subtree meghanada magit ag)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
