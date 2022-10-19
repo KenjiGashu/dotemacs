@@ -134,14 +134,28 @@
                 shell-mode-hook
                 treemacs-mode-hook
                 eshell-mode-hook
-		pdf-view-mode-hook))
+		pdf-view-mode-hook
+		dired-mode))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
 
+(desktop-save-mode 1)
 
+(setq-default tab-width 2)
 
+;; display function definition
+(which-function-mode)
+
+;; Show the current function name in the header line
+(which-function-mode)
+(setq-default header-line-format
+              '((which-func-mode ("" which-func-format " "))))
+(setq mode-line-misc-info
+            ;; We remove Which Function Mode from the mode line, because it's mostly
+            ;; invisible here anyway.
+            (assq-delete-all 'which-func-mode mode-line-misc-info))
 
 ;; ==================================================================
 ;;
@@ -479,7 +493,9 @@
 (setq which-key-idle-delay 0.3) ;; I need the help, I really do
 
 ;;change default font to iosevka
-(add-to-list 'default-frame-alist '(font . "Iosevka-14"))
+(if (equal system-type 'windows-nt)
+    (add-to-list 'default-frame-alist '(font . "Iosevka-11"))
+  (add-to-list 'default-frame-alist '(font . "Iosevka-14")))
 
 ;;change c style indentation
 (setq c-default-style "ellemtel"
@@ -654,7 +670,15 @@ nil : Otherwise, return nil and run next lineup function."
 (use-package projectile
   :init (setq projectile-project-search-path '("~/prog" "/media/prog/"))
   :commands (projectile-find-file) 
-  :ensure t)
+  :ensure t
+  :config
+  (projectile-global-mode)
+  (general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "f SPC" 'projectile-find-file))
 
 (use-package org
   :mode "\\.org")
@@ -1442,13 +1466,13 @@ nil : Otherwise, return nil and run next lineup function."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
-   ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
+	 ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bmkp/stld-publ")
  '(c-default-style '((awk-mode . "awk") (other . "gnu")))
  '(custom-safe-themes
-   '("7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
+	 '("7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
  '(package-selected-packages
-   '(vundo evil-anzu anzu highlight-indentation omnisharp csharp-mode el-get use-package-git avy posframe markdown-mode company-quickhelp helpful auto-yasnippet highlight-indent-guides dimmer beacon evil-vimish-fold nav-flash editorconfig pdf-tools all-the-icons-dired dired-sidebar dired-collapse dired-ranger dired-filter all-the-icons-ibuffer slime-company general yasnippet-snippets dired-subtree meghanada magit ag)))
+	 '(vundo evil-anzu anzu highlight-indentation omnisharp csharp-mode el-get use-package-git avy posframe markdown-mode company-quickhelp helpful auto-yasnippet highlight-indent-guides dimmer beacon evil-vimish-fold nav-flash editorconfig pdf-tools all-the-icons-dired dired-sidebar dired-collapse dired-ranger dired-filter all-the-icons-ibuffer slime-company general yasnippet-snippets dired-subtree meghanada magit ag)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
