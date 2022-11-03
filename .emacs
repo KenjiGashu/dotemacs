@@ -157,6 +157,71 @@
             ;; invisible here anyway.
             (assq-delete-all 'which-func-mode mode-line-misc-info))
 
+
+
+
+(use-package general :ensure t
+  :config
+  (general-create-definer my-leader-def
+    ;; :prefix my-leader
+    :prefix "SPC")
+
+  (general-create-definer my-local-leader-def
+    ;; :prefix my-local-leader
+    :prefix "SPC m")
+
+  ;; (general-override-mode)
+  ;; (my-leader-def
+  ;;  :keymaps 'normal
+  ;;  :keymaps 'override
+  ;;  ;; bind "SPC a"
+  ;;  "a" 'org-agenda
+  ;;  "b" 'counsel-bookmark
+  ;;  "c" 'org-capture)
+  (general-define-key
+   :states '(normal  visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+
+    ;; simple command
+    "'"   '(iterm-focus :which-key "iterm")
+    "?"   '(iterm-goto-filedir-or-home :which-key "iterm - goto dir")
+    "/"   'counsel-ag
+    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+    "gc"  '(avy-goto-char-2  :which-key "go to char 2")
+
+    "f" '(:ignore t :which-key "Files")
+    "ff" 'find-file
+
+    "s" '(:ignore t :which-key "Search")
+    "ss" 'consult-line
+
+    "b" '(:ignore t :which-key "Buffer")
+    "bb" 'switch-to-buffer
+    "bd" 'kill-buffer
+    "bi" 'ibuffer
+
+    "w" '(:ignore t :which-key "Window")
+    "wmm" 'delete-other-windows
+    "wv"  'split-window-horizontally
+    "w-"  'split-window-vertically
+    "wh"  'windmove-left
+    "wl"  'windmove-right
+    "wj"  'windmove-down
+    "wk"  'windmove-up
+
+
+    "o" '(:ignore t :which-key "toggle")
+
+    ;; Applications
+    "a" '(:ignore t :which-key "Applications")
+    "ar" 'ranger
+    "ad" 'dired)
+  )
+
+
+
 ;; ==================================================================
 ;;
 ;; vertico
@@ -289,6 +354,18 @@
    "sae" 'aya-expand
    "sah" 'aya-expand-from-history)
   )
+
+
+(use-package posframe :ensure t
+  :demand t)
+
+
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
+
+
 
 ;; lsp bridge
 (el-get-bundle lsp-bridge
@@ -488,6 +565,18 @@
   :config (global-anzu-mode +1))
 (use-package evil-anzu
   :after evil)
+
+(use-package evil-search-highlight-persist
+	:ensure t
+	:config (global-evil-search-highlight-persist t))
+
+(use-package ah
+	:ensure t
+	:after evil-search-highlight-persist
+	:config
+	(ah-mode 1)
+	(add-hook 'ah-after-c-g-hook (lambda () (evil-search-highlight-persist-remove-all)))
+	)
 
 ;; make which key show up faster
 (setq which-key-idle-delay 0.3) ;; I need the help, I really do
@@ -726,14 +815,6 @@ nil : Otherwise, return nil and run next lineup function."
   :after company
   :config (company-quickhelp-mode))
 
-
-(use-package markdown-mode
-  :ensure t
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown"))
-
-(use-package posframe :ensure t
-  :demand t)
 
 
 ;; ===================================================
@@ -1390,67 +1471,6 @@ nil : Otherwise, return nil and run next lineup function."
 	     (eldoc-mode)
 	     (rainbow-delimiters-mode)))
 
-(use-package general :ensure t
-  :config
-  (general-create-definer my-leader-def
-    ;; :prefix my-leader
-    :prefix "SPC")
-
-  (general-create-definer my-local-leader-def
-    ;; :prefix my-local-leader
-    :prefix "SPC m")
-
-  ;; (general-override-mode)
-  ;; (my-leader-def
-  ;;  :keymaps 'normal
-  ;;  :keymaps 'override
-  ;;  ;; bind "SPC a"
-  ;;  "a" 'org-agenda
-  ;;  "b" 'counsel-bookmark
-  ;;  "c" 'org-capture)
-  (general-define-key
-   :states '(normal  visual insert emacs)
-   :prefix "SPC"
-   :keymaps '(override pdf-view-mode)
-   :non-normal-prefix "C-SPC"
-
-    ;; simple command
-    "'"   '(iterm-focus :which-key "iterm")
-    "?"   '(iterm-goto-filedir-or-home :which-key "iterm - goto dir")
-    "/"   'counsel-ag
-    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
-    "gc"  '(avy-goto-char-2  :which-key "go to char 2")
-
-    "f" '(:ignore t :which-key "Files")
-    "ff" 'find-file
-
-    "s" '(:ignore t :which-key "Search")
-    "ss" 'consult-line
-
-    "b" '(:ignore t :which-key "Buffer")
-    "bb" 'switch-to-buffer
-    "bd" 'kill-buffer
-    "bi" 'ibuffer
-
-    "w" '(:ignore t :which-key "Window")
-    "wmm" 'delete-other-windows
-    "wv"  'split-window-horizontally
-    "w-"  'split-window-vertically
-    "wh"  'windmove-left
-    "wl"  'windmove-right
-    "wj"  'windmove-down
-    "wk"  'windmove-up
-
-
-    "o" '(:ignore t :which-key "toggle")
-
-    ;; Applications
-    "a" '(:ignore t :which-key "Applications")
-    "ar" 'ranger
-    "ad" 'dired)
-  )
-
-
 
 (general-define-key
  :states '(normal  visual insert emacs)
@@ -1472,7 +1492,7 @@ nil : Otherwise, return nil and run next lineup function."
  '(custom-safe-themes
 	 '("7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
  '(package-selected-packages
-	 '(vundo evil-anzu anzu highlight-indentation omnisharp csharp-mode el-get use-package-git avy posframe markdown-mode company-quickhelp helpful auto-yasnippet highlight-indent-guides dimmer beacon evil-vimish-fold nav-flash editorconfig pdf-tools all-the-icons-dired dired-sidebar dired-collapse dired-ranger dired-filter all-the-icons-ibuffer slime-company general yasnippet-snippets dired-subtree meghanada magit ag)))
+	 '(ah evil-search-highlight-persist vundo evil-anzu anzu highlight-indentation omnisharp csharp-mode el-get use-package-git avy posframe markdown-mode company-quickhelp helpful auto-yasnippet highlight-indent-guides dimmer beacon evil-vimish-fold nav-flash editorconfig pdf-tools all-the-icons-dired dired-sidebar dired-collapse dired-ranger dired-filter all-the-icons-ibuffer slime-company general yasnippet-snippets dired-subtree meghanada magit ag)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
