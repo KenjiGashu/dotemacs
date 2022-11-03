@@ -951,7 +951,7 @@ nil : Otherwise, return nil and run next lineup function."
 ;; javascript config
 ;;
 ;; =================================================
-(add-hook 'javascript-mode-hook (lambda () (lsp-bridge-mode)))
+(add-hook 'js-mode-hook (lambda () (lsp-bridge-mode)))
 
 ;; (use-package js2-mode
 ;;   :ensure t
