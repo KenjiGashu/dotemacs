@@ -99,13 +99,14 @@
 ;;
 ;; ===============================================================
 
+(use-package! org)
+
 ;;=============== bookmark+ ================================
 (use-package! bookmark+
   :config
   (setq bookmark-version-control t
         delete-old-versions t
-        bookmark-save-flag 1
-        bmkp-count-multi-mods-as-one-flag t)
+        bookmark-save-flag t)
   :load-path "~/.emacs.d/custom/bookmark-plus")
 
 (map! :leader
@@ -144,10 +145,10 @@
 ;;
 ;;
 ;; centaur tabs
-(map! (:when (featurep! :editor snippets)
+(map! (:when (modulep! :editor snippets)
        :i  [C-tab] nil
        :nv [C-tab] nil))
-(map! (:when (featurep! :ui tabs)
+(map! (:when (modulep! :ui tabs)
        :nv [C-tab]           #'centaur-tabs-forward-tab
        :nv [C-S-tab]         #'centaur-tabs-backward-tab
        :nv [C-S-iso-lefttab] #'centaur-tabs-backward-tab))
@@ -212,9 +213,9 @@
 ;;   (require 'eaf-browser)
 ;;   :load-path "~/.emacs.d/site-lisp/emacs-application-framework")
 
-(use-package! flutter
-  :custom
-  (setq flutter-sdk-path "~/Downloads/dev/flutter/"))
+;; (use-package! flutter
+;;   :custom
+;;   (setq flutter-sdk-path "~/Downloads/dev/flutter/"))
 
 ;; (after! eglot
 ;;   (setq eglot-server-programs
@@ -226,8 +227,8 @@
 ;;                       "--lsp")))))
 
 
-(use-package! dart-server
-  :init (setq dart-server-sdk-path "/home/kenjigashu/Downloads/dev/flutter/bin/cache/dart-sdk/"))
+;; (use-package! dart-server
+;;   :init (setq dart-server-sdk-path "/home/kenjigashu/Downloads/dev/flutter/bin/cache/dart-sdk/"))
 
 
 ;; (use-package! slime
@@ -255,54 +256,98 @@
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
   )
 
-(use-package! eaf
-  :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
-  :init
-  :custom
-  (eaf-browser-continue-where-left-off t)
-  (eaf-browser-enable-adblocker t)
-  (browse-url-browser-function 'eaf-open-browser) ;; Make EAF Browser my default browser
-  :config
-  (defalias 'browse-web #'eaf-open-browser)
 
-  (require 'eaf-file-manager)
-  (require 'eaf-music-player)
-  (require 'eaf-image-viewer)
-  (require 'eaf-camera)
-  (require 'eaf-demo)
-  (require 'eaf-airshare)
-  (require 'eaf-terminal)
-  (require 'eaf-markdown-previewer)
-  (require 'eaf-video-player)
-  (require 'eaf-vue-demo)
-  (require 'eaf-file-sender)
-  (require 'eaf-pdf-viewer)
-  (require 'eaf-mindmap)
-  (require 'eaf-netease-cloud-music)
-  (require 'eaf-jupyter)
-  (require 'eaf-org-previewer)
-  (require 'eaf-system-monitor)
-  (require 'eaf-rss-reader)
-  (require 'eaf-file-browser)
-  (require 'eaf-browser)
-  (require 'eaf-org)
-  (require 'eaf-mail)
-  (require 'eaf-git)
-  (when (display-graphic-p)
-    (require 'eaf-all-the-icons))
+;; (add-load-path! "lisp")
+;; (add-load-path! "lisp/lsp-bridge")
+;; (add-load-path! "lisp/lsp-bridge/acm")
+(add-to-list 'load-path "~/.doom.d/lisp/lsp-bridge")
 
-  (require 'eaf-evil)
-  (define-key key-translation-map (kbd "SPC")
-    (lambda (prompt)
-      (if (derived-mode-p 'eaf-mode)
-          (pcase eaf--buffer-app-name
-            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
-                           (kbd "SPC")
-                         (kbd eaf-evil-leader-key)))
-            ("pdf-viewer" (kbd eaf-evil-leader-key))
-            ("image-viewer" (kbd eaf-evil-leader-key))
-            (_  (kbd "SPC")))
-        (kbd "SPC")))))
+
+(require 'lsp-bridge)
+;;(global-lsp-bridge-mode)
+
+;; add hooks to use lsp bridge instead of company
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (company-mode 0)
+            (lsp-bridge-mode 1)))
+;;javascript mode hook
+(add-hook 'rjsx-mode-hook
+          (lambda ()
+            (company-mode 0)
+            (lsp-bridge-mode 1)))
+
+;;c
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (company-mode 0)
+            (lsp-bridge-mode 1)))
+
+(add-hook 'java-mode-hook
+          (lambda ()
+            (company-mode 0)
+            (lsp-bridge-mode 1)))
+
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (company-mode 0)
+            (lsp-bridge-mode 1)))
+
+(use-package! auto-yasnippet
+  :init (setq aya-persist-snippets-dir "~/.doom.d/snippets/"))
+
+;; (use-package! lsp-bridge
+;;   :config
+;;   (global-lsp-bridge-mode))
+
+;; (use-package! eaf
+;;   :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
+;;   :init
+;;   :custom
+;;   (eaf-browser-continue-where-left-off t)
+;;   (eaf-browser-enable-adblocker t)
+;;   (browse-url-browser-function 'eaf-open-browser) ;; Make EAF Browser my default browser
+;;   :config
+;;   (defalias 'browse-web #'eaf-open-browser)
+
+;;   (require 'eaf-file-manager)
+;;   (require 'eaf-music-player)
+;;   (require 'eaf-image-viewer)
+;;   (require 'eaf-camera)
+;;   (require 'eaf-demo)
+;;   (require 'eaf-airshare)
+;;   (require 'eaf-terminal)
+;;   (require 'eaf-markdown-previewer)
+;;   (require 'eaf-video-player)
+;;   (require 'eaf-vue-demo)
+;;   (require 'eaf-file-sender)
+;;   (require 'eaf-pdf-viewer)
+;;   (require 'eaf-mindmap)
+;;   (require 'eaf-netease-cloud-music)
+;;   (require 'eaf-jupyter)
+;;   (require 'eaf-org-previewer)
+;;   (require 'eaf-system-monitor)
+;;   (require 'eaf-rss-reader)
+;;   (require 'eaf-file-browser)
+;;   (require 'eaf-browser)
+;;   (require 'eaf-org)
+;;   (require 'eaf-mail)
+;;   (require 'eaf-git)
+;;   (when (display-graphic-p)
+;;     (require 'eaf-all-the-icons))
+
+;;   (require 'eaf-evil)
+;;   (define-key key-translation-map (kbd "SPC")
+;;     (lambda (prompt)
+;;       (if (derived-mode-p 'eaf-mode)
+;;           (pcase eaf--buffer-app-name
+;;             ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
+;;                            (kbd "SPC")
+;;                          (kbd eaf-evil-leader-key)))
+;;             ("pdf-viewer" (kbd eaf-evil-leader-key))
+;;             ("image-viewer" (kbd eaf-evil-leader-key))
+;;             (_  (kbd "SPC")))
+;;         (kbd "SPC")))))
 
 ;; (use-package! eaf-browser
 ;;   :after eaf)

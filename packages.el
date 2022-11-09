@@ -9,6 +9,11 @@
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
 
+(package! f)
+(package! s)
+(package! pkg-info)
+(package! epl)
+
 (package! ggtags)
 (package! sly-asdf)
 ;; (package! sly :disable t)
@@ -22,6 +27,13 @@
 (package! flx)
 ;;(package! bm)
 (package! magit-section)
+
+(package! org-mode)
+
+(package! posframe)
+(package! markdown-mode)
+(package! lsp-bridge
+  :recipe (:repo "https://github.com/manateelazycat/lsp-bridge.git" ))
 
 ;; ================= install bookmark-plus =================
 
@@ -61,7 +73,7 @@
 
 ;; ================= install bookmark-plus ======================
 
-(package! eaf)
+;;(package! eaf)
 
 (package! gitconfig-mode
 	  :recipe (:host github :repo "magit/git-modes"
