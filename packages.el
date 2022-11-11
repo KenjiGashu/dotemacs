@@ -28,8 +28,6 @@
 ;;(package! bm)
 (package! magit-section)
 
-(package! org-mode)
-
 (package! posframe)
 (package! markdown-mode)
 (package! lsp-bridge
