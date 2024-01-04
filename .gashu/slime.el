@@ -28,7 +28,7 @@
     ;;(setq inferior-lisp-program "C:/Users/lkenji/Downloads/ccl/wx86cl64")
     )
   (when (string= system-type "gnu/linux")
-    (setq inferior-lisp-program "sbcl")
+    (setq inferior-lisp-program "sbcl --dynamic-space-size 8192")
     ;; (setq inferior-lisp-program "C:/Users/lkenji/Downloads/ccl/wx86cl64.exe")
     ;; (setq inferior-lisp-program "wx86cl64")
     )
@@ -36,6 +36,8 @@
         '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
   :config (slime-setup '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
  )
+
+(add-hook 'lisp-mode-hook #'company-mode)
 
  
  (use-package slime-repl-ansi-color

@@ -1,0 +1,8 @@
+(undo-tree-save-format-version . 1)
+"814a2c4c80abae1d53a933e9aeffce0823c092c4"
+[nil nil nil nil (25871 27102 579798 356000) 0 nil]
+([nil nil ((nil rear-nonsticky nil 1043 . 1044) (nil fontified nil 1 . 1044) (1 . 1044) (t . -1)) nil (25871 27102 579795 486000) 0 nil])
+([nil nil ((#(";" 0 1 (face font-lock-comment-delimiter-face fontified t)) . 315) (undo-tree-id5 . -1) (undo-tree-id6 . -1) (t 25871 27102 578759 502000)) nil (25880 56719 887676 334000) 0 nil])
+([nil nil ((#(";" 0 1 (face font-lock-comment-delimiter-face fontified t)) . 315) (undo-tree-id3 . -1) (undo-tree-id4 . -1)) nil (25880 56719 887674 840000) 0 nil])
+([nil current ((#(" " 0 1 (face highlight-indent-guides-top-character-face display "│" highlight-indent-guides-prop (0 nil t 1 (character (top) (face highlight-indent-guides-top-character-face display "│")) ((#<marker at 315 in lsp-bridge.el> . #<marker at 339 in lsp-bridge.el>))) fontified t)) . 315) (undo-tree-id0 . -1) (undo-tree-id1 . -1) (undo-tree-id2 . -1)) nil (25880 56719 887671 754000) 0 nil])
+nil

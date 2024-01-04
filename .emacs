@@ -245,7 +245,8 @@
 
 ;;(load-file "~/.gashu/hydra-keys.el")
 
-(load-file "~/.gashu/slime.el")
+;;(load-file "~/.gashu/slime.el")
+(load-file "~/.gashu/sly.el")
 
 (load-file "~/.gashu/config.el")
 
@@ -258,13 +259,72 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
-	 ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff" "#c6c6c6"])
+	 ["#303030" "#ff4b4b" "#d7ff5f" "#fce94f" "#5fafd7" "#d18aff" "#afd7ff"
+		"#c6c6c6"])
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bmkp/stld-publ")
  '(c-default-style '((awk-mode . "awk") (other . "gnu")))
  '(custom-safe-themes
-	 '("7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525" "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" default))
- '(package-selected-packages
-	 '(ah evil-search-highlight-persist vundo evil-anzu anzu highlight-indentation omnisharp csharp-mode el-get use-package-git avy posframe markdown-mode company-quickhelp helpful auto-yasnippet highlight-indent-guides dimmer beacon evil-vimish-fold nav-flash editorconfig pdf-tools all-the-icons-dired dired-sidebar dired-collapse dired-ranger dired-filter all-the-icons-ibuffer slime-company general yasnippet-snippets dired-subtree meghanada magit ag)))
+	 '("7a424478cb77a96af2c0f50cfb4e2a88647b3ccca225f8c650ed45b7f50d9525"
+		 "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2"
+		 "7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386"
+		 "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3"
+		 default))
+ '(package-selected-packages nil)
+ '(safe-local-variable-values
+	 '((Base . 10) (Package . DRAKMA) (Syntax . COMMON-LISP)
+		 (eval put 'test-js-eval 'common-lisp-indent-function 1)
+		 (eval put 'test-ps-js 'common-lisp-indent-function 1)
+		 (eval cl-flet
+					 ((enhance-imenu-lisp (&rest keywords)
+																(dolist (keyword keywords)
+																	(let
+																			((prefix
+																				(when (listp keyword)
+																					(cl-second keyword)))
+																			 (keyword
+																				(if (listp keyword)
+																						(cl-first keyword)
+																					keyword)))
+																		(add-to-list
+																		 'lisp-imenu-generic-expression
+																		 (list
+																			(purecopy
+																			 (concat (capitalize keyword)
+																							 (if
+																									 (string=
+																										(substring-no-properties
+																										 keyword -1)
+																										"s")
+																									 "es"
+																								 "s")))
+																			(purecopy
+																			 (concat "^\\s-*("
+																							 (regexp-opt
+																								(list
+																								 (if prefix
+																										 (concat prefix
+																														 "-"
+																														 keyword)
+																									 keyword)
+																								 (concat prefix "-"
+																												 keyword))
+																								t)
+																							 "\\s-+\\("
+																							 lisp-mode-symbol-regexp
+																							 "\\)"))
+																			2))))))
+					 (enhance-imenu-lisp '("bookmarklet-command" "define")
+															 '("class" "define")
+															 '("command" "define")
+															 '("ffi-method" "define")
+															 '("ffi-generic" "define")
+															 '("function" "define")
+															 '("internal-page-command" "define")
+															 '("internal-page-command-global"
+																 "define")
+															 '("mode" "define")
+															 '("parenscript" "define") "defpsmacro"))
+		 (Syntax . ANSI-Common-Lisp) (Package . FSet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
