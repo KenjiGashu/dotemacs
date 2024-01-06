@@ -7,13 +7,17 @@
   :mode ("README\\.md\\'" . gfm-mode)
   :init (setq markdown-command "multimarkdown"))
 
-
-
-;; lsp bridge
-(el-get-bundle lsp-bridge
-  :url "https://github.com/manateelazycat/lsp-bridge.git"
-  :features lsp-bridge)
-(el-get 'sync)
+;; install lsp-bridge if its not installed yet:
+(unless (require 'lsp-bridge nil 'noerror)
+  (require 'package)
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.org/packages/"))
+  (package-refresh-contents)
+  (package-initialize)
+	(package-vc-install
+   '(lsp-bridge :url "https://github.com/manateelazycat/lsp-bridge.git"))
+  ;;(package-install 'el-get)
+  (require 'lsp-bridge))
 
 (global-lsp-bridge-mode)
 (setq acm-enable-quick-access 1)
