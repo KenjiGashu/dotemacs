@@ -10,7 +10,21 @@
   :init
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
   (setq evil-want-keybinding nil)
+
+	:hook
+  ('prog-mode . #'hs-minor-mode)
   :config (evil-mode 1))
+
+(setq evil-fold-list
+  `(((hs-minor-mode)
+     :open-all   hs-show-all
+     :close-all  hs-hide-all
+     :toggle     hs-toggle-hiding
+     :open       hs-show-block
+     :open-rec   nil
+     :close      hs-hide-block)
+   )
+)
 
 (use-package evil-collection
   :after evil

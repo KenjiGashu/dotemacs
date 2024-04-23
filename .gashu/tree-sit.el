@@ -22,13 +22,26 @@
 
 (require 'treesit)
 
-(setq major-mode-remap-alist
-      '((yaml-mode . yaml-ts-mode)
-        (c-mode . c-ts-mode)
-        (c++-mode . c++-ts-mode)
-        (bash-mode . bash-ts-mode)
-        (js2-mode . js-ts-mode)
-        (typescript-mode . typescript-ts-mode)
-        (json-mode . json-ts-mode)
-        (css-mode . css-ts-mode)
-        (python-mode . python-ts-mode)))
+;; (setq major-mode-remap-alist
+;;       '((yaml-mode . yaml-ts-mode)
+;;         (c-mode . c-ts-mode)
+;;         (c++-mode . c++-ts-mode)
+;;         (bash-mode . bash-ts-mode)
+;;         (js2-mode . js-ts-mode)
+;;         (typescript-mode . typescript-ts-mode)
+;;         (json-mode . json-ts-mode)
+;;         (css-mode . css-ts-mode)
+;;         (python-mode . python-ts-mode)))
+
+(use-package tree-sitter
+	:ensure t
+  :demand t
+ )
+
+(use-package tree-sitter-langs
+	:ensure t
+  :demand t
+ )
+
+(global-tree-sitter-mode)
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)

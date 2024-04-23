@@ -58,6 +58,8 @@
 
 (load-file "~/.gashu/yasnippet.el")
 
+(load-file "~/.gashu/magit.el")
+
 ;; ==================================================================
 ;;
 ;; init some things
@@ -140,16 +142,20 @@
 (load-file "~/.gashu/company.el")
 
 ;;lsp config
-(load-file "~/.gashu/lsp.el")
+;;(load-file "~/.gashu/lsp.el")
+
+;;debugger
+(load-file "~/.gashu/debug.el")
 
 ;;(load-file "~/.gashu/flutter.el")
-
 
 (load-file "~/.gashu/omnisharp.el")
 
 ;;(load-file "~/.gashu/rust.el")
 
 ;;(load-file "~/.gashu/web.el")
+
+(load-file "~/.gashu/smerge.el")
 
 ;; ===================================================
 ;;
@@ -159,9 +165,11 @@
 ;; (use-package php-mode
 ;;   :mode "\\php")
 
-(load-file "~/.gashu/lsp-bridge-hooks.el")
+;;(load-file "~/.gashu/lsp-bridge-hooks.el")
 
 ;;(load-file "~/.gashu/javascript.el")
+
+;;(load-file "~/.gashu/react.el")
 
 ;; ===================================================
 ;;
@@ -226,7 +234,7 @@
 
 (load-file "~/.gashu/cpp.el")
 
-
+(load-file "~/.gashu/zig.el")
 
 (load-file "~/.gashu/java.el")
 
@@ -249,12 +257,33 @@
 
 (load-file "~/.gashu/hooks.el")
 
+(load-file "~/.gashu/eaf.el")
+
+(load-file "~/.gashu/citre.el")
+
+(use-package vterm
+    :ensure t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(lsp-bridge-get-workspace-folder 'my-lsp-bridge-workspace)
+ '(package-selected-packages
+	 '(ag ah all-the-icons-dired all-the-icons-ibuffer async
+				auto-package-update auto-yasnippet beacon bui cider-decompile
+				cider-hydra citre company-quickhelp consult dap-mode
+				dap-netcore dimmer dired-collapse dired-filter dired-ranger
+				dired-sidebar doom-modeline doom-themes editorconfig evil-anzu
+				evil-collection evil-mc evil-org evil-search-highlight-persist
+				evil-vimish-fold flycheck-clang-tidy geiser general helpful
+				highlight-blocks highlight-indent-guides lsp-bridge lsp-docker
+				lsp-treemacs magit marginalia modern-cpp-font-lock nav-flash
+				omnisharp orderless pdf-tools projectile rainbow-delimiters
+				realgud sly-asdf tree-sitter tree-sitter-lang
+				tree-sitter-langs undo-tree vertico vterm vundo which-key
+				winum yasnippet-snippets zig-mode))
  '(package-vc-selected-packages
 	 '((lsp-bridge :url "https://github.com/manateelazycat/lsp-bridge.git")))
  '(safe-local-variable-values
