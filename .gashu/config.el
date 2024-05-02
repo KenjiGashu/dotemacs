@@ -4,12 +4,11 @@
     (add-to-list 'default-frame-alist '(font . "Iosevka-11"))
   (add-to-list 'default-frame-alist '(font . "Iosevka-14")))
 
-
-
 (electric-pair-mode 1)
 
 (setq vc-make-backup-files t)
 
+(global-auto-revert-mode 1)
 
 ;; ==============================================================
 ;;

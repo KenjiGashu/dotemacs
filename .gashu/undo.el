@@ -3,7 +3,10 @@
   :config
   (global-undo-tree-mode 1)
   (evil-set-undo-system 'undo-tree)
-	(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo"))))
+	:custom
+	(undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+	(undo-tree-visualizer-diff t)
+	(undo-tree-visualizer-timestamps t))
 
 ;; (use-package vundo
 ;;   :config
