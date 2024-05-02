@@ -1,8 +1,0 @@
-(undo-tree-save-format-version . 1)
-"f6cca9079407e219ae39202c40f483b15b43f604"
-[nil nil nil nil (25851 56907 275750 539000) 0 nil]
-([nil nil ((nil rear-nonsticky nil 982 . 983) (nil fontified nil 1 . 983) (1 . 983) (t 25851 56884 499070 788000)) nil (25851 56907 275748 86000) 0 nil])
-([nil nil ((nil rear-nonsticky nil 1105 . 1106) (nil fontified nil 983 . 1106) (983 . 1106) (t 25851 56907 272310 728000)) nil (25851 56923 460551 294000) 0 nil])
-([nil nil ((nil rear-nonsticky nil 1249 . 1250) (nil fontified nil 1106 . 1250) (1106 . 1250) (t 25851 56923 458911 63000)) nil (25851 56955 346530 455000) 0 nil])
-([nil current ((1138 . 1148) (#("evil" 0 4 (fontified t)) . 1138) (undo-tree-id0 . -3) (undo-tree-id1 . -4) (undo-tree-id2 . -4) (t 25851 56955 345447 178000)) nil (25851 57139 272471 515000) 0 nil])
-nil
