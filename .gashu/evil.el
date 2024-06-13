@@ -45,14 +45,6 @@
   :after vimish-fold
   :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
 
-;; (use-package vimish-fold
-;;   :ensure t
-;;   :after (evil))
-
-;; (use-package evil-vimish-fold
-;;   :ensure t
-;;   :after (evil vimish-fold))
-
 ;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 
 

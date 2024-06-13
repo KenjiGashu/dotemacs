@@ -8,6 +8,10 @@
 	(undo-tree-visualizer-diff t)
 	(undo-tree-visualizer-timestamps t))
 
+(add-hook 'after-save-hook (lambda () (undo-tree-save-history nil t)))
+(add-hook 'after-save-visited-mode-hook (lambda () (undo-tree-save-history nil t)))
+(add-hook 'after-save-hook (lambda () (undo-tree-save-history nil t)))
+
 ;; (use-package vundo
 ;;   :config
 ;;   (setq vundo-glyph-alist vundo-unicode-symbols))

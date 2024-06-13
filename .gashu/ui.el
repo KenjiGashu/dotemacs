@@ -3,6 +3,15 @@
 ;; some ui configuration
 ;;
 ;; =================================================================
+
+;;change default font to iosevka
+(if (equal system-type 'windows-nt)
+    (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
+  (add-to-list 'default-frame-alist '(font . "Iosevka-12")))
+
+
+
+
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
 (tooltip-mode -1)           ; Disable tooltips
@@ -90,17 +99,19 @@
   (setq dimmer-fraction 0.6)
   (dimmer-mode t))
 
-
 (use-package highlight-indent-guides
   :config
-  ;; (setq highlight-indent-guides-auto-character-face-perc 0)
-  ;; (setq highlight-indent-guides-auto-even-face-perc 0)
-  ;; (setq highlight-indent-guides-auto-odd-face-perc 0)
-  ;; (setq highlight-indent-guides-auto-character-face-perc 0)
-  ;; (setq highlight-indent-guides-auto-top-character-face-perc 0)
-  (setq highlight-indent-guides-method 'character)
+  ;;(setq highlight-indent-guides-auto-character-face-perc 0)
+  (setq highlight-indent-guides-auto-even-face-perc 40)
+  (setq highlight-indent-guides-auto-odd-face-perc 60)
+	(setq highlight-indent-guides-auto-top-odd-face-perc 90)
+	(setq highlight-indent-guides-auto-top-even-face-perc 90)
+  ;;(setq highlight-indent-guides-auto-character-face-perc 0)
+  ;;(setq highlight-indent-guides-auto-top-character-face-perc 0)
+
+  (setq highlight-indent-guides-method 'column)
   (setq highlight-indent-guides-responsive 'top)
-  (setq highlight-indent-guides-auto-enabled nil)
+  (setq highlight-indent-guides-auto-enabled t)
   (set-face-foreground 'highlight-indent-guides-character-face "dim gray")
   (set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)

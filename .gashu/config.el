@@ -1,9 +1,3 @@
-
-;;change default font to iosevka
-(if (equal system-type 'windows-nt)
-    (add-to-list 'default-frame-alist '(font . "Iosevka-11"))
-  (add-to-list 'default-frame-alist '(font . "Iosevka-14")))
-
 (electric-pair-mode 1)
 
 (setq vc-make-backup-files t)

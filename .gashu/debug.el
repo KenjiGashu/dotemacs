@@ -22,3 +22,5 @@
 (dap-ui-controls-mode 1)
 
 (require 'dap-netcore)
+(require 'dap-lldb)
+(require 'dap-gdb-lldb)

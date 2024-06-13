@@ -54,3 +54,6 @@
 ;; (use-package company-tern
 ;;   :hook (rjsx-mode tern-mode))
 
+
+(add-hook 'js-mode-hook 'eglot-ensure)
+(add-hook 'js-mode-hook 'corfu-mode)

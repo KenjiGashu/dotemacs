@@ -41,6 +41,8 @@ nil : Otherwise, return nil and run next lineup function."
   (flycheck-mode . flycheck-clang-tidy-setup)
   )
 
-(add-hook 'c-mode-hook (lambda () (lsp-bridge-mode)))
+;;(add-hook 'c-mode-hook (lambda () (lsp-bridge-mode)))
+(add-hook 'c-mode-hook (lambda () (eglot-ensure)))
+(add-hook 'c-mode-hook (lambda () (corfu-mode)))
 ;; ==================================================================
 
