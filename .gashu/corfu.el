@@ -100,5 +100,5 @@
 (add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
 (add-hook 'corfu-mode-hook 'corfu-history-mode)
 (add-hook 'corfu-mode-hook 'corfu-echo-mode)
-(setq corfu-popupinfo-delay (cons nil 0.75))
+(setq corfu-popupinfo-delay (cons 0.8 0.55))
 

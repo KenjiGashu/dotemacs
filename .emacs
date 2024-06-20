@@ -59,6 +59,7 @@
 (load-file "~/.gashu/debug.el")
 ;;(load-file "~/.gashu/flutter.el")
 ;;(load-file "~/.gashu/omnisharp.el")
+(load-file "~/.gashu/csharp.el")
 ;;(load-file "~/.gashu/rust.el")
 ;;(load-file "~/.gashu/web.el")
 (load-file "~/.gashu/smerge.el")
