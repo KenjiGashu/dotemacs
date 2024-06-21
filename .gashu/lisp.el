@@ -31,7 +31,7 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
-	     (corfu-mode)
+	     ;;(corfu-mode)
 	     (eldoc-mode)
 	     (rainbow-delimiters-mode)))
 

@@ -26,7 +26,7 @@
 	(:map corfu-map ("S-SPC" . corfu-insert-separator))
 
   :init
- ;; (global-corfu-mode)
+	(global-corfu-mode)
 	)
 
 
@@ -88,9 +88,9 @@
 (use-package kind-icon
   :ensure t
   :after corfu
-  ;:custom
-  ; (kind-icon-blend-background t)
-  ; (kind-icon-default-face 'corfu-default) ; only needed with blend-background
+  :custom
+   (kind-icon-blend-background t)
+   (kind-icon-default-face 'corfu-default) ; only needed with blend-background
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
@@ -102,3 +102,7 @@
 (add-hook 'corfu-mode-hook 'corfu-echo-mode)
 (setq corfu-popupinfo-delay (cons 0.8 0.55))
 
+(general-define-key
+ :states '(insert emacs)
+ :keymaps '(override)
+ "C-M-i" 'completion-at-point)

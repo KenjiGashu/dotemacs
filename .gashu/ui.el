@@ -94,10 +94,10 @@
 (use-package beacon :ensure t
   :config
   (beacon-mode 1))
-(use-package dimmer :ensure t
-  :config
-  (setq dimmer-fraction 0.6)
-  (dimmer-mode t))
+;; (use-package dimmer :ensure t
+;;   :config
+;;   (setq dimmer-fraction 0.6)
+;;   (dimmer-mode t))
 
 (use-package highlight-indent-guides
   :config

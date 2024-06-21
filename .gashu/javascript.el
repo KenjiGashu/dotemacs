@@ -56,4 +56,4 @@
 
 
 (add-hook 'js-mode-hook 'eglot-ensure)
-(add-hook 'js-mode-hook 'corfu-mode)
+;;(add-hook 'js-mode-hook 'corfu-mode)

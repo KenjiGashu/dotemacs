@@ -57,3 +57,11 @@
   :after evil
   :config (global-evil-mc-mode 1))
 
+(use-package evil-snipe :demand t
+	:ensure t
+	:after evil
+	:config
+	(evil-snipe-mode +1)
+	(evil-snipe-override-mode +1)
+	(setq evil-snipe-scope 'visible)
+	(setq evil-snipe-repeat-scope 'whole-visible))

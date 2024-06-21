@@ -7,3 +7,10 @@
    :non-normal-prefix "C-SPC"
    "gc" 'avy-goto-char-2
    "gw" 'avy-goto-word-1))
+
+(general-define-key
+   :states '(normal  visual insert emacs)
+   :prefix "g"
+   :keymaps '(override pdf-view-mode)
+   :non-normal-prefix "C-SPC"
+   "s" 'avy-goto-word-1)
