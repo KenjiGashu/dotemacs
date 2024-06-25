@@ -13,4 +13,5 @@
    :prefix "g"
    :keymaps '(override pdf-view-mode)
    :non-normal-prefix "C-SPC"
-   "s" 'avy-goto-word-1)
+   "S" 'avy-goto-word-1-above
+	 "s" 'avy-goto-word-1-below)
