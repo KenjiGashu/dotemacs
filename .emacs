@@ -81,6 +81,7 @@
 (load-file "~/.gashu/eaf.el")
 (load-file "~/.gashu/citre.el")
 (load-file "~/.gashu/vterm.el")
+(load-file "~/.gashu/ibuffer.el")
 
 
 (custom-set-variables
@@ -91,8 +92,6 @@
  '(auto-save-visited-mode t)
  '(lsp-bridge-get-workspace-folder 'my-lsp-bridge-workspace)
  '(package-selected-packages nil)
- '(package-vc-selected-packages
-	 '((lsp-bridge :url "https://github.com/manateelazycat/lsp-bridge.git")))
  '(safe-local-variable-values
 	 '((Package . CL-UNICODE) (Package . FLEXI-STREAMS) (package . puri)
 		 (Package . CHUNGA) (Package . GMap) (Package . Lexical-Contexts)

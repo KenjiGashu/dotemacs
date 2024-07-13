@@ -1,24 +1,26 @@
+(add-hook 'java-mode 'eglot-ensure)
+
 ;;===================================================================
 ;;
 ;; Java
 ;;
 ;;===================================================================
-(add-hook 'java-mode (lambda () (lsp-bridge-mode)))
+;; (add-hook 'java-mode (lambda () (lsp-bridge-mode)))
 
-(setq lsp-bridge-enable-auto-import t) ;; 开启自动导入依赖，目前没有code action。补全时可以通过这个导入相应的依赖，建议开启。
-(setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/kenjigashu/.emacs.d/.cache/java/lombok/lombok.jar"))
+;; (setq lsp-bridge-enable-auto-import t) ;; 开启自动导入依赖，目前没有code action。补全时可以通过这个导入相应的依赖，建议开启。
+;; (setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/kenjigashu/.emacs.d/.cache/java/lombok/lombok.jar"))
 
-(defun my-lsp-bridge-workspace (proj)
-  (let* ((proj-2-workspace
-          '(("/home/kenjigashu/repo/java/workspace1/proj1" .
-             "file:///home/kenjigashu/repo/java/workspace1/")
-            ("/home/kenjigashu/repo/java/workspace2/proj2" .
-             "file:///home/kenjigashu/repo/java/workspace2/")))
-         (kv (assoc proj proj-2-workspace)))
-    (when kv
-        (cdr kv))))
+;; (defun my-lsp-bridge-workspace (proj)
+;;   (let* ((proj-2-workspace
+;;           '(("/home/kenjigashu/repo/java/workspace1/proj1" .
+;;              "file:///home/kenjigashu/repo/java/workspace1/")
+;;             ("/home/kenjigashu/repo/java/workspace2/proj2" .
+;;              "file:///home/kenjigashu/repo/java/workspace2/")))
+;;          (kv (assoc proj proj-2-workspace)))
+;;     (when kv
+;;         (cdr kv))))
 
-(custom-set-variables '(lsp-bridge-get-workspace-folder 'my-lsp-bridge-workspace))
+;; (custom-set-variables '(lsp-bridge-get-workspace-folder 'my-lsp-bridge-workspace))
 
 ;; (use-package meghanada
 ;;   :hook (java-mode . meghanada-mode)

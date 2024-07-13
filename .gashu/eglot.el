@@ -21,7 +21,7 @@
   (setq-local completion-at-point-functions
               (list (cape-capf-super
                      #'eglot-completion-at-point
-                     #'tempel-expand
+                     #'tempel-complete
                      #'cape-file))))
 
 ;;(add-to-list 'eglot-server-programs '((csharp-mode) . "omnisharp"))
