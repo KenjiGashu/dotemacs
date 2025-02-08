@@ -14,6 +14,12 @@
   :ensure t
   :init (setq geiser-active-implementations '(racket)))
 
+
+;; corfu
+(add-hook 'emacs-lisp-mode-hook 'corfu-mode)
+
+(add-hook 'lisp-mode-hook 'corfu-mode)
+
 ;;
 ;;scheme mode
 ;;

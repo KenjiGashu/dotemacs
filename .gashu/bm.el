@@ -17,6 +17,8 @@
   ;; save bookmarks
   (setq-default bm-buffer-persistence t)
 
+	(setq bm-highlight-style 'bm-highlight-only-fringe)
+
   ;; Loading the repository from file when on start up.
   (add-hook 'after-init-hook 'bm-repository-load)
 

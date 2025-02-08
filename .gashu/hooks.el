@@ -48,7 +48,7 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
-	     (lsp-bridge-mode)
+	     ;;(lsp-bridge-mode)
 	     (eldoc-mode)
 	     (rainbow-delimiters-mode)))
 

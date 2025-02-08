@@ -37,8 +37,6 @@
   :config (slime-setup '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
  )
 
-(add-hook 'lisp-mode-hook #'company-mode)
-
  
  (use-package slime-repl-ansi-color
    :after (slime))

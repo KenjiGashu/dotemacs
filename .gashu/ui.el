@@ -37,12 +37,7 @@
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
 
-(desktop-save-mode 1)
-
 (setq-default tab-width 2)
-
-;; display function definition
-(which-function-mode)
 
 ;; Show the current function name in the header line
 (which-function-mode)
@@ -53,9 +48,7 @@
             ;; invisible here anyway.
             (assq-delete-all 'which-func-mode mode-line-misc-info))
 
-
-(use-package doom-themes
-  :init (load-theme 'doom-palenight t))
+(use-package doom-themes)
   
 (use-package all-the-icons)
 
@@ -102,10 +95,10 @@
 (use-package highlight-indent-guides
   :config
   ;;(setq highlight-indent-guides-auto-character-face-perc 0)
-  (setq highlight-indent-guides-auto-even-face-perc 40)
-  (setq highlight-indent-guides-auto-odd-face-perc 60)
-	(setq highlight-indent-guides-auto-top-odd-face-perc 90)
-	(setq highlight-indent-guides-auto-top-even-face-perc 90)
+  (setq highlight-indent-guides-auto-even-face-perc 18)
+  (setq highlight-indent-guides-auto-odd-face-perc 35)
+	(setq highlight-indent-guides-auto-top-odd-face-perc 60)
+	(setq highlight-indent-guides-auto-top-even-face-perc 60)
   ;;(setq highlight-indent-guides-auto-character-face-perc 0)
   ;;(setq highlight-indent-guides-auto-top-character-face-perc 0)
 
@@ -121,4 +114,8 @@
 (setq lazy-highlight-cleanup nil)
 (setq lazy-highlight-max-at-a-time nil)
 (setq lazy-highlight-initial-delay 0)
+
+(add-hook 'dired-mode-hook
+      (lambda ()
+        (dired-hide-details-mode)))
 

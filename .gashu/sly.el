@@ -17,10 +17,12 @@
 	(add-to-list 'sly-contribs 'sly-asdf 'append)
  )
 
-(add-hook 'lisp-mode-hook #'company-mode)
+;;(add-hook 'lisp-mode-hook #'company-mode)
 
 
 (use-package sly-asdf
   ;;:demand t
   :after sly
  )
+
+(add-hook 'sly-mrepl-mode-hook 'corfu-mode)

@@ -21,7 +21,7 @@
   (setq-local completion-at-point-functions
               (list (cape-capf-super
                      #'eglot-completion-at-point
-                     #'tempel-complete
+                     #'tempel-expand
                      #'cape-file))))
 
 ;;(add-to-list 'eglot-server-programs '((csharp-mode) . "omnisharp"))
@@ -30,3 +30,25 @@
 ;;                `(csharp-mode . ("OmniSharp.exe" "--lsp"))))
 
 (add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+
+(general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :keymaps '(eglot-mode-map)
+   :non-normal-prefix "C-SPC"
+   "li" 'eglot-find-implementation
+   "ld" 'eglot-find-declaration
+   "la" 'eglot-code-actions
+	 "lt" 'eglot-find-typeDefinition
+	 "lo" 'eglot-code-action-organize-imports
+	 "lz"  'eglot-shutdown-all)
+
+;; (straight-use-package
+;;  '(eglot-booster
+;;    :type git
+;;    :repo "https://github.com/jdtsmith/eglot-booster"))
+
+;; (use-package eglot-booster
+;; 	:ensure nil
+;; 	:after eglot
+;; 	:config	(eglot-booster-mode))

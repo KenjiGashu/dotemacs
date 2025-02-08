@@ -11,12 +11,12 @@
   (setq company-minimum-prefix-length 1
 	company-idle-delay 0.0)
   (evil-define-key nil evil-insert-state-map
-    (kbd "C-M-y") 'company-complete)
+    (kbd "C-M-y") 'company-capf)
 
   ;;setup backends
-  :hook ((emacs-lisp-mode . (lambda ()
-			      (set (make-local-variable 'company-backends) (push 'company-elisp company-backends)))))
-  )
+  ;; :hook ((emacs-lisp-mode . (lambda ()
+	;; 		      (set (make-local-variable 'company-backends) (push 'company-elisp company-backends)))))
+)
 
 (use-package company-quickhelp :ensure t
   :after company

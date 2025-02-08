@@ -25,8 +25,8 @@
 	:bind
 	(:map corfu-map ("S-SPC" . corfu-insert-separator))
 
-  :init
-	(global-corfu-mode)
+  ;;:init
+	;;(global-corfu-mode)
 	)
 
 
@@ -42,13 +42,14 @@
 
   ;; Emacs 30 and newer: Disable Ispell completion function. As an alternative,
   ;; try `cape-dict'.
-  (setq text-mode-ispell-word-completion nil)
+  ;;(setq text-mode-ispell-word-completion nil)
 
   ;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
   ;; mode.  Corfu commands are hidden, since they are not used via M-x. This
   ;; setting is useful beyond Corfu.
   (setq read-extended-command-predicate #'command-completion-default-include-p))
-    ;;;; 
+
+
 ;; Add extensions
 (use-package cape
   :init
@@ -56,9 +57,9 @@
   ;; used by `completion-at-point'.  The order of the functions matters, the
   ;; first function returning a result wins.  Note that the list of buffer-local
   ;; completion functions takes precedence over the global list.
-  (add-hook 'completion-at-point-functions #'cape-dabbrev)
-  (add-hook 'completion-at-point-functions #'cape-file)
-  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+ (add-hook 'completion-at-point-functions #'cape-dabbrev)
+ (add-hook 'completion-at-point-functions #'cape-file)
+ (add-hook 'completion-at-point-functions #'cape-elisp-block)
   ;;(add-hook 'completion-at-point-functions #'cape-history)
   ;;(add-hook 'completion-at-point-functions #'cape-keyword)
   ;;(add-hook 'completion-at-point-functions #'cape-tex)
@@ -70,19 +71,32 @@
   ;;(add-hook 'completion-at-point-functions #'cape-line)
 )
 
+(use-package orderless
+  :init
+
+  ;; Tune the global completion style settings to your liking!
+  ;; This affects the minibuffer and non-lsp completion at point.
+  (setq completion-styles '(orderless partial-completion basic)
+        completion-category-defaults nil
+        completion-category-overrides nil)
+	)
+	
+
+
 ;; corfu terminal
-(straight-use-package
- '(corfu-terminal
-   :type git
-   :repo "https://codeberg.org/akib/emacs-corfu-terminal.git"))
-(unless (display-graphic-p)
-  (corfu-terminal-mode +1))
-(straight-use-package
- '(corfu-doc-terminal
-   :type git
-   :repo "https://codeberg.org/akib/emacs-corfu-doc-terminal.git"))
-(unless (display-graphic-p)
-  (corfu-doc-terminal-mode +1))
+;; (straight-use-package
+;;  '(corfu-terminal
+;;    :type git
+;;    :repo "https://codeberg.org/akib/emacs-corfu-terminal.git"))
+;; (unless (display-graphic-p)
+;;   (corfu-terminal-mode +1))
+;; (straight-use-package
+;;  '(corfu-doc-terminal
+;;    :type git
+;;    :repo "https://codeberg.org/akib/emacs-corfu-doc-terminal.git"))
+;; (unless (display-graphic-p)
+;;   (corfu-doc-terminal-mode +1))
+
 
 ;; pretty icons
 (use-package kind-icon
@@ -95,7 +109,7 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 
-(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+;;(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
 
 (add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
 (add-hook 'corfu-mode-hook 'corfu-history-mode)
@@ -104,5 +118,5 @@
 
 (general-define-key
  :states '(insert emacs)
- :keymaps '(override)
+ :keymaps '(corfu-mode-map)
  "C-M-i" 'completion-at-point)

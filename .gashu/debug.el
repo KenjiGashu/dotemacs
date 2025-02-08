@@ -1,13 +1,13 @@
 (use-package dap-mode
 	:ensure t)
 
-(use-package realgud
-	:ensure t)
+;; (use-package realgud
+;; 	:ensure t)
 
-;; Enabling only some features
-(setq dap-auto-configure-features '(sessions locals controls tooltip))
-
+;; ;; Enabling only some features
+;; (setq dap-auto-configure-features '(sessions locals controls tooltip))
 (dap-mode 1)
+(dap-auto-configure-mode 1)
 
 ;; The modes below are optional
 
@@ -21,6 +21,9 @@
 ;; requies emacs 26+
 (dap-ui-controls-mode 1)
 
+;;(add-hook 'dap-mode-hook 'dap-auto-configure-mode)
+
+;;(require 'dap-java)
 (require 'dap-netcore)
 (require 'dap-lldb)
 (require 'dap-gdb-lldb)

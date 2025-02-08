@@ -1,4 +1,3 @@
-
 ;; ================= install bookmark-plus =================
 
 ;; (let ((bookmarkplus-dir "~/.emacs.d/custom/bookmark-plus/")

@@ -1,4 +1,21 @@
-(add-hook 'java-mode 'eglot-ensure)
+;;(add-hook 'java-mode-hook (lambda () (lsp-bridge-mode)))
+;;(add-hook 'java-mode 'eglot-ensure)
+;;(add-hook 'java-mode-hook 'lspce-mode)
+(add-hook 'java-mode-hook 'lsp)
+(add-hook 'java-mode-hook 'corfu-mode)
+
+(setq lsp-java-vmargs '("-noverify" "-Xmx1G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/kenjigashu/repo/lombok.jar" "-Xbootclasspath/a:/home/kenjigashu/repo/lombok.jar"))
+(add-to-list 'lspce-java-vmargs "-javaagent:/home/kenjigashu/repo/lombok.jar")
+(add-to-list 'lspce-java-vmargs  "-Xbootclasspath/a:/home/kenjigashu/repo/lombok.jar")
+
+(defvar gashu-java-templates 
+	'((prente "System.out.println(\"" r "\")")))
+
+(defun gashu-setup-java ()
+	(defvar-local tempel-template-sources tempel-template-sources)
+	(add-to-list 'tempel-template-sources 'gashu-java-templates))
+
+(add-hook 'java-mode-hook 'gashu-setup-java)
 
 ;;===================================================================
 ;;

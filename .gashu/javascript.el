@@ -54,6 +54,11 @@
 ;; (use-package company-tern
 ;;   :hook (rjsx-mode tern-mode))
 
+(use-package typescript-mode
+	:ensure t)
 
-(add-hook 'js-mode-hook 'eglot-ensure)
-;;(add-hook 'js-mode-hook 'corfu-mode)
+;;(add-hook 'js-mode-hook 'eglot-ensure)
+;;(add-hook 'js-mode-hook 'lspce-mode)
+(add-hook 'js-mode-hook 'corfu-mode)
+(add-hook 'js-mode-hook 'lsp)
+;;(add-hook 'js-mode-hook 'lsp-bridge-mode)
