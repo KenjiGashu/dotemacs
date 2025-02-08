@@ -1,2 +1,5 @@
-**/.emacs-backups/**
+*
 
+!.emacs
+!.gashu/
+!.emacs.backup.configuration
