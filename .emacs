@@ -93,7 +93,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-	 '("4594d6b9753691142f02e67b8eb0fda7d12f6cc9f1299a49b819312d6addad1d"
+	 '("aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8"
+		 "5c7720c63b729140ed88cf35413f36c728ab7c70f8cd8422d9ee1cedeb618de5"
+		 "4594d6b9753691142f02e67b8eb0fda7d12f6cc9f1299a49b819312d6addad1d"
 		 "32f22d075269daabc5e661299ca9a08716aa8cda7e85310b9625c434041916af"
 		 "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
 		 "2b20b4633721cc23869499012a69894293d49e147feeb833663fdc968f240873"
@@ -111,10 +113,11 @@
 		 "691d671429fa6c6d73098fc6ff05d4a14a323ea0a18787daeb93fde0e48ab18b"
 		 default))
  '(safe-local-variable-values
-	 '((evil-shift-width . 2) (evil-shift-width . 3) (evil-shift-width . 4)
-		 (Package . CL-UNICODE) (Package . FLEXI-STREAMS) (package . puri)
-		 (Package . CHUNGA) (Package . GMap) (Package . Lexical-Contexts)
-		 (Package . CL-User)
+	 '((Package . BORDEAUX-THREADS-2) (Syntax . ANSI-Common-lisp)
+		 (evil-shift-width . 2) (evil-shift-width . 3)
+		 (evil-shift-width . 4) (Package . CL-UNICODE)
+		 (Package . FLEXI-STREAMS) (package . puri) (Package . CHUNGA)
+		 (Package . GMap) (Package . Lexical-Contexts) (Package . CL-User)
 		 (eval put 'test-js-eval 'common-lisp-indent-function 1)
 		 (eval put 'test-ps-js 'common-lisp-indent-function 1)
 		 (Package . CL-PPCRE) (Package . containers)
