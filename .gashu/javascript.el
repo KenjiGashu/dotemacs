@@ -54,6 +54,12 @@
 ;; (use-package company-tern
 ;;   :hook (rjsx-mode tern-mode))
 
+(use-package lsp-tailwindcss
+	:ensure t
+	:init
+	(setq lsp-tailwindcss-add-on-mode t)
+	:config
+	(setq lsp-tailwindcss-major-modes '(web-mode html-mode sgml-mode css-mode rjsx-mode))) 
 (use-package typescript-mode
 	:ensure t)
 
