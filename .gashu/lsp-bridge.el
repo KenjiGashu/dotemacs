@@ -7,18 +7,19 @@
   :mode ("README\\.md\\'" . gfm-mode)
   :init (setq markdown-command "multimarkdown"))
 
-;;(add-to-list 'load-path "~/.emacs.d/straight/build/lsp-bridge/")
+(when (string= system-type "windows-nt")
+	(add-to-list 'load-path "~/.emacs.d/site-lisp/lsp-bridge/")
+	(require 'lsp-bridge))
 
 ;;install lsp-bridge if its not installed yet:
-(use-package lsp-bridge
+(when (string= system-type "gnu/linux")
+	(use-package lsp-bridge
   :straight '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
             :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
             :build (:not compile))
   :init
   ;;(global-lsp-bridge-mode)
-	)
-
-;;(require 'lsp-bridge)
+	))
 
 (require 'lsp-bridge-jdtls)  
 (setq lsp-bridge-enable-auto-import t) 
