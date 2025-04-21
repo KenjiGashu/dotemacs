@@ -54,6 +54,19 @@
 ;; (use-package company-tern
 ;;   :hook (rjsx-mode tern-mode))
 
+(use-package rjsx-mode
+	:ensure t)
+
+(use-package web-mode
+	:ensure t)
+
+(setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
+
+(use-package emmet-mode
+	:ensure t)
+
+(add-hook 'web-mode-hook 'emmet-mode)
+
 (use-package lsp-tailwindcss
 	:ensure t
 	:init
@@ -65,6 +78,6 @@
 
 ;;(add-hook 'js-mode-hook 'eglot-ensure)
 ;;(add-hook 'js-mode-hook 'lspce-mode)
-(add-hook 'js-mode-hook 'corfu-mode)
-(add-hook 'js-mode-hook 'lsp)
+;;(add-hook 'js-mode-hook 'corfu-mode)
+;;(add-hook 'js-mode-hook 'lsp)
 ;;(add-hook 'js-mode-hook 'lsp-bridge-mode)

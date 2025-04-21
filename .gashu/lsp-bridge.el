@@ -7,7 +7,7 @@
   :mode ("README\\.md\\'" . gfm-mode)
   :init (setq markdown-command "multimarkdown"))
 
-(add-to-list 'load-path "~/.emacs.d/site-lisp/lsp-bridge")
+;;(add-to-list 'load-path "~/.emacs.d/straight/build/lsp-bridge/")
 
 ;;install lsp-bridge if its not installed yet:
 (use-package lsp-bridge
@@ -18,11 +18,13 @@
   ;;(global-lsp-bridge-mode)
 	)
 
-(require 'lsp-bridge)
+;;(require 'lsp-bridge)
 
 (require 'lsp-bridge-jdtls)  
 (setq lsp-bridge-enable-auto-import t) 
 (setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/kenjigashu/jars/lombok.jar"))
+
+(setq lsp-bridge-python-command "python3")
 
 ;;(global-lsp-bridge-mode)
 (setq acm-enable-quick-access 1)
@@ -61,7 +63,7 @@
 
 ;;(setq lsp-bridge-csharp-lsp-server "omnisharp-mono")
 ;;(setq lsp-bridge-csharp-lsp-server "csharp-ls")
-(setq lsp-bridge-csharp-lsp-server "omnisharp-dotnet")
+;;(setq lsp-bridge-csharp-lsp-server "omnisharp-dotnet")
 
 ;; (use-package auto-highlight-symbol
 ;;   :ensure t

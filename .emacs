@@ -34,7 +34,7 @@
 (load-file "~/.gashu/yasnippet.el")
 (use-package async)
 (use-package popup)
-;; ;;(load-file "~/.gashu/lsp-bridge.el")
+(load-file "~/.gashu/lsp-bridge.el")
 ;; ;;(load-file "~/.gashu/eglot.el")
 (load-file "~/.gashu/lspce.el")
 (load-file "~/.gashu/magit.el")
