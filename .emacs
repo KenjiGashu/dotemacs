@@ -86,7 +86,8 @@
 (load-file "~/.gashu/lisp.el")
 ;; ;;(load-file "~/.gashu/eaf.el")
 ;; ;;(load-file "~/.gashu/citre.el")
-(load-file "~/.gashu/vterm.el")
+(when (string= system-type "gnu/linux")
+	(load-file "~/.gashu/vterm.el"))
 (load-file "~/.gashu/ibuffer.el")
 (load-file "~/.gashu/workspaces.el")
 (custom-set-variables
