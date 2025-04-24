@@ -25,7 +25,9 @@
 (setq lsp-bridge-enable-auto-import t) 
 (setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/kenjigashu/jars/lombok.jar"))
 
-(setq lsp-bridge-python-command "python3")
+(if (string= system-type "windows-nt")
+		(setq lsp-bridge-python-command "python")
+	(setq lsp-bridge-python-command "python3"))
 
 (setq lsp-bridge-user-multiserver-dir "~/.gashu/multiserver")
 (setq lsp-bridge-user-langserver-dir "~/.gashu/langserver")
