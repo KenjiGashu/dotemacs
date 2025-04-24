@@ -27,6 +27,25 @@
 
 (setq lsp-bridge-python-command "python3")
 
+(setq lsp-bridge-user-multiserver-dir "~/.gashu/multiserver")
+(setq lsp-bridge-user-langserver-dir "~/.gashu/langserver")
+
+
+;; (defcustom lsp-bridge-multi-lang-server-extension-list
+;;   '(
+;;     (("js" "jsx")   . "javascript_tailwindcss")
+;;     )
+;;   "The multi lang server rule for file extension."
+;;   :type 'cons)
+(setq lsp-bridge-multi-lang-server-extension-list
+  '(
+    (("ts" )   . "typescript_eslint")
+    (("tsx" )   . "typescriptreact_eslint_tailwindcss")
+    (("jsx" )   . "javascript_tailwindcss")
+		(("html") . "html_and_tailwindcss")
+    )
+  )
+
 ;;(global-lsp-bridge-mode)
 (setq acm-enable-quick-access 1)
 ;; (setq lsp-bridge-get-workspace-folder nil)

@@ -1,0 +1,3 @@
+java-mode
+
+(println "System.out.println(\""r"\")")

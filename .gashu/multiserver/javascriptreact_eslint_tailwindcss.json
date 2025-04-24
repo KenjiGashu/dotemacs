@@ -1,0 +1,23 @@
+{
+	"completion": ["tailwindreact", "javascriptreact"],
+  "completion_item_resolve": ["javascriptreact", "tailwindreact"],
+  "diagnostics": ["javascriptreact", "vscode-eslint-language-server"],
+  "code_action": ["javascriptreact", "vscode-eslint-language-server"],
+  "execute_command": ["javascriptreact", "vscode-eslint-language-server"],
+  "find_define": "javascriptreact",
+  "find_type_define": "javascriptreact",
+  "find_implementation": "javascriptreact",
+  "find_references": "javascriptreact",
+  "peek_find_definition": "javascriptreact",
+  "peek_find_references": "javascriptreact",
+  "formatting": "javascriptreact",
+  "hover": ["javascriptreact", "tailwindreact"],
+  "signature_help": "javascriptreact",
+  "prepare_rename": "javascriptreact",
+  "rename": "javascriptreact",
+  "document_symbol": "javascriptreact",
+  "workspace_symbol": "javascriptreact",
+  "semantic_tokens": "javascriptreact",
+  "inlay_hint": "javascriptreact"
+
+}

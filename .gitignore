@@ -1,5 +1,15 @@
+# Ignore everything
 *
 
+# But descend into directories
+!*/
+
+# Recursively allow files under subtree
+#!/subtree/**
+
+!.gashu/**
 !.emacs
-!.gashu/
+!.gashu/templates/**
+!.gashu/langserver/**
+!.gashu/multiserver/**
 !.emacs.backup.configuration

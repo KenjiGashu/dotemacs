@@ -1,0 +1,21 @@
+{
+  "completion": ["tailwindreact", "javascript"],
+  "completion_item_resolve": ["tailwindreact", "javascript"],
+  "diagnostics": ["javascript", "tailwindreact"],
+  "code_action": ["javascript", "tailwindreact"],
+  "execute_command": ["javascript", "tailwindreact"],
+  "find_define": "javascript",
+  "find_type_define": "javascript",
+  "peek_find_definition": "javascript",
+  "peek_find_references": "javascript",
+  "find_implementation": "javascript",
+  "find_references": "javascript",
+  "formatting": "javascript",
+  "hover": "javascript",
+  "signature_help": "javascript",
+  "prepare_rename": "javascript",
+  "rename": "javascript",
+  "document_symbol": "javascript",
+  "workspace_symbol": "javascript",
+  "inlay_hint": "javascript"
+}
