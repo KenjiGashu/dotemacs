@@ -2,14 +2,30 @@
 *
 
 # But descend into directories
-!*/
+#!*/
+# aur/
+# common-lisp/
+# quicklisp/
+# repo/
+# .cache/
+# .cargo/
+# .config/
+# .local/
+# .emacs.d/
+# .emacs.d_backup/
+# .emacs.d_prelude/
 
 # Recursively allow files under subtree
 #!/subtree/**
 
-!.gashu/**
+!init.el
+!.gashu/
+!.gashu/*
 !.emacs
-!.gashu/templates/**
-!.gashu/langserver/**
-!.gashu/multiserver/**
+!.gashu/templates/*
+!.gashu/templates/
+!.gashu/langserver/*
+!.gashu/langserver/
+!.gashu/multiserver/*
+!.gashu/multiserver/
 !.emacs.backup.configuration

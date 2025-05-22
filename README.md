@@ -1,3 +1,0 @@
-# dotemacs
-.emacs conf
-

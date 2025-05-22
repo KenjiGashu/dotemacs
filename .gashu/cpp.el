@@ -47,12 +47,14 @@ nil : Otherwise, return nil and run next lineup function."
 ;;(add-hook 'c-mode-common-hook 'eglot-ensure)
 
 ;;(add-hook 'c-mode-hook 'lspce-mode)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c-mode-hook 'corfu-mode)
+;; (add-hook 'c-mode-hook 'lsp)
+;; (add-hook 'c-mode-hook 'corfu-mode)
+(add-hook 'c-mode-hook 'lsp-bridge-mode)
 
-(add-hook 'c++-mode-hook 'lsp)
+;; (add-hook 'c++-mode-hook 'lsp)
+;; (add-hook 'c++-mode-hook 'corfu-mode)
 ;;(add-hook 'c++-mode-hook 'lspce-mode)
-(add-hook 'c++-mode-hook 'corfu-mode)
+(add-hook 'c++-mode-hook 'lsp-bridge-mode)
 
 ;; ==================================================================
 

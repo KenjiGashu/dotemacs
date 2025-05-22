@@ -10,7 +10,10 @@
 (use-package dired-collapse :ensure t )
 (use-package dired-sidebar :ensure t
   :commands (dired-sidebar-toggle-sidebar)
-  :init
+	:config
+	(setq dired-sidebar-width 65)
+
+	:init
   (general-define-key
    :states '(normal  visual insert emacs)
    :prefix "SPC"

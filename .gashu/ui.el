@@ -49,6 +49,31 @@
             (assq-delete-all 'which-func-mode mode-line-misc-info))
 
 (use-package doom-themes)
+(use-package moe-theme)
+(use-package nordic-night-theme)
+(use-package ef-themes)
+(use-package standard-themes)
+(use-package modus-themes)
+(when (string= system-type "gnu/linux")
+	(use-package alabaster-theme 
+  :straight '(alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
+(use-package catppuccin-theme)
+;; (setq catppuccin-flavor 'mocha)
+;; (catppuccin-reload)
+(use-package autothemer :ensure t)
+(straight-use-package
+ '(rose-pine-emacs
+   :host github
+   :repo "thongpv87/rose-pine-emacs"
+   :branch "master"))
+(use-package timu-caribbean-theme)
+(use-package color-theme-sanityinc-tomorrow)
+(use-package color-theme-sanityinc-solarized)
+(straight-use-package
+ '(emacs-material-theme
+	 :host github
+	 :repo "cpaulik/emacs-material-theme"))
+(use-package kaolin-themes)
   
 (use-package all-the-icons)
 

@@ -67,12 +67,29 @@
 
 (add-hook 'web-mode-hook 'emmet-mode)
 
+;; (use-package lsp-tailwindcss
+;; 	:ensure t
+;; 	:init
+;; 	(setq lsp-tailwindcss-add-on-mode t)
+;; 	:config
+;; 	(setq lsp-tailwindcss-major-modes '(web-mode html-mode sgml-mode css-mode rjsx-mode))) 
+
 (use-package lsp-tailwindcss
-	:ensure t
-	:init
-	(setq lsp-tailwindcss-add-on-mode t)
-	:config
-	(setq lsp-tailwindcss-major-modes '(web-mode html-mode sgml-mode css-mode rjsx-mode))) 
+      :straight '(lsp-tailwindcss :type git :host github :repo "merrickluo/lsp-tailwindcss")
+      :init (setq lsp-tailwindcss-add-on-mode t)
+      :config
+      (dolist (tw-major-mode
+               '(css-mode
+                 css-ts-mode
+                 typescript-mode
+                 typescript-ts-mode
+                 tsx-ts-mode
+								 rjsx-mode
+                 js2-mode
+                 js-ts-mode
+                 clojure-mode))
+        (add-to-list 'lsp-tailwindcss-major-modes tw-major-mode)))
+
 (use-package typescript-mode
 	:ensure t)
 
@@ -80,4 +97,4 @@
 ;;(add-hook 'js-mode-hook 'lspce-mode)
 ;;(add-hook 'js-mode-hook 'corfu-mode)
 ;;(add-hook 'js-mode-hook 'lsp)
-;;(add-hook 'js-mode-hook 'lsp-bridge-mode)
+(add-hook 'js-mode-hook 'lsp-bridge-mode)

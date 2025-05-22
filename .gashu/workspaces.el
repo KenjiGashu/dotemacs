@@ -14,6 +14,8 @@
 (straight-use-package
  `(desktop-plus :type git :host github :repo "ffevotte/desktop-plus"))
 
+(setq desktop+-base-dir (concat xdg-home "desktops"))
+
 
 ;; https://github.com/nflath/save-visited-files
 

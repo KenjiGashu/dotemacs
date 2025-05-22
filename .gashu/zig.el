@@ -7,7 +7,7 @@
 (add-to-list 'auto-mode-alist '("\\.zig\\'" . zig-mode))
 
 ;; (add-hook 'zig-mode-hook 'lspce-mode)
-(add-hook 'zig-mode-hook 'lsp)
-(add-hook 'zig-mode-hook 'corfu-mode)
-;;(add-hook 'zig-mode-hook 'lsp-bridge-mode)
+;;(add-hook 'zig-mode-hook 'lsp)
+;;(add-hook 'zig-mode-hook 'corfu-mode)
+(add-hook 'zig-mode-hook 'lsp-bridge-mode)
 

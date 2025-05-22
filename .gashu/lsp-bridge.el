@@ -8,7 +8,7 @@
   :init (setq markdown-command "multimarkdown"))
 
 (when (string= system-type "windows-nt")
-	(add-to-list 'load-path "~/.emacs.d/site-lisp/lsp-bridge/")
+	(add-to-list 'load-path (concat xdg-home ".emacs.d/site-lisp/lsp-bridge/"))
 	(require 'lsp-bridge))
 
 ;;install lsp-bridge if its not installed yet:
@@ -29,8 +29,8 @@
 		(setq lsp-bridge-python-command "python")
 	(setq lsp-bridge-python-command "python3"))
 
-(setq lsp-bridge-user-multiserver-dir "~/.gashu/multiserver")
-(setq lsp-bridge-user-langserver-dir "~/.gashu/langserver")
+(setq lsp-bridge-user-multiserver-dir (concat xdg-home ".gashu/multiserver"))
+(setq lsp-bridge-user-langserver-dir (concat xdg-home ".gashu/langserver"))
 
 
 ;; (defcustom lsp-bridge-multi-lang-server-extension-list
@@ -54,6 +54,11 @@
 (setq lsp-bridge-enable-log 1)
 (setq acm-enable-tempel 1)
 (setq acm-backend-lsp-show-progress 1)
+(setq lsp-bridge-enable-debug 1)
+(setq lsp-bridge-log-level 'debug)
+(setq lsp-bridge-enable-completion-in-string t)
+(setq acm-backend-lsp-candidates-max-number 50)
+(add-hook 'rjsx-mode-hook (lambda () (setq-local acm-backend-lsp-match-mode "prefix")))
 ;;(setq acm-enable-citre 1)
 ;;(setq lsp-bridge-defaul-mode-hooks '(c-mode c++-mode zig-mode elisp-mode shell-script-mode))
 
