@@ -1,8 +1,8 @@
 ;;(add-hook 'java-mode-hook (lambda () (lsp-bridge-mode)))
 ;;(add-hook 'java-mode 'eglot-ensure)
 ;;(add-hook 'java-mode-hook 'lspce-mode)
-;; (add-hook 'java-mode-hook 'lsp)
-;; (add-hook 'java-mode-hook 'corfu-mode)
+;;(add-hook 'java-mode-hook 'lsp)
+;;(add-hook 'java-mode-hook 'corfu-mode)
 (add-hook 'java-mode-hook 'lsp-bridge-mode)
 
 (setq lsp-java-vmargs '("-noverify" "-Xmx1G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/kenjigashu/repo/lombok.jar" "-Xbootclasspath/a:/home/kenjigashu/repo/lombok.jar"))
@@ -25,12 +25,9 @@
 ;;===================================================================
 ;; (add-hook 'java-mode (lambda () (lsp-bridge-mode)))
 
-(setq lsp-bridge-enable-auto-import t) ;; 开启自动导入依赖，目前没有code action。补全时可以通过这个导入相应的依赖，建议开启。
-(setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/kenjigashu/repo/lombok.jar"))
-(require 'lsp-bridge-jdtls)
 
-(add-hook 'java-mode-hook (lambda ()
-                            (setq-local lsp-bridge-get-lang-server-by-project 'lsp-bridge-get-jdtls-server-by-project)))
+;; (add-hook 'java-mode-hook (lambda ()
+;;                             (setq-local lsp-bridge-get-lang-server-by-project 'lsp-bridge-get-jdtls-server-by-project)))
 
 ;; (defun my-lsp-bridge-workspace (proj)
 ;;   (let* ((proj-2-workspace

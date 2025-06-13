@@ -21,9 +21,10 @@
   ;;(global-lsp-bridge-mode)
 	))
 
-(require 'lsp-bridge-jdtls)  
-(setq lsp-bridge-enable-auto-import t) 
-(setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/kenjigashu/jars/lombok.jar"))
+;;java
+(setq lsp-bridge-enable-auto-import t) ;; 开启自动导入依赖，目前没有code action。补全时可以通过这个导入相应的依赖，建议开启。
+(setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/kenjigashu/repo/lombok.jar"))
+(require 'lsp-bridge-jdtls)
 
 (if (string= system-type "windows-nt")
 		(setq lsp-bridge-python-command "python")
@@ -57,7 +58,7 @@
 (setq lsp-bridge-enable-debug 1)
 (setq lsp-bridge-log-level 'debug)
 (setq lsp-bridge-enable-completion-in-string t)
-(setq acm-backend-lsp-candidates-max-number 50)
+(setq acm-backend-lsp-candidates-max-number 80)
 (add-hook 'rjsx-mode-hook (lambda () (setq-local acm-backend-lsp-match-mode "prefix")))
 ;;(setq acm-enable-citre 1)
 ;;(setq lsp-bridge-defaul-mode-hooks '(c-mode c++-mode zig-mode elisp-mode shell-script-mode))

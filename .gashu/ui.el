@@ -82,7 +82,8 @@
   :custom ((doom-modeline-height 15)))
 
 (use-package highlight-blocks)
-(use-package rainbow-delimiters )
+(use-package rainbow-delimiters
+	:hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package all-the-icons-ibuffer
   :ensure t
