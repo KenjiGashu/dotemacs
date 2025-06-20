@@ -27,6 +27,8 @@
 (defvar xdg-home (concat (getenv "XDG_CONFIG_HOME") "/emacs/"))
 
 ;; ;;(load-file (concat xdg-home "/.gashu/el-get.el"))
+(use-package async)
+(use-package popup)
 (load-file (concat xdg-home ".gashu/straight.el"))
 (load-file (concat xdg-home ".gashu/auto-update-config.el"))
 (load-file (concat xdg-home ".gashu/setup-load-path.el"))
@@ -35,8 +37,6 @@
 (load-file (concat xdg-home ".gashu/vertico.el"))
 (load-file (concat xdg-home ".gashu/tree-sit.el"))
 (load-file (concat xdg-home ".gashu/yasnippet.el"))
-(use-package async)
-(use-package popup)
 (load-file (concat xdg-home ".gashu/lsp-bridge.el"))
 ;; ;;(load-file "~/.gashu/eglot.el")
 (when (string= system-type "gnu/linux")
