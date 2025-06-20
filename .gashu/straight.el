@@ -13,3 +13,17 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+(autoload 'dired-async-mode "dired-async.el" nil t)
+(dired-async-mode 1)
+
+(async-bytecomp-package-mode 1)
+
+(defun my-straight-pull-async ()
+	(async-start
+	 (lambda ()
+		 (message "Starting straight pull! GASHU")
+		 (straight-pull-all)
+		 (message "Finished straight pull! GASHU"))))
+
+(add-hook 'emacs-startup-hook 'my-straight-pull-async)

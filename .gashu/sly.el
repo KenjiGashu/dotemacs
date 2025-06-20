@@ -26,3 +26,9 @@
  )
 
 (add-hook 'sly-mrepl-mode-hook 'corfu-mode)
+
+
+;; (asdf:initialize-source-registry
+;;   `(:source-registry
+;;      (:tree "/home/kenjigashu/repo/nyxt")
+;;      :inherit-configuration))

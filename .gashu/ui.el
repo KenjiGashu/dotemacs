@@ -53,7 +53,7 @@
 (use-package nordic-night-theme)
 (use-package ef-themes)
 (use-package standard-themes)
-(use-package modus-themes)
+;;(use-package modus-themes)
 (when (string= system-type "gnu/linux")
 	(use-package alabaster-theme 
   :straight '(alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
