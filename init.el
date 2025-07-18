@@ -24,7 +24,8 @@
 (setq ac-disable-faces nil)
 
 ;;(setenv "LSP_USE_PLISTS" "true")
-(defvar xdg-home (concat (getenv "XDG_CONFIG_HOME") "/emacs/"))
+;;(defvar xdg-home (concat (getenv "XDG_CONFIG_HOME") "/emacs/"))
+(defvar xdg-home "~/.emacs.d/dotemacs/")
 
 ;; ;;(load-file (concat xdg-home "/.gashu/el-get.el"))
 (use-package async)
