@@ -145,6 +145,11 @@
       (lambda ()
         (dired-hide-details-mode)))
 
+(use-package casual)
+(add-hook 'dired-mode-hook #'casual-dired-tmenu)
+(add-hook 'bookmark-bmenu-mode-hook #'casual-bookmarks-tmenu)
+(add-hook 'ibuffer-hook #'casual-ibuffer-tmenu)
+
 (use-package rand-theme)
 (setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
 timu-caribbean moe-dark ef-symbiosis ef-trio-dark ef-tritanopia-dark ef-owl ef-night ef-maris-dark ef-elea-dark

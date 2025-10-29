@@ -26,6 +26,8 @@
 (setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/kenjigashu/repo/lombok.jar"))
 (require 'lsp-bridge-jdtls)
 
+
+
 (if (string= system-type "windows-nt")
 		(setq lsp-bridge-python-command "python")
 	(setq lsp-bridge-python-command "python3"))
@@ -53,8 +55,10 @@
 (setq acm-enable-quick-access 1)
 ;; (setq lsp-bridge-get-workspace-folder nil)
 (setq lsp-bridge-enable-log 1)
+(setq lsp-bridge-enable-inlay-hint t)
 (setq acm-enable-tempel 1)
 (setq acm-backend-lsp-show-progress 1)
+(setq acm-enable-icon 1)
 (setq lsp-bridge-enable-debug 1)
 (setq lsp-bridge-log-level 'debug)
 (setq lsp-bridge-enable-completion-in-string t)
