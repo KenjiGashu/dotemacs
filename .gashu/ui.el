@@ -106,8 +106,22 @@
 (setq  all-the-icons-ibuffer-human-readable-size t)
 
 
-(use-package nav-flash :ensure t
-  :config (nav-flash-show))
+;; (use-package nav-flash :ensure t
+;;   :config (nav-flash-show))
+(use-package pulsar
+  :ensure t
+  :bind
+  ( :map global-map
+    ("C-x l" . pulsar-pulse-line) ; overrides `count-lines-page'
+    ("C-x L" . pulsar-highlight-permanently-dwim)) ; or use `pulsar-highlight-temporarily-dwim'
+  :init
+  (pulsar-global-mode 1)
+  :config
+  (setq pulsar-delay 0.055)
+  (setq pulsar-iterations 5)
+  (setq pulsar-face 'pulsar-green)
+  (setq pulsar-region-face 'pulsar-yellow)
+  (setq pulsar-highlight-face 'pulsar-magenta))
 
 
 (use-package beacon :ensure t
@@ -145,10 +159,10 @@
       (lambda ()
         (dired-hide-details-mode)))
 
-(use-package casual)
-(add-hook 'dired-mode-hook #'casual-dired-tmenu)
-(add-hook 'bookmark-bmenu-mode-hook #'casual-bookmarks-tmenu)
-(add-hook 'ibuffer-hook #'casual-ibuffer-tmenu)
+;; (use-package casual)
+;; (add-hook 'dired-mode-hook #'casual-dired-tmenu)
+;; (add-hook 'bookmark-bmenu-mode-hook #'casual-bookmarks-tmenu)
+;; (add-hook 'ibuffer-hook #'casual-ibuffer-tmenu)
 
 (use-package rand-theme)
 (setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
@@ -156,3 +170,21 @@ timu-caribbean moe-dark ef-symbiosis ef-trio-dark ef-tritanopia-dark ef-owl ef-n
 ef-duo-dark ef-dream ef-deuteranopia-dark ef-dark ef-cherie ef-bio ef-autumn sanityinc-tomorrow-eighties catppuccin
 material))
 (rand-theme)
+
+;; ======= COLORFUL ==========
+(use-package colorful-mode
+  ;; :diminish
+  ;; :ensure t ; Optional
+  :custom
+  (colorful-use-prefix t)
+  (colorful-only-strings 'only-prog)
+  (css-fontify-colors nil)
+  :config
+  (global-colorful-mode t)
+  (add-to-list 'global-colorful-modes 'helpful-mode))
+
+
+;; ========== breadcrumb =======
+(use-package breadcrumb
+	:config
+	(breadcrumb-mode 1))

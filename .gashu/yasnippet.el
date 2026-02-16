@@ -1,5 +1,5 @@
 (use-package yasnippet
-  ;;:demand t
+  :demand t
   :config
   (yas-global-mode 1)
   (general-define-key
