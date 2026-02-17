@@ -1,7 +1,7 @@
 
-(use-package general :ensure t
-  :config
-  (general-create-definer my-leader-def
+(elpaca
+		(general :wait :t)
+	(general-create-definer my-leader-def
     ;; :prefix my-leader
     :prefix "SPC")
 

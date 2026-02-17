@@ -34,27 +34,32 @@ nil : Otherwise, return nil and run next lineup function."
   :ensure t
   :hook ((c-mode c++-mode) . modern-c++-font-lock-mode))
 
+(use-package rmsbolt)
+
 ;;fix header not found when flycheck is enabled
-(use-package flycheck-clang-tidy
-  :after flycheck
-  :hook
-  (flycheck-mode . flycheck-clang-tidy-setup)
-  )
+;; (use-package flycheck-clang-tidy
+;;   :after flycheck
+;;   :hook
+;;   (flycheck-mode . flycheck-clang-tidy-setup)
+;;   )
 
 ;;(add-hook 'c-mode-hook (lambda () (lsp-bridge-mode)))
 ;;(add-hook 'c-mode-hook 'lsp-bridge-mode)
 ;;(add-hook 'c-mode-common-hook 'lsp-bridge-mode)
-;;(add-hook 'c-mode-common-hook 'eglot-ensure)
+(add-hook 'c-mode-common-hook 'eglot-ensure)
+(add-hook 'c-mode-common-hook 'corfu-mode)
 
 ;;(add-hook 'c-mode-hook 'lspce-mode)
 ;; (add-hook 'c-mode-hook 'lsp)
 ;; (add-hook 'c-mode-hook 'corfu-mode)
-(add-hook 'c-mode-hook 'lsp-bridge-mode)
+;;(add-hook 'c-mode-hook 'lsp-bridge-mode)
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c-mode-hook 'corfu-mode)
 
 ;; (add-hook 'c++-mode-hook 'lsp)
-;; (add-hook 'c++-mode-hook 'corfu-mode)
+(add-hook 'c++-mode-hook 'corfu-mode)
 ;;(add-hook 'c++-mode-hook 'lspce-mode)
-(add-hook 'c++-mode-hook 'lsp-bridge-mode)
+;;(add-hook 'c++-mode-hook 'lsp-bridge-mode)
 
 ;; ==================================================================
 

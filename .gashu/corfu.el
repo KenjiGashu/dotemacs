@@ -1,4 +1,15 @@
 (use-package corfu
+  :config
+  (add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
+  (add-hook 'corfu-mode-hook 'corfu-history-mode)
+  (add-hook 'corfu-mode-hook 'corfu-echo-mode)
+  (setq corfu-popupinfo-delay (cons 0.8 0.55))
+
+(general-define-key
+ :states '(insert emacs)
+ :keymaps '(corfu-mode-map)
+ "C-M-i" 'completion-at-point)
+
   ;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -31,23 +42,23 @@
 
 
 ;; A few more useful configurations...
-(use-package emacs
-  :init
-  ;; TAB cycle if there are only few candidates
-  ;; (setq completion-cycle-threshold 3)
+;; (use-package emacs
+;;   :init
+;;   ;; TAB cycle if there are only few candidates
+;;   ;; (setq completion-cycle-threshold 3)
 
-  ;; Enable indentation+completion using the TAB key.
-  ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete)
+;;   ;; Enable indentation+completion using the TAB key.
+;;   ;; `completion-at-point' is often bound to M-TAB.
+;;   (setq tab-always-indent 'complete)
 
-  ;; Emacs 30 and newer: Disable Ispell completion function. As an alternative,
-  ;; try `cape-dict'.
-  ;;(setq text-mode-ispell-word-completion nil)
+;;   ;; Emacs 30 and newer: Disable Ispell completion function. As an alternative,
+;;   ;; try `cape-dict'.
+;;   ;;(setq text-mode-ispell-word-completion nil)
 
-  ;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
-  ;; mode.  Corfu commands are hidden, since they are not used via M-x. This
-  ;; setting is useful beyond Corfu.
-  (setq read-extended-command-predicate #'command-completion-default-include-p))
+;;   ;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
+;;   ;; mode.  Corfu commands are hidden, since they are not used via M-x. This
+;;   ;; setting is useful beyond Corfu.
+;;   (setq read-extended-command-predicate #'command-completion-default-include-p))
 
 
 ;; Add extensions
@@ -111,12 +122,3 @@
 
 ;;(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
 
-(add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
-(add-hook 'corfu-mode-hook 'corfu-history-mode)
-(add-hook 'corfu-mode-hook 'corfu-echo-mode)
-(setq corfu-popupinfo-delay (cons 0.8 0.55))
-
-(general-define-key
- :states '(insert emacs)
- :keymaps '(corfu-mode-map)
- "C-M-i" 'completion-at-point)

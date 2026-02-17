@@ -7,7 +7,7 @@
 ;;change default font to iosevka
 (if (equal system-type 'windows-nt)
     (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
-  (add-to-list 'default-frame-alist '(font . "Iosevka-12")))
+  (add-to-list 'default-frame-alist '(font . "Iosevka-10")))
 
 
 
@@ -42,7 +42,7 @@
 ;; Show the current function name in the header line
 (which-function-mode)
 (setq-default header-line-format
-              '((which-func-mode ("" which-func-format " "))))
+             '((which-func-mode ("" which-func-format " "))))
 (setq mode-line-misc-info
             ;; We remove Which Function Mode from the mode line, because it's mostly
             ;; invisible here anyway.
@@ -55,24 +55,26 @@
 (use-package standard-themes)
 ;;(use-package modus-themes)
 (when (string= system-type "gnu/linux")
-	(use-package alabaster-theme 
-  :straight '(alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
+	(elpaca (alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
 (use-package catppuccin-theme)
 ;; (setq catppuccin-flavor 'mocha)
 ;; (catppuccin-reload)
 (use-package autothemer :ensure t)
-(straight-use-package
- '(rose-pine-emacs
-   :host github
-   :repo "thongpv87/rose-pine-emacs"
-   :branch "master"))
+
+(elpaca (rose-pine-emacs :host github :repo "thongpv87/rose-pine-emacs"
+												 :files (:defaults "*.el")
+												 :main "rose-pine-color-theme.el"))
+
 (use-package timu-caribbean-theme)
 (use-package color-theme-sanityinc-tomorrow)
 (use-package color-theme-sanityinc-solarized)
-(straight-use-package
- '(emacs-material-theme
+(elpaca 
+ (emacs-material-theme
 	 :host github
-	 :repo "cpaulik/emacs-material-theme"))
+	 :repo "cpaulik/emacs-material-theme"
+	 :files (:defaults "*.el")
+	 :main "material-theme.el"
+	 ))
 (use-package kaolin-themes)
   
 (use-package all-the-icons)
@@ -83,27 +85,31 @@
 
 (use-package highlight-blocks)
 (use-package rainbow-delimiters
+	:ensure (:wait t)
+	:demand t
 	:hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package all-the-icons-ibuffer
+	:init
+	;; Whether display the icons.
+	(setq all-the-icons-ibuffer-icon t)
+
+	;; Whether display the colorful icons.
+	;; It respects `all-the-icons-color-icons'.
+	(setq all-the-icons-ibuffer-color-icon t)
+
+	;; The default icon size in ibuffer.
+	(setq all-the-icons-ibuffer-icon-size 1.0)
+
+	;; The default vertical adjustment of the icon in ibuffer.
+	(setq all-the-icons-ibuffer-icon-v-adjust 0.0)
+
+	;; Use human readable file size in ibuffer.
+	(setq  all-the-icons-ibuffer-human-readable-size t)
+
   :ensure t
   :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
 
-;; Whether display the icons.
-(setq all-the-icons-ibuffer-icon t)
-
-;; Whether display the colorful icons.
-;; It respects `all-the-icons-color-icons'.
-(setq all-the-icons-ibuffer-color-icon t)
-
-;; The default icon size in ibuffer.
-(setq all-the-icons-ibuffer-icon-size 1.0)
-
-;; The default vertical adjustment of the icon in ibuffer.
-(setq all-the-icons-ibuffer-icon-v-adjust 0.0)
-
-;; Use human readable file size in ibuffer.
-(setq  all-the-icons-ibuffer-human-readable-size t)
 
 
 ;; (use-package nav-flash :ensure t
@@ -124,9 +130,9 @@
   (setq pulsar-highlight-face 'pulsar-magenta))
 
 
-(use-package beacon :ensure t
-  :config
-  (beacon-mode 1))
+;; (use-package beacon :ensure t
+;;   :config
+;;   (beacon-mode 1))
 ;; (use-package dimmer :ensure t
 ;;   :config
 ;;   (setq dimmer-fraction 0.6)
@@ -164,12 +170,15 @@
 ;; (add-hook 'bookmark-bmenu-mode-hook #'casual-bookmarks-tmenu)
 ;; (add-hook 'ibuffer-hook #'casual-ibuffer-tmenu)
 
-(use-package rand-theme)
-(setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
+(use-package rand-theme
+	:init
+	(setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
 timu-caribbean moe-dark ef-symbiosis ef-trio-dark ef-tritanopia-dark ef-owl ef-night ef-maris-dark ef-elea-dark
 ef-duo-dark ef-dream ef-deuteranopia-dark ef-dark ef-cherie ef-bio ef-autumn sanityinc-tomorrow-eighties catppuccin
 material))
-(rand-theme)
+	:config
+	(rand-theme))
+
 
 ;; ======= COLORFUL ==========
 (use-package colorful-mode

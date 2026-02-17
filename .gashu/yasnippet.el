@@ -31,20 +31,20 @@
 ;; 					(lambda ()
 ;; 						(yas-activate-extra-mode 'c++-mode))
 
-(add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
-(add-hook 'c-ts-mode-hook
-					(lambda ()
-						(yas-minor-mode)
-						(yas-activate-extra-mode 'c++-mode)))
+;; (add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
+;; (add-hook 'c-ts-mode-hook
+;; 					(lambda ()
+;; 						(yas-minor-mode)
+;; 						(yas-activate-extra-mode 'c++-mode)))
 
-(add-hook 'c++-ts-mode-hook
-					(lambda ()
-						(yas-minor-mode)
-						(yas-activate-extra-mode 'c++-mode)))
-(add-hook 'c++-mode-hook
-					(lambda ()
-						(yas-minor-mode)
-						(yas-activate-extra-mode 'c++-mode)))
+;; (add-hook 'c++-ts-mode-hook
+;; 					(lambda ()
+;; 						(yas-minor-mode)
+;; 						(yas-activate-extra-mode 'c++-mode)))
+;; (add-hook 'c++-mode-hook
+;; 					(lambda ()
+;; 						(yas-minor-mode)
+;; 						(yas-activate-extra-mode 'c++-mode)))
 
 					
 (use-package auto-yasnippet :ensure t
