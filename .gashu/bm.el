@@ -50,9 +50,8 @@
   ;; Then new bookmarks can be saved before the buffer is reverted.
   ;; Make sure bookmarks is saved before check-in (and revert-buffer)
   (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
-  )
 
-(general-define-key
+	(general-define-key
    :states '(normal visual insert emacs)
    :prefix "SPC"
    :keymaps '(override pdf-view-mode)
@@ -60,4 +59,7 @@
    "bm" 'bm-toggle
    "bj" 'bm-next
    "bk" 'bm-previous)
+  )
+
+
 
