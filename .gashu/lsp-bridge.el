@@ -12,6 +12,7 @@
 
 (elpaca
 		(lsp-bridge
+		 :wait t
 		 :host github :repo "manateelazycat/lsp-bridge"
 		 :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
 		 :build (:not elpaca--byte-compile))

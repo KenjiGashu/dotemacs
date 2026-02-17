@@ -5,7 +5,7 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
-			 ;;(lsp-bridge-mode)
+			 (lsp-bridge-mode)
 			 (setq-local acm-enable-capf t)
 	     (rainbow-delimiters-mode)))
 
@@ -42,7 +42,7 @@
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
 	     ;;(corfu-mode)
-			 ;;(lsp-bridge-mode)
+			 (lsp-bridge-mode)
 			 (setq-local acm-enable-capf t)
 	     (eldoc-mode)
 	     (rainbow-delimiters-mode)))
