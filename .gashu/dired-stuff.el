@@ -21,7 +21,6 @@
    :non-normal-prefix "C-SPC"
    "o=" 'dired-sidebar-toggle-sidebar))
 
-(use-package all-the-icons-dired :ensure t )
 
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 ;;(add-hook 'dired-mode-hook 'dired-collapse-mode)

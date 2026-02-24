@@ -78,16 +78,7 @@
 (use-package kaolin-themes)
   
 (use-package all-the-icons)
-
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
-
-(use-package highlight-blocks)
-(use-package rainbow-delimiters
-	:ensure (:wait t)
-	:demand t
-	:hook (prog-mode . rainbow-delimiters-mode))
+(use-package all-the-icons-dired :ensure t )
 
 (use-package all-the-icons-ibuffer
 	:init
@@ -107,8 +98,20 @@
 	;; Use human readable file size in ibuffer.
 	(setq  all-the-icons-ibuffer-human-readable-size t)
 
-  :ensure t
+  :ensure (:wait t)
   :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
+
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
+
+(use-package highlight-blocks)
+(use-package rainbow-delimiters
+	:ensure (:wait t)
+	:demand t
+	:hook (prog-mode . rainbow-delimiters-mode))
+
 
 
 
