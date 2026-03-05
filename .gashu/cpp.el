@@ -30,14 +30,14 @@ nil : Otherwise, return nil and run next lineup function."
 ;;
 ;; ================================================================
 
-(use-package modern-cpp-font-lock
-  :ensure t
-  :hook ((c-mode c++-mode) . modern-c++-font-lock-mode))
+(elpaca modern-cpp-font-lock
+  (add-hook 'c-mode-hook  'modern-c++-font-lock-mode)
+	(add-hook 'c++-mode-hook 'modern-c++-font-lock-mode))
 
-(use-package rmsbolt)
+(elpaca rmsbolt)
 
 ;;fix header not found when flycheck is enabled
-;; (use-package flycheck-clang-tidy
+;; (elpaca flycheck-clang-tidy
 ;;   :after flycheck
 ;;   :hook
 ;;   (flycheck-mode . flycheck-clang-tidy-setup)

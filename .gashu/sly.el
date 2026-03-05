@@ -1,7 +1,5 @@
-(use-package sly
+(elpaca sly
   ;;:demand t
-  :commands sly
-  :init
     ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (when (string= system-type "windows-nt")
     (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/2.0.0/")
@@ -20,9 +18,7 @@
 ;;(add-hook 'lisp-mode-hook #'company-mode)
 
 
-(use-package sly-asdf
-  ;;:demand t
-  :after sly
+(elpaca sly-asdf
  )
 
 (add-hook 'sly-mrepl-mode-hook 'corfu-mode)

@@ -1,6 +1,4 @@
-(use-package yasnippet
-  :demand t
-  :config
+(elpaca yasnippet
   (yas-global-mode 1)
   (general-define-key
    :states '(normal visual insert emacs)
@@ -13,10 +11,8 @@
    :non-normal-prefix "C-SPC"
    "C-M-u" 'yas-expand))
 
-(use-package yasnippet-snippets
-    :after (yas-global-mode)
-    :config (yas-reload-all)
-    :ensure t)
+(elpaca yasnippet-snippets
+    (yas-reload-all))
 
 
 ;;workaround for tree sitter
@@ -47,8 +43,7 @@
 ;; 						(yas-activate-extra-mode 'c++-mode)))
 
 					
-(use-package auto-yasnippet :ensure t
-  :config
+(elpaca auto-yasnippet
   (general-define-key
    :states '(normal visual insert emacs)
    :prefix "SPC"

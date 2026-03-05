@@ -1,6 +1,4 @@
-(use-package zig-mode
-	:ensure t
-  ;;:demand t
+(elpaca zig-mode
  )
 
 (autoload 'zig-mode "zig-mode" nil t)

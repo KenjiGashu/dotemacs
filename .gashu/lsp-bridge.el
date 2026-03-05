@@ -1,10 +1,8 @@
-(use-package posframe :ensure t
-  :demand t)
+(elpaca posframe)
 
-(use-package markdown-mode
-  :ensure t
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown"))
+(elpaca markdown-mode
+  ;;("README\\.md\\'" . gfm-mode)
+  (setq markdown-command "multimarkdown"))
 
 ;; (when (string= system-type "windows-nt")
 ;; 	(add-to-list 'load-path (concat xdg-home ".emacs.d/site-lisp/lsp-bridge/"))

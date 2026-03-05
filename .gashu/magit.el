@@ -1,2 +1,2 @@
-(use-package transient)
-(use-package magit :ensure t)
+(elpaca transient)
+(elpaca magit :ensure t)

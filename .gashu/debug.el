@@ -1,6 +1,4 @@
-(use-package dap-mode
-	:ensure t
-	:config
+(elpaca dap-mode
 ;; ;; Enabling only some features
 ;; (setq dap-auto-configure-features '(sessions locals controls tooltip))
 (dap-mode 1)

@@ -1,5 +1,4 @@
-(use-package corfu
-  :config
+(elpaca corfu
   (add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
   (add-hook 'corfu-mode-hook 'corfu-history-mode)
   (add-hook 'corfu-mode-hook 'corfu-echo-mode)
@@ -11,12 +10,11 @@
  "C-M-i" 'completion-at-point)
 
   ;; Optional customizations
-  :custom
-  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
+  (setq corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (setq corfu-auto t)                 ;; Enable auto completion
   ;;(corfu-separator ?\s)          ;; Orderless field separator
-	(corfu-auto-prefix 4)
-	(corfu-auto-delay 0.5)
+	(setq corfu-auto-prefix 4)
+	(setq corfu-auto-delay 0.5)
 	
   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
   ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
@@ -33,11 +31,11 @@
   ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
   ;; be used globally (M-/).  See also the customization variable
   ;; `global-corfu-modes' to exclude certain modes.
-	:bind
-	(:map corfu-map ("S-SPC" . corfu-insert-separator))
+	;; :bind
+	;; (:map corfu-map ("S-SPC" . corfu-insert-separator))
 
   ;;:init
-	;;(global-corfu-mode)
+	(global-corfu-mode)
 	)
 
 
@@ -62,8 +60,7 @@
 
 
 ;; Add extensions
-(use-package cape
-  :init
+(elpaca cape
   ;; Add to the global default value of `completion-at-point-functions' which is
   ;; used by `completion-at-point'.  The order of the functions matters, the
   ;; first function returning a result wins.  Note that the list of buffer-local
@@ -82,8 +79,7 @@
   ;;(add-hook 'completion-at-point-functions #'cape-line)
 )
 
-(use-package orderless
-  :init
+(elpaca orderless
 
   ;; Tune the global completion style settings to your liking!
   ;; This affects the minibuffer and non-lsp completion at point.
@@ -110,14 +106,10 @@
 
 
 ;; pretty icons
-(use-package kind-icon
-  :ensure t
-  :after corfu
-  :custom
-   (kind-icon-blend-background t)
-   (kind-icon-default-face 'corfu-default) ; only needed with blend-background
-  :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+(elpaca kind-icon
+   (setq kind-icon-blend-background t)
+   (setq kind-icon-default-face 'corfu-default) ; only needed with blend-background
+  (add-hook 'emacs-startup-hook (lambda () (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))))
 
 
 ;;(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)

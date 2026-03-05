@@ -4,9 +4,8 @@
 ;;
 ;; =================================================================
 ;; Enable vertico
-(use-package vertico
+(elpaca vertico
 	:ensure t
-  :init
   (vertico-mode)
 
   ;; Different scroll margin
@@ -21,11 +20,16 @@
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   ;; (setq vertico-cycle t)
 
-  :bind (:map vertico-map
-	      ("C-j" . vertico-next)
-	      ("C-k" . vertico-previous))
+  ;; :bind (:map vertico-map
+  ;; 	      ("C-j" . vertico-next)
+  ;; 	      ("C-k" . vertico-previous))
 
-  :config
+  (general-define-key
+   :keymaps 'vertico-map
+   "C-j" #'vertico-next
+   "C-k" #'vertico-previous
+   "C-l" #'vertico-directory-delete-char)
+  
   ;; Use `consult-completion-in-region' if Vertico is enabled.
   ;; Otherwise use the default `completion--in-region' function.
   (setq completion-in-region-function
@@ -41,9 +45,7 @@
 ;; expansion. `partial-completion' is important for wildcard support.
 ;; Multiple files can be opened at once with `find-file' if you enter a
 ;; wildcard. You may also give the `initials' completion style a try.
-(use-package orderless
-	:ensure t
-  :init
+(elpaca orderless
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
@@ -57,10 +59,21 @@
 ;;   :init
 ;;   (savehist-mode))
 
-;; A few more useful configurations...
-;; (use-package emacs
-;; 	:ensure t
-;;   :init
+;; from (use-package emacs)
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; Alternatively try `consult-completing-read-multiple'.
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+
+;; ;; A few more useful configurations...
+;; (elpaca emacs
 ;;   ;; Add prompt indicator to `completing-read-multiple'.
 ;;   ;; Alternatively try `consult-completing-read-multiple'.
 ;;   (defun crm-indicator (args)
@@ -80,15 +93,9 @@
 ;;   ;; Enable recursive minibuffers
 ;;   (setq enable-recursive-minibuffers t))
 
-(use-package marginalia
-	:ensure t
-  :after vertico
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :init (marginalia-mode))
+(elpaca marginalia
+  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
 
-(use-package consult
-	:ensure t
-  :after vertico)
+(elpaca consult)
 
 

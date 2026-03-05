@@ -49,18 +49,21 @@
       ;; invisible here anyway.
       (assq-delete-all 'which-func-mode mode-line-misc-info))
 
-(use-package doom-themes)
-(use-package moe-theme)
-(use-package nordic-night-theme)
-(use-package ef-themes)
-(use-package standard-themes)
-;;(use-package modus-themes)
+(elpaca rainbow-delimiters :wait t
+				(add-hook 'emacs-startup-hook (lambda () (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))))
+
+(elpaca doom-themes)
+(elpaca moe-theme)
+(elpaca nordic-night-theme)
+(elpaca ef-themes)
+(elpaca standard-themes)
+;;(elpaca modus-themes)
 (when (string= system-type "gnu/linux")
 	(elpaca (alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
-(use-package catppuccin-theme)
+(elpaca catppuccin-theme)
 ;; (setq catppuccin-flavor 'mocha)
 ;; (catppuccin-reload)
-(use-package autothemer :ensure t)
+(elpaca autothemer :ensure t)
 
 (elpaca
 	(rose-pine-emacs
@@ -68,9 +71,9 @@
 	 :files (:defaults "*.el")
 	 :main "rose-pine-color-theme.el"))
 
-(use-package timu-caribbean-theme)
-(use-package color-theme-sanityinc-tomorrow)
-(use-package color-theme-sanityinc-solarized)
+(elpaca timu-caribbean-theme)
+(elpaca color-theme-sanityinc-tomorrow)
+(elpaca color-theme-sanityinc-solarized)
 (elpaca 
  (emacs-material-theme
 	 :host github
@@ -78,12 +81,12 @@
 	 :files (:defaults "*.el")
 	 :main "material-theme.el"
 	 ))
-(use-package kaolin-themes)
+(elpaca kaolin-themes)
   
-(use-package all-the-icons)
-(use-package all-the-icons-dired :ensure t )
+(elpaca all-the-icons)
+(elpaca all-the-icons-dired :ensure t )
 
-(use-package all-the-icons-ibuffer
+(elpaca all-the-icons-ibuffer
 	:init
 	;; Whether display the icons.
 	(setq all-the-icons-ibuffer-icon t)
@@ -101,34 +104,32 @@
 	;; Use human readable file size in ibuffer.
 	(setq  all-the-icons-ibuffer-human-readable-size t)
 
-  :ensure (:wait t)
-  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
+  (add-hook 'ibuffer-mode-hook all-the-icons-ibuffer-mode))
 
 
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+(elpaca doom-modeline
+(doom-modeline-mode 1)
+(setq doom-modeline-height 15))
 
-(use-package highlight-blocks)
-(use-package rainbow-delimiters
-	:ensure (:wait t)
-	:demand t
-	:hook (prog-mode . rainbow-delimiters-mode))
+(elpaca highlight-blocks)
 
 
 
 
-;; (use-package nav-flash :ensure t
+
+;; (elpaca nav-flash :ensure t
 ;;   :config (nav-flash-show))
-(use-package pulsar
-  :ensure t
-  :bind
-  ( :map global-map
-    ("C-x l" . pulsar-pulse-line) ; overrides `count-lines-page'
-    ("C-x L" . pulsar-highlight-permanently-dwim)) ; or use `pulsar-highlight-temporarily-dwim'
-  :init
+(elpaca pulsar
+  
+  (general-define-key
+   :keymaps 'global-map
+   "C-x l" 'pulsar-pulse-line
+   "C-x L" 'pulsar-highlight-permanently-dwim
+   )
+  ;; ( :map global-map
+  ;;   ("C-x l" . pulsar-pulse-line) ; overrides `count-lines-page'
+  ;;   ("C-x L" . pulsar-highlight-permanently-dwim)) ; or use `pulsar-highlight-temporarily-dwim'
   (pulsar-global-mode 1)
-  :config
   (setq pulsar-delay 0.055)
   (setq pulsar-iterations 5)
   (setq pulsar-face 'pulsar-green)
@@ -136,15 +137,15 @@
   (setq pulsar-highlight-face 'pulsar-magenta))
 
 
-;; (use-package beacon :ensure t
+;; (elpaca beacon :ensure t
 ;;   :config
 ;;   (beacon-mode 1))
-;; (use-package dimmer :ensure t
+;; (elpaca dimmer :ensure t
 ;;   :config
 ;;   (setq dimmer-fraction 0.6)
 ;;   (dimmer-mode t))
 
-;; (use-package indent-bars
+;; (elpaca indent-bars
 ;; 	:custom
 ;; 	(indent-bars-no-descend-lists t)
 ;; 	;;(indent-bars-no-descend-lists 'skip)
@@ -154,8 +155,7 @@
 ;; 	:init
 ;; 	(add-hook 'prog-mode-hook 'indent-bars-mode))
 
-(use-package highlight-indent-guides
-  :config
+(elpaca highlight-indent-guides
   ;;(setq highlight-indent-guides-auto-character-face-perc 0)
   (setq highlight-indent-guides-auto-even-face-perc 17)
   (setq highlight-indent-guides-auto-odd-face-perc 33)
@@ -182,35 +182,30 @@
       (lambda ()
         (dired-hide-details-mode)))
 
-;; (use-package casual)
+;; (elpaca casual)
 ;; (add-hook 'dired-mode-hook #'casual-dired-tmenu)
 ;; (add-hook 'bookmark-bmenu-mode-hook #'casual-bookmarks-tmenu)
 ;; (add-hook 'ibuffer-hook #'casual-ibuffer-tmenu)
 
-(use-package rand-theme
-	:init
+(elpaca rand-theme
 	(setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
 timu-caribbean moe-dark ef-symbiosis ef-trio-dark ef-tritanopia-dark ef-owl ef-night ef-maris-dark ef-elea-dark
 ef-duo-dark ef-dream ef-deuteranopia-dark ef-dark ef-cherie ef-bio ef-autumn sanityinc-tomorrow-eighties catppuccin
 material))
-	:config
 	(rand-theme))
 
 
 ;; ======= COLORFUL ==========
-(use-package colorful-mode
+(elpaca colorful-mode
   ;; :diminish
   ;; :ensure t ; Optional
-  :custom
-  (colorful-use-prefix t)
-  (colorful-only-strings 'only-prog)
-  (css-fontify-colors nil)
-  :config
+  (setq colorful-use-prefix t)
+  (setq colorful-only-strings 'only-prog)
+  (setq css-fontify-colors nil)
   (global-colorful-mode t)
   (add-to-list 'global-colorful-modes 'helpful-mode))
 
 
 ;; ========== breadcrumb =======
-(use-package breadcrumb
-	:config
+(elpaca breadcrumb
 	(breadcrumb-mode 1))

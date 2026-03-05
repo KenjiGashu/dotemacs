@@ -5,16 +5,13 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
-			 (lsp-bridge-mode)
-			 (setq-local acm-enable-capf t)
-	     (rainbow-delimiters-mode)))
+			 (setq-local acm-enable-capf t)))
 
 ;;
 ;; geiser
 ;;
-(use-package geiser
-  :ensure t
-  :init (setq geiser-active-implementations '(racket)))
+(elpaca geiser
+  (setq geiser-active-implementations '(racket)))
 
 
 ;; corfu
@@ -29,9 +26,7 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
-			 ;;(lsp-bridge-mode)
 			 (setq-local acm-enable-capf t)
-	     (rainbow-delimiters-mode)
 	     (geiser-mode)))
 
 ;;
@@ -41,9 +36,6 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
-	     ;;(corfu-mode)
-			 (lsp-bridge-mode)
 			 (setq-local acm-enable-capf t)
-	     (eldoc-mode)
-	     (rainbow-delimiters-mode)))
+	     (eldoc-mode)))
 

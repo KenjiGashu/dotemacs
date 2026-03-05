@@ -33,17 +33,12 @@
 ;;         (css-mode . css-ts-mode)
 ;;         (python-mode . python-ts-mode)))
 
-(use-package tree-sitter
-	:ensure t
-  :demand t
-	:config
+(elpaca tree-sitter
 	(global-tree-sitter-mode)
 	(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 	)
 
-(use-package tree-sitter-langs
-	:ensure t
-  :demand t
+(elpaca tree-sitter-langs
  )
 

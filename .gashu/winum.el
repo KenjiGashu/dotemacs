@@ -1,7 +1,5 @@
-(use-package winum
-  :ensure t
-  :demand t
-  :config (winum-mode 1)
+(elpaca winum
+	(winum-mode 1)
   (general-define-key
    :states '(normal  visual insert emacs)
    :prefix "SPC"
