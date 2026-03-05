@@ -16,7 +16,7 @@
   ;;:demand t
   :commands slime
   :init
-    ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (when (string= system-type "windows-nt")
     ;;(load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
     ;;(add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")

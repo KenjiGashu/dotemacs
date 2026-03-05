@@ -5,7 +5,7 @@
     ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (when (string= system-type "windows-nt")
     (add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/2.0.0/")
-    (setq inferior-lisp-program "sbcl")
+    (setq inferior-lisp-program "ccl")
     )
 
   (when (string= system-type "gnu/linux")

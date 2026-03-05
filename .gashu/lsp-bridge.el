@@ -41,7 +41,7 @@
 					)
 				)
 
-	(global-lsp-bridge-mode)
+	;;(global-lsp-bridge-mode)
 	(setq acm-enable-quick-access 1)
 	(setq lsp-bridge-enable-log 1)
 	(setq lsp-bridge-enable-inlay-hint t)
