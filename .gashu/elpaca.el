@@ -40,6 +40,9 @@
 (when (string= system-type "windows-nt")
 	(elpaca-no-symlink-mode))
 
+(when (string= system-type "windows-nt")
+	(setq elpaca-queue-limit 5))
+
 ;; Install use-package support
 (elpaca elpaca-use-package
   ;; Enable use-package :ensure support for Elpaca.
