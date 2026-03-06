@@ -104,7 +104,7 @@
 	;; Use human readable file size in ibuffer.
 	(setq  all-the-icons-ibuffer-human-readable-size t)
 
-  (add-hook 'ibuffer-mode-hook all-the-icons-ibuffer-mode))
+  (add-hook 'ibuffer-mode-hook 'all-the-icons-ibuffer-mode))
 
 
 (elpaca doom-modeline
@@ -181,6 +181,7 @@
 (add-hook 'dired-mode-hook
       (lambda ()
         (dired-hide-details-mode)))
+;;(add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
 ;; (elpaca casual)
 ;; (add-hook 'dired-mode-hook #'casual-dired-tmenu)

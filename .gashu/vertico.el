@@ -5,7 +5,6 @@
 ;; =================================================================
 ;; Enable vertico
 (elpaca vertico
-	:ensure t
   (vertico-mode)
 
   ;; Different scroll margin

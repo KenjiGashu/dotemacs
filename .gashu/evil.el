@@ -32,9 +32,9 @@
 (elpaca vimish-fold)
 
 (elpaca (evil-vimish-fold)
-  (add-hook 'prog-mode-hook evil-vimish-fold-mode)
-  (add-hook 'conf-mode-hook evil-vimish-fold-mode)
-  (add-hook 'text-mode-hook evil-vimish-fold-mode))
+  (add-hook 'prog-mode-hook 'evil-vimish-fold-mode)
+  (add-hook 'conf-mode-hook 'evil-vimish-fold-mode)
+  (add-hook 'text-mode-hook 'evil-vimish-fold-mode))
 
 ;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 

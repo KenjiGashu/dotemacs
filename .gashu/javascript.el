@@ -83,7 +83,7 @@
                  js2-mode
                  js-ts-mode
                  clojure-mode))
-        (add-to-list 'lsp-tailwindcss-major-modes tw-major-mode)))
+        (add-hook 'emacs-startup-hook (lambda () (add-to-list 'lsp-tailwindcss-major-modes tw-major-mode)))))
 
 (elpaca typescript-mode)
 
