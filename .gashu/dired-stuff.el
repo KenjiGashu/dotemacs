@@ -3,12 +3,14 @@
 ;; Dired stuff
 ;;
 ;; ================================
-(elpaca dired-hacks-utils :ensure t )
-(elpaca dired-filter :ensure t )
-(elpaca dired-subtree :ensure t )
-(elpaca dired-ranger :ensure t )
-(elpaca dired-collapse :ensure t )
-(elpaca dired-sidebar :ensure t
+(elpaca dired-hacks-utils )
+(elpaca dired-filter )
+(elpaca dired-subtree )
+(elpaca dired-ranger )
+(elpaca dired-collapse
+	(add-hook 'dired-mode-hook 'dired-collapse-mode)
+	)
+(elpaca dired-sidebar 
 	(setq dired-sidebar-width 65)
 
   (general-define-key
@@ -19,8 +21,6 @@
    "o=" 'dired-sidebar-toggle-sidebar))
 
 
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-(add-hook 'dired-mode-hook 'dired-collapse-mode)
 
 
 (elpaca dired-subtree

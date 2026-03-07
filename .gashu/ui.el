@@ -84,7 +84,9 @@
 (elpaca kaolin-themes)
   
 (elpaca all-the-icons)
-(elpaca all-the-icons-dired :ensure t )
+(elpaca all-the-icons-dired 
+	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+				)
 
 (elpaca all-the-icons-ibuffer
 	:init

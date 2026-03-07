@@ -72,18 +72,9 @@
 ;; 	(setq lsp-tailwindcss-major-modes '(web-mode html-mode sgml-mode css-mode rjsx-mode))) 
 
 (elpaca lsp-tailwindcss
-      (setq lsp-tailwindcss-add-on-mode t)
-      (dolist (tw-major-mode
-               '(css-mode
-                 css-ts-mode
-                 typescript-mode
-                 typescript-ts-mode
-                 tsx-ts-mode
-								 rjsx-mode
-                 js2-mode
-                 js-ts-mode
-                 clojure-mode))
-        (add-hook 'emacs-startup-hook (lambda () (add-to-list 'lsp-tailwindcss-major-modes tw-major-mode)))))
+  (setq lsp-tailwindcss-add-on-mode t))
+
+
 
 (elpaca typescript-mode)
 
