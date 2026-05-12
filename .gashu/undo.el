@@ -15,8 +15,7 @@
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (elpaca undo-fu
-	(setq evil-undo-system 'undo-fu)
-  (setq evil-set-undo-system 'undo-fu))
+	(evil-set-undo-system 'undo-fu))
 
 (elpaca undo-fu-session
 	(undo-fu-session-global-mode))

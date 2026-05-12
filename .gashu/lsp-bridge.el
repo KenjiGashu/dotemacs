@@ -41,6 +41,7 @@
 
 	;;(global-lsp-bridge-mode)
 	(setq acm-enable-quick-access 1)
+	(setq acm-enable-capf 1)
 	(setq lsp-bridge-enable-log 1)
 	(setq lsp-bridge-enable-inlay-hint t)
 	(setq acm-enable-tempel 1)
@@ -49,7 +50,7 @@
 	(setq lsp-bridge-enable-debug 1)
 	(setq lsp-bridge-log-level 'debug)
 	(setq lsp-bridge-enable-completion-in-string t)
-	(setq acm-backend-lsp-candidates-max-number 80)
+	(setq acm-backend-lsp-candidates-max-number 40)
 	(add-hook 'rjsx-mode-hook (lambda () (setq-local acm-backend-lsp-match-mode "prefix")))
 	(if (string= system-type "windows-nt")
 			(setq lsp-bridge-python-command "python")

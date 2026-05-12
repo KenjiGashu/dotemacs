@@ -1,2 +1,1 @@
-(use-package vterm
-    :ensure t)
+(elpaca vterm)

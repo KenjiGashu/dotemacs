@@ -5,12 +5,13 @@
 ;; =================================================================
 
 ;;change default font to iosevka
+;; (if (equal system-type 'windows-nt)
+;;     (add-to-list 'default-frame-alist '(font . "Spleen 6x12-12"))
+;;   (add-to-list 'default-frame-alist '(font . "Spleen 6x12-12")))
+
 (if (equal system-type 'windows-nt)
-    (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
-  (add-to-list 'default-frame-alist '(font . "Iosevka-10")))
-
-
-
+    (add-to-list 'default-frame-alist '(font . "Spleen 6x12-12"))
+  (add-to-list 'default-frame-alist '(font . "Sergamon-12")))
 
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
@@ -51,6 +52,25 @@
 
 (elpaca rainbow-delimiters :wait t
 				(add-hook 'emacs-startup-hook (lambda () (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))))
+
+(elpaca highlight-indent-guides
+	;;(setq highlight-indent-guides-auto-character-face-perc 0)
+	(setq highlight-indent-guides-auto-even-face-perc 17)
+	(setq highlight-indent-guides-auto-odd-face-perc 33)
+	(setq highlight-indent-guides-auto-top-odd-face-perc 60)
+	(setq highlight-indent-guides-auto-top-even-face-perc 60)
+	;;(setq highlight-indent-guides-auto-character-face-perc 0)
+	;;(setq highlight-indent-guides-auto-top-character-face-perc 0)
+
+	(setq highlight-indent-guides-method 'column)
+	(setq highlight-indent-guides-responsive 'top)
+	(setq highlight-indent-guides-auto-enabled t)
+	(set-face-foreground 'highlight-indent-guides-character-face "dim gray")
+	;;(set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
+	(set-face-foreground 'highlight-indent-guides-top-character-face "light gray")
+	(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+	)
+
 
 (elpaca doom-themes)
 (elpaca moe-theme)
@@ -157,23 +177,7 @@
 ;; 	:init
 ;; 	(add-hook 'prog-mode-hook 'indent-bars-mode))
 
-(elpaca highlight-indent-guides
-  ;;(setq highlight-indent-guides-auto-character-face-perc 0)
-  (setq highlight-indent-guides-auto-even-face-perc 17)
-  (setq highlight-indent-guides-auto-odd-face-perc 33)
-	(setq highlight-indent-guides-auto-top-odd-face-perc 60)
-	(setq highlight-indent-guides-auto-top-even-face-perc 60)
-  ;;(setq highlight-indent-guides-auto-character-face-perc 0)
-  ;;(setq highlight-indent-guides-auto-top-character-face-perc 0)
 
-  (setq highlight-indent-guides-method 'column)
-  (setq highlight-indent-guides-responsive 'top)
-  (setq highlight-indent-guides-auto-enabled t)
-  (set-face-foreground 'highlight-indent-guides-character-face "dim gray")
-  ;;(set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
-	(set-face-foreground 'highlight-indent-guides-top-character-face "light gray")
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-  )
 
 ;;customize search
 (setq lazy-highlight-cleanup nil)
@@ -212,3 +216,4 @@ material))
 ;; ========== breadcrumb =======
 (elpaca breadcrumb
 	(breadcrumb-mode 1))
+

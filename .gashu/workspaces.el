@@ -2,8 +2,12 @@
 ;; 	:ensure t
 ;; 	:config (eyebrowse-mode 1))
 
-;; (use-package persp-mode
-;; 	:ensure t)
+(elpaca persp-mode
+	(add-hook 'elpaca-after-init-hook
+						(lambda ()
+							(setq wg-morph-on nil) ;; switch off animation
+							(setq persp-autokill-buffer-on-remove 'kill-weak)
+							(add-hook 'window-setup-hook #'(lambda () (persp-mode 1))))))
 
 ;; (use-package workgroups
 ;; 	:ensure t)

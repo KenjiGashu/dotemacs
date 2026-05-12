@@ -7,6 +7,11 @@
   (browse-url-browser-function 'eaf-open-browser)
 ) ;; unbind, see more in the Wiki
 
+(elpaca eaf
+	:host github :repo "thongpv87/rose-pine-emacs"
+	:files (:defaults "*")
+	;;:main "rose-pine-color-theme.el"
+	)
 
 (require 'eaf-browser)
 (require 'eaf-pdf-viewer)
