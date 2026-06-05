@@ -11,11 +11,19 @@
 ;;(add-hook 'after-save-visited-mode-hook (lambda () (undo-tree-save-history nil t)))
 ;;(add-hook 'after-revert-hook (lambda () (undo-tree-save-history nil t)))
 
-(elpaca vundo
+(use-package vundo
+	:ensure t
+  :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
-(elpaca undo-fu
-	(evil-set-undo-system 'undo-fu))
+(use-package undo-fu
+	:ensure t
+	:after evil
+	:config
+	(setq evil-undo-system 'undo-fu)
+  (evil-set-undo-system 'undo-fu))
 
-(elpaca undo-fu-session
-	(undo-fu-session-global-mode))
+(use-package undo-fu-session
+	:ensure t
+	:after undo-fu
+	:config (undo-fu-session-global-mode))

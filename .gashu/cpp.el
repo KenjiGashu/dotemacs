@@ -30,36 +30,30 @@ nil : Otherwise, return nil and run next lineup function."
 ;;
 ;; ================================================================
 
-(elpaca modern-cpp-font-lock
-  (add-hook 'c-mode-hook  'modern-c++-font-lock-mode)
-	(add-hook 'c++-mode-hook 'modern-c++-font-lock-mode))
-
-(elpaca rmsbolt)
+(use-package modern-cpp-font-lock
+  :ensure t
+  :hook ((c-mode c++-mode) . modern-c++-font-lock-mode))
 
 ;;fix header not found when flycheck is enabled
-;; (elpaca flycheck-clang-tidy
-;;   :after flycheck
-;;   :hook
-;;   (flycheck-mode . flycheck-clang-tidy-setup)
-;;   )
+(use-package flycheck-clang-tidy
+	:ensure t
+  :after flycheck
+  :hook
+  (flycheck-mode . flycheck-clang-tidy-setup)
+  )
 
 ;;(add-hook 'c-mode-hook (lambda () (lsp-bridge-mode)))
 ;;(add-hook 'c-mode-hook 'lsp-bridge-mode)
 ;;(add-hook 'c-mode-common-hook 'lsp-bridge-mode)
-(add-hook 'c-mode-common-hook 'eglot-ensure)
-(add-hook 'c-mode-common-hook 'corfu-mode)
+;;(add-hook 'c-mode-common-hook 'eglot-ensure)
 
 ;;(add-hook 'c-mode-hook 'lspce-mode)
 ;; (add-hook 'c-mode-hook 'lsp)
 ;; (add-hook 'c-mode-hook 'corfu-mode)
-;;(add-hook 'c-mode-hook 'lsp-bridge-mode)
-(add-hook 'c-mode-hook 'eglot-ensure)
-(add-hook 'c-mode-hook 'corfu-mode)
 
 ;; (add-hook 'c++-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'corfu-mode)
+;; (add-hook 'c++-mode-hook 'corfu-mode)
 ;;(add-hook 'c++-mode-hook 'lspce-mode)
-;;(add-hook 'c++-mode-hook 'lsp-bridge-mode)
 
 ;; ==================================================================
 

@@ -6,12 +6,14 @@
 
 (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
 (setq evil-want-keybinding nil)
-(elpaca (evil :wait t)
+(use-package evil :ensure t :demand t
+  :init
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
   (setq evil-want-keybinding nil)
 
-  (add-hook 'prog-mode-hook #'hs-minor-mode)
-  (evil-mode 1))
+	:hook
+  ('prog-mode . #'hs-minor-mode)
+  :config (evil-mode 1))
 
 (setq evil-fold-list
   `(((hs-minor-mode)
@@ -24,17 +26,24 @@
    )
 )
 
-(elpaca evil-collection
+(use-package evil-collection
+  :after evil
+  :defer nil
+  :ensure t
+  :config
   (evil-collection-init))
 
-(elpaca evil-org)
+(use-package evil-org
+  :after (evil org-mode))
 
-(elpaca vimish-fold)
+(use-package vimish-fold
+  :ensure t
+  :after evil)
 
-(elpaca (evil-vimish-fold)
-  (add-hook 'prog-mode-hook 'evil-vimish-fold-mode)
-  (add-hook 'conf-mode-hook 'evil-vimish-fold-mode)
-  (add-hook 'text-mode-hook 'evil-vimish-fold-mode))
+(use-package evil-vimish-fold
+  :ensure t
+  :after vimish-fold
+  :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
 
 ;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 
@@ -43,11 +52,16 @@
 ;;   (kbd "RET") 'dired-find-file)
 
 ;; multiple cursors evil mode
-(elpaca evil-mc
-  (global-evil-mc-mode 1))
+(use-package evil-mc :demand t
+  :ensure t
+  :after evil
+  :config (global-evil-mc-mode 1))
 
-(elpaca evil-snipe
-  (evil-snipe-mode +1)
-  (evil-snipe-override-mode +1)
-  (setq evil-snipe-scope 'visible)
-  (setq evil-snipe-repeat-scope 'whole-visible))
+(use-package evil-snipe :demand t
+	:ensure t
+	:after evil
+	:config
+	(evil-snipe-mode +1)
+	(evil-snipe-override-mode +1)
+	(setq evil-snipe-scope 'visible)
+	(setq evil-snipe-repeat-scope 'whole-visible))

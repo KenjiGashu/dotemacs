@@ -33,22 +33,25 @@
 ;; ================= install bookmark-plus ======================
 ;;
 
-(elpaca
-		(bookmark+ :host github :repo "emacsmirror/bookmark-plus")
-
+(use-package bookmark+
+	:ensure (:host github
+					 :repo "https://github.com/emacsmirror/bookmark-plus")
+	:after general
+	:config
 	(general-define-key
-	 :states '(normal  visual insert emacs)
-	 :prefix "SPC"
-	 :keymaps '(override pdf-view-mode)
-	 :non-normal-prefix "C-SPC"
-	 "bm" 'bookmark-set
-	 "bv" 'list-bookmarks
-	 "bt" 'bmkp-switch-bookmark-file-create
-	 "bn" 'bmkp-next-bookmark
-	 "bp" 'bmkp-previous-bookmark)
-	
-
-	(setq bookmark-save-flag 1
-				bmkp-count-multi-mods-as-one-flag t))
+ :states '(normal  visual insert emacs)
+ :prefix "SPC"
+ :keymaps '(override pdf-view-mode)
+ :non-normal-prefix "C-SPC"
+ "bm" 'bookmark-set
+ "bv" 'list-bookmarks
+ "bt" 'bmkp-switch-bookmark-file-create
+ "bn" 'bmkp-next-bookmark
+ "bp" 'bmkp-previous-bookmark)
+  )
 
 
+
+
+(setq bookmark-save-flag 1
+			bmkp-count-multi-mods-as-one-flag t)

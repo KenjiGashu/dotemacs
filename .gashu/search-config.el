@@ -1,6 +1,10 @@
-(elpaca anzu
-	(global-anzu-mode +1))
-(elpaca evil-anzu)
+(use-package anzu
+	:ensure t
+  :config (global-anzu-mode +1))
+(use-package evil-anzu
+	:ensure t
+  :after evil)
 
-(elpaca evil-search-highlight-persist
-	(global-evil-search-highlight-persist t))
+(use-package evil-search-highlight-persist
+	:ensure t
+	:config (global-evil-search-highlight-persist t))

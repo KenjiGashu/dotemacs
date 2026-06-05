@@ -3,16 +3,18 @@
 ;; Dired stuff
 ;;
 ;; ================================
-(elpaca dired-hacks-utils )
-(elpaca dired-filter )
-(elpaca dired-subtree )
-(elpaca dired-ranger )
-(elpaca dired-collapse
-	(add-hook 'dired-mode-hook 'dired-collapse-mode)
-	)
-(elpaca dired-sidebar 
+(use-package dired-hacks-utils :ensure t )
+(use-package dired-filter :ensure t )
+(use-package dired-subtree :ensure t )
+(use-package dired-ranger :ensure t )
+(use-package dired-collapse :ensure t )
+(use-package dired-sidebar :ensure t
+	:after general
+  :commands (dired-sidebar-toggle-sidebar)
+	:config
 	(setq dired-sidebar-width 65)
 
+	:init
   (general-define-key
    :states '(normal  visual insert emacs)
    :prefix "SPC"
@@ -20,10 +22,17 @@
    :non-normal-prefix "C-SPC"
    "o=" 'dired-sidebar-toggle-sidebar))
 
+(use-package all-the-icons-dired :ensure t
+	:init
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+	)
+
+;;(add-hook 'dired-mode-hook 'dired-collapse-mode)
 
 
-
-(elpaca dired-subtree
+(use-package dired-subtree
+	:ensure t
+  :config
   (evil-define-key '(normal) dired-mode-map
     (kbd "TAB") 'dired-subtree-insert
     (kbd "<backtab>") 'dired-subtree-remove)

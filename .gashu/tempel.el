@@ -1,13 +1,15 @@
 ;;tempel
 ;; Configure Tempel
-(elpaca tempel
+(use-package tempel
+	:ensure t
   ;; Require trigger prefix before template name when completing.
   ;; :custom
   ;; (tempel-trigger-prefix "<")
 
-  ;; :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
-  ;;        ("M-*" . tempel-insert))
+  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+         ("M-*" . tempel-insert))
 
+  :init
 
   ;; Setup completion at point
   ;; (defun tempel-setup-capf ()
@@ -34,7 +36,7 @@
 
 ;; Optional: Add tempel-collection.
 ;; The package is young and doesn't have comprehensive coverage.
-(elpaca tempel-collection)
+(use-package tempel-collection :ensure t)
 
 
 ;; (defun tempel-include (elt)

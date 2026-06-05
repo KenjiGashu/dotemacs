@@ -1,4 +1,8 @@
-(elpaca yasnippet
+(use-package yasnippet
+  :after general
+  :ensure t
+  ;;:demand t
+  :config
   (yas-global-mode 1)
   (general-define-key
    :states '(normal visual insert emacs)
@@ -11,8 +15,10 @@
    :non-normal-prefix "C-SPC"
    "C-M-u" 'yas-expand))
 
-(elpaca yasnippet-snippets
-    (yas-reload-all))
+(use-package yasnippet-snippets
+    :after (yas-global-mode)
+    :config (yas-reload-all)
+    :ensure t)
 
 
 ;;workaround for tree sitter
@@ -27,23 +33,25 @@
 ;; 					(lambda ()
 ;; 						(yas-activate-extra-mode 'c++-mode))
 
-;; (add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
-;; (add-hook 'c-ts-mode-hook
-;; 					(lambda ()
-;; 						(yas-minor-mode)
-;; 						(yas-activate-extra-mode 'c++-mode)))
+(add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
+(add-hook 'c-ts-mode-hook
+					(lambda ()
+						(yas-minor-mode)
+						(yas-activate-extra-mode 'c++-mode)))
 
-;; (add-hook 'c++-ts-mode-hook
-;; 					(lambda ()
-;; 						(yas-minor-mode)
-;; 						(yas-activate-extra-mode 'c++-mode)))
-;; (add-hook 'c++-mode-hook
-;; 					(lambda ()
-;; 						(yas-minor-mode)
-;; 						(yas-activate-extra-mode 'c++-mode)))
+(add-hook 'c++-ts-mode-hook
+					(lambda ()
+						(yas-minor-mode)
+						(yas-activate-extra-mode 'c++-mode)))
+(add-hook 'c++-mode-hook
+					(lambda ()
+						(yas-minor-mode)
+						(yas-activate-extra-mode 'c++-mode)))
 
 					
-(elpaca auto-yasnippet
+(use-package auto-yasnippet :ensure t
+  :after general
+  :config
   (general-define-key
    :states '(normal visual insert emacs)
    :prefix "SPC"

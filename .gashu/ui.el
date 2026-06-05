@@ -5,13 +5,12 @@
 ;; =================================================================
 
 ;;change default font to iosevka
-;; (if (equal system-type 'windows-nt)
-;;     (add-to-list 'default-frame-alist '(font . "Spleen 6x12-12"))
-;;   (add-to-list 'default-frame-alist '(font . "Spleen 6x12-12")))
-
 (if (equal system-type 'windows-nt)
-    (add-to-list 'default-frame-alist '(font . "Spleen 6x12-12"))
-  (add-to-list 'default-frame-alist '(font . "Sergamon-12")))
+    (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
+  (add-to-list 'default-frame-alist '(font . "Iosevka-12")))
+
+
+
 
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
@@ -26,12 +25,11 @@
 (column-number-mode 1)
 
 ;; Disable line numbers for some modes
-(dolist
-		(mode '(org-mode-hook
-            term-mode-hook
-            shell-mode-hook
-            treemacs-mode-hook
-            eshell-mode-hook
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                treemacs-mode-hook
+                eshell-mode-hook
 		pdf-view-mode-hook
 		dired-mode))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
@@ -44,140 +42,104 @@
 ;; Show the current function name in the header line
 (which-function-mode)
 (setq-default header-line-format
-							'((which-func-mode ("" which-func-format " "))))
+              '((which-func-mode ("" which-func-format " "))))
 (setq mode-line-misc-info
-      ;; We remove Which Function Mode from the mode line, because it's mostly
-      ;; invisible here anyway.
-      (assq-delete-all 'which-func-mode mode-line-misc-info))
+            ;; We remove Which Function Mode from the mode line, because it's mostly
+            ;; invisible here anyway.
+            (assq-delete-all 'which-func-mode mode-line-misc-info))
 
-(elpaca rainbow-delimiters :wait t
-				(add-hook 'emacs-startup-hook (lambda () (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))))
-
-(elpaca highlight-indent-guides
-	;;(setq highlight-indent-guides-auto-character-face-perc 0)
-	(setq highlight-indent-guides-auto-even-face-perc 17)
-	(setq highlight-indent-guides-auto-odd-face-perc 33)
-	(setq highlight-indent-guides-auto-top-odd-face-perc 60)
-	(setq highlight-indent-guides-auto-top-even-face-perc 60)
-	;;(setq highlight-indent-guides-auto-character-face-perc 0)
-	;;(setq highlight-indent-guides-auto-top-character-face-perc 0)
-
-	(setq highlight-indent-guides-method 'column)
-	(setq highlight-indent-guides-responsive 'top)
-	(setq highlight-indent-guides-auto-enabled t)
-	(set-face-foreground 'highlight-indent-guides-character-face "dim gray")
-	;;(set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
-	(set-face-foreground 'highlight-indent-guides-top-character-face "light gray")
-	(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-	)
-
-
-(elpaca doom-themes)
-(elpaca moe-theme)
-(elpaca nordic-night-theme)
-(elpaca ef-themes)
-(elpaca standard-themes)
-;;(elpaca modus-themes)
-(when (string= system-type "gnu/linux")
-	(elpaca (alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
-(elpaca catppuccin-theme)
+(use-package doom-themes :ensure t)
+(use-package moe-theme :ensure t)
+(use-package nordic-night-theme :ensure t)
+(use-package ef-themes :ensure t)
+(use-package standard-themes :ensure t)
+;;(use-package modus-themes)
+;; (when (string= system-type "gnu/linux")
+;; 	(use-package alabaster-theme 
+;;   :straight '(alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
+(use-package catppuccin-theme :ensure t)
 ;; (setq catppuccin-flavor 'mocha)
 ;; (catppuccin-reload)
-(elpaca autothemer :ensure t)
-
-(elpaca
-	(rose-pine-emacs
-	 :host github :repo "thongpv87/rose-pine-emacs"
-	 :files (:defaults "*.el")
-	 :main "rose-pine-color-theme.el"))
-
-(elpaca timu-caribbean-theme)
-(elpaca color-theme-sanityinc-tomorrow)
-(elpaca color-theme-sanityinc-solarized)
-(elpaca 
- (emacs-material-theme
-	 :host github
-	 :repo "cpaulik/emacs-material-theme"
-	 :files (:defaults "*.el")
-	 :main "material-theme.el"
-	 ))
-(elpaca kaolin-themes)
+(use-package autothemer :ensure t)
+;; (straight-use-package
+;;  '(rose-pine-emacs
+;;    :host github
+;;    :repo "thongpv87/rose-pine-emacs"
+;;    :branch "master"))
+(use-package timu-caribbean-theme :ensure t)
+(use-package color-theme-sanityinc-tomorrow :ensure t)
+(use-package color-theme-sanityinc-solarized :ensure t)
+;; (straight-use-package
+;;  '(emacs-material-theme
+;; 	 :host github
+;; 	 :repo "cpaulik/emacs-material-theme"))
+(use-package kaolin-themes :ensure t)
   
-(elpaca all-the-icons)
-(elpaca all-the-icons-dired 
-	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-				)
+(use-package all-the-icons :ensure t)
 
-(elpaca all-the-icons-ibuffer
-	:init
-	;; Whether display the icons.
-	(setq all-the-icons-ibuffer-icon t)
+(use-package doom-modeline
+   :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
 
-	;; Whether display the colorful icons.
-	;; It respects `all-the-icons-color-icons'.
-	(setq all-the-icons-ibuffer-color-icon t)
+(use-package highlight-blocks :ensure t)
+(use-package rainbow-delimiters
+   :ensure t
+	:hook (prog-mode . rainbow-delimiters-mode))
 
-	;; The default icon size in ibuffer.
-	(setq all-the-icons-ibuffer-icon-size 1.0)
+(use-package all-the-icons-ibuffer
+  :ensure t
+  :init
+  ;; Whether display the icons.
+(setq all-the-icons-ibuffer-icon t)
 
-	;; The default vertical adjustment of the icon in ibuffer.
-	(setq all-the-icons-ibuffer-icon-v-adjust 0.0)
+;; Whether display the colorful icons.
+;; It respects `all-the-icons-color-icons'.
+(setq all-the-icons-ibuffer-color-icon t)
 
-	;; Use human readable file size in ibuffer.
-	(setq  all-the-icons-ibuffer-human-readable-size t)
+;; The default icon size in ibuffer.
+(setq all-the-icons-ibuffer-icon-size 1.0)
 
-  (add-hook 'ibuffer-mode-hook 'all-the-icons-ibuffer-mode))
+;; The default vertical adjustment of the icon in ibuffer.
+(setq all-the-icons-ibuffer-icon-v-adjust 0.0)
 
-
-(elpaca doom-modeline
-(doom-modeline-mode 1)
-(setq doom-modeline-height 15))
-
-(elpaca highlight-blocks)
-
-
+;; Use human readable file size in ibuffer.
+(setq  all-the-icons-ibuffer-human-readable-size t)
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
 
 
 
-;; (elpaca nav-flash :ensure t
-;;   :config (nav-flash-show))
-(elpaca pulsar
-  
-  (general-define-key
-   :keymaps 'global-map
-   "C-x l" 'pulsar-pulse-line
-   "C-x L" 'pulsar-highlight-permanently-dwim
-   )
-  ;; ( :map global-map
-  ;;   ("C-x l" . pulsar-pulse-line) ; overrides `count-lines-page'
-  ;;   ("C-x L" . pulsar-highlight-permanently-dwim)) ; or use `pulsar-highlight-temporarily-dwim'
-  (pulsar-global-mode 1)
-  (setq pulsar-delay 0.055)
-  (setq pulsar-iterations 5)
-  (setq pulsar-face 'pulsar-green)
-  (setq pulsar-region-face 'pulsar-yellow)
-  (setq pulsar-highlight-face 'pulsar-magenta))
+
+(use-package nav-flash :ensure t
+  :config (nav-flash-show))
 
 
-;; (elpaca beacon :ensure t
-;;   :config
-;;   (beacon-mode 1))
-;; (elpaca dimmer :ensure t
+(use-package beacon :ensure t
+  :config
+  (beacon-mode 1))
+;; (use-package dimmer :ensure t
 ;;   :config
 ;;   (setq dimmer-fraction 0.6)
 ;;   (dimmer-mode t))
 
-;; (elpaca indent-bars
-;; 	:custom
-;; 	(indent-bars-no-descend-lists t)
-;; 	;;(indent-bars-no-descend-lists 'skip)
-;; 	(indent-bars-starting-column 0)
-;; 	(indent-bars-treesit-support t)
-;; 	(indent-bars-treesit-ignore-blank-lines-types '("module"))
-;; 	:init
-;; 	(add-hook 'prog-mode-hook 'indent-bars-mode))
+(use-package highlight-indent-guides
+   :ensure t
+  :config
+  ;;(setq highlight-indent-guides-auto-character-face-perc 0)
+  (setq highlight-indent-guides-auto-even-face-perc 18)
+  (setq highlight-indent-guides-auto-odd-face-perc 35)
+	(setq highlight-indent-guides-auto-top-odd-face-perc 60)
+	(setq highlight-indent-guides-auto-top-even-face-perc 60)
+  ;;(setq highlight-indent-guides-auto-character-face-perc 0)
+  ;;(setq highlight-indent-guides-auto-top-character-face-perc 0)
 
-
+  (setq highlight-indent-guides-method 'column)
+  (setq highlight-indent-guides-responsive 'top)
+  (setq highlight-indent-guides-auto-enabled t)
+  (set-face-foreground 'highlight-indent-guides-character-face "dim gray")
+  (set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  )
 
 ;;customize search
 (setq lazy-highlight-cleanup nil)
@@ -187,33 +149,27 @@
 (add-hook 'dired-mode-hook
       (lambda ()
         (dired-hide-details-mode)))
-;;(add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
-;; (elpaca casual)
+;; (use-package casual :ensure t)
 ;; (add-hook 'dired-mode-hook #'casual-dired-tmenu)
 ;; (add-hook 'bookmark-bmenu-mode-hook #'casual-bookmarks-tmenu)
 ;; (add-hook 'ibuffer-hook #'casual-ibuffer-tmenu)
 
-(elpaca rand-theme
-	(setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
+(use-package rand-theme :ensure t
+  :init
+  (setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
 timu-caribbean moe-dark ef-symbiosis ef-trio-dark ef-tritanopia-dark ef-owl ef-night ef-maris-dark ef-elea-dark
 ef-duo-dark ef-dream ef-deuteranopia-dark ef-dark ef-cherie ef-bio ef-autumn sanityinc-tomorrow-eighties catppuccin
-material))
-	(rand-theme))
-
-
-;; ======= COLORFUL ==========
-(elpaca colorful-mode
-  ;; :diminish
-  ;; :ensure t ; Optional
-  (setq colorful-use-prefix t)
-  (setq colorful-only-strings 'only-prog)
-  (setq css-fontify-colors nil)
-  (global-colorful-mode t)
-  (add-to-list 'global-colorful-modes 'helpful-mode))
-
-
-;; ========== breadcrumb =======
-(elpaca breadcrumb
-	(breadcrumb-mode 1))
+material doom-1337 doom-Iosvkem doom-acario-dark doom-ayu-dark doom-ayu-mirage
+doom-badger doom-bluloco-dark doom-challenger-deep doom-city-lights doom-dark+ doom-dracula
+doom-earl-grey doom-ephemeral doom-fairy-floss doom-feather-dark doom-flatwhite doom-gruvbox
+doom-henna doom-homage-black doom-homage-white doom-horizon doom-ir-black doom-lantern doom-laserwave doom-manegarm
+doom-material-dark doom-material doom-meltbus doom-miramare doom-molokai doom-monokai-classic doom-monokai-machine
+doom-monokai-octagon doom-monokai-pro doom-monokai-ristretto doom-monokai-spectrum doom-moonlight doom-nord-aurora
+doom-nord doom-nova doom-oceanic-next doom-oksolar-dark doom-old-hope doom-one doom-opera doom-outrun-electric
+doom-palenight doom-peacock doom-pine doom-plain-dark doom-rouge doom-shades-of-purple doom-snazzy
+doom-solarized-dark-high-contrast doom-solarized-dark doom-sourcerer doom-spacegrey doom-tokyo-night
+doom-tomorrow-night doom-vibrant doom-wilmersdorf doom-winter-is-coming-dark-blue doom-xcode doom-zenburn))
+  :config
+  (rand-theme))
 

@@ -6,12 +6,17 @@
 ;;(use-package slime-autoloads :ensure t)
 
 ;; Set your lisp system and some contribs
-(elpaca slime-company
-  (setq slime-company-completion 'fuzzy
-				slime-company-after-completion 'slime-company-just-one-space))
+(use-package slime-company
+  :ensure t
+  :after (company)
+  :config (setq slime-company-completion 'fuzzy
+                slime-company-after-completion 'slime-company-just-one-space))
 
-(elpaca slime
-  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+(use-package slime
+  ;;:demand t
+  :commands slime
+  :init
+    ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
   (when (string= system-type "windows-nt")
     ;;(load (expand-file-name "C:/Users/lkenji/.roswell/helper.el"))
     ;;(add-to-list 'exec-path "C:/Program Files/Steel Bank Common Lisp/1.4.14/")
@@ -29,11 +34,12 @@
     )
   (setq slime-contribs
         '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
-  (slime-setup '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
+  :config (slime-setup '(slime-fancy slime-company slime-asdf slime-quicklisp slime-cl-indent))
  )
 
  
- (elpaca slime-repl-ansi-color)
+ (use-package slime-repl-ansi-color
+   :after (slime))
 
 
 ;; ===================

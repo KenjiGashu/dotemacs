@@ -43,43 +43,58 @@
 
 ;; (use-package nodejs-repl
 ;;   :ensure t)
-;; (elpaca js2-highlight-vars)
-;; (elpaca eslint-fix
+;; (use-package js2-highlight-vars)
+;; (use-package eslint-fix
 ;;   :init (add-hook 'rjsx-mode-hook 
 ;;           (lambda () 
 ;;              (add-hook 'after-save-hook 'eslint-fix nil 'make-it-local))))
-;; (elpaca xref-js2
+;; (use-package xref-js2
 ;;   :hook (js2-mode . (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
-;; (elpaca indium)
-;; (elpaca company-tern
+;; (use-package indium)
+;; (use-package company-tern
 ;;   :hook (rjsx-mode tern-mode))
 
-(elpaca rjsx-mode)
+(use-package rjsx-mode
+	:ensure t)
 
-(elpaca web-mode)
+(use-package web-mode
+	:ensure t)
 
 (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
 
-(elpaca emmet-mode)
-
+(use-package emmet-mode
+	:init
 (add-hook 'web-mode-hook 'emmet-mode)
+	:ensure t)
 
-;; (elpaca lsp-tailwindcss
+
+;; (use-package lsp-tailwindcss
 ;; 	:ensure t
 ;; 	:init
 ;; 	(setq lsp-tailwindcss-add-on-mode t)
 ;; 	:config
 ;; 	(setq lsp-tailwindcss-major-modes '(web-mode html-mode sgml-mode css-mode rjsx-mode))) 
 
-(elpaca lsp-tailwindcss
-  (setq lsp-tailwindcss-add-on-mode t))
+(use-package lsp-tailwindcss
+	:ensure (:host github :repo "merrickluo/lsp-tailwindcss")
+      :init (setq lsp-tailwindcss-add-on-mode t)
+      :config
+      (dolist (tw-major-mode
+               '(css-mode
+                 css-ts-mode
+                 typescript-mode
+                 typescript-ts-mode
+                 tsx-ts-mode
+								 rjsx-mode
+                 js2-mode
+                 js-ts-mode
+                 clojure-mode))
+        (add-to-list 'lsp-tailwindcss-major-modes tw-major-mode)))
 
-
-
-(elpaca typescript-mode)
+(use-package typescript-mode
+	:ensure t)
 
 ;;(add-hook 'js-mode-hook 'eglot-ensure)
 ;;(add-hook 'js-mode-hook 'lspce-mode)
 ;;(add-hook 'js-mode-hook 'corfu-mode)
 ;;(add-hook 'js-mode-hook 'lsp)
-(add-hook 'js-mode-hook 'lsp-bridge-mode)
