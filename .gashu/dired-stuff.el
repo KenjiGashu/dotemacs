@@ -9,6 +9,7 @@
 (use-package dired-ranger :ensure t )
 (use-package dired-collapse :ensure t )
 (use-package dired-sidebar :ensure t
+	:after general
   :commands (dired-sidebar-toggle-sidebar)
 	:config
 	(setq dired-sidebar-width 65)
@@ -21,13 +22,16 @@
    :non-normal-prefix "C-SPC"
    "o=" 'dired-sidebar-toggle-sidebar))
 
-(use-package all-the-icons-dired :ensure t )
-
+(use-package all-the-icons-dired :ensure t
+	:init
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+	)
+
 ;;(add-hook 'dired-mode-hook 'dired-collapse-mode)
 
 
 (use-package dired-subtree
+	:ensure t
   :config
   (evil-define-key '(normal) dired-mode-map
     (kbd "TAB") 'dired-subtree-insert

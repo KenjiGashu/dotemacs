@@ -63,9 +63,10 @@
 (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
 
 (use-package emmet-mode
+	:init
+(add-hook 'web-mode-hook 'emmet-mode)
 	:ensure t)
 
-(add-hook 'web-mode-hook 'emmet-mode)
 
 ;; (use-package lsp-tailwindcss
 ;; 	:ensure t
@@ -75,7 +76,7 @@
 ;; 	(setq lsp-tailwindcss-major-modes '(web-mode html-mode sgml-mode css-mode rjsx-mode))) 
 
 (use-package lsp-tailwindcss
-      :straight '(lsp-tailwindcss :type git :host github :repo "merrickluo/lsp-tailwindcss")
+	:ensure (:host github :repo "merrickluo/lsp-tailwindcss")
       :init (setq lsp-tailwindcss-add-on-mode t)
       :config
       (dolist (tw-major-mode
@@ -97,4 +98,3 @@
 ;;(add-hook 'js-mode-hook 'lspce-mode)
 ;;(add-hook 'js-mode-hook 'corfu-mode)
 ;;(add-hook 'js-mode-hook 'lsp)
-(add-hook 'js-mode-hook 'lsp-bridge-mode)

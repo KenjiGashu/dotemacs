@@ -1,4 +1,6 @@
 (use-package corfu
+:ensure t
+:after general
   ;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -27,6 +29,18 @@
 
   ;;:init
 	;;(global-corfu-mode)
+
+	:config
+
+(add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
+(add-hook 'corfu-mode-hook 'corfu-history-mode)
+(add-hook 'corfu-mode-hook 'corfu-echo-mode)
+(setq corfu-popupinfo-delay (cons 0.8 0.55))
+
+(general-define-key
+ :states '(insert emacs)
+ :keymaps '(corfu-mode-map)
+ "C-M-i" 'completion-at-point)
 	)
 
 
@@ -52,6 +66,7 @@
 
 ;; Add extensions
 (use-package cape
+:ensure t
   :init
   ;; Add to the global default value of `completion-at-point-functions' which is
   ;; used by `completion-at-point'.  The order of the functions matters, the
@@ -72,6 +87,7 @@
 )
 
 (use-package orderless
+  :ensure t
   :init
 
   ;; Tune the global completion style settings to your liking!
@@ -111,12 +127,3 @@
 
 ;;(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
 
-(add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
-(add-hook 'corfu-mode-hook 'corfu-history-mode)
-(add-hook 'corfu-mode-hook 'corfu-echo-mode)
-(setq corfu-popupinfo-delay (cons 0.8 0.55))
-
-(general-define-key
- :states '(insert emacs)
- :keymaps '(corfu-mode-map)
- "C-M-i" 'completion-at-point)

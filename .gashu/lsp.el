@@ -3,6 +3,8 @@
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
 (use-package lsp-mode
+	:after t
+	:ensure t
 	:custom
       (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
       (lsp-completion-provider :none)       ; Using Corfu as the provider
@@ -65,10 +67,17 @@
   :hook
   (lsp-completion-mode . my/lsp-mode-setup-completion)
 
-	:ensure t
 	:config
 	(setq lsp-keymap-prefix "SPC l")
   (fset 'lsp-command-map lsp-command-map)
+	(general-define-key
+   :states '(normal visual insert emacs)
+	 :prefix "SPC"
+   :keymaps '(lsp-command-map)
+	 :non-normal-prefix "C-SPC"
+   "ld" 'lsp-find-definition
+	 "lr" 'lsp-find-references
+	 "la" 'lsp-execute-code-action)
 	)
 
 
@@ -80,14 +89,7 @@
 (use-package lsp-java
 	:ensure t)
 
-(general-define-key
-   :states '(normal visual insert emacs)
-	 :prefix "SPC"
-   :keymaps '(lsp-command-map)
-	 :non-normal-prefix "C-SPC"
-   "ld" 'lsp-find-definition
-	 "lr" 'lsp-find-references
-	 "la" 'lsp-execute-code-action)
+
 
 ;; (defun lsp-booster--advice-json-parse (old-fn &rest args)
 ;;   "Try to parse bytecode instead of json."

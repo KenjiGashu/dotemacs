@@ -1,23 +1,17 @@
 ;;
 ;; lisp mode hook
 ;;
+(use-package emacs
+:after rainbow-delimiters
+:config
 (add-hook 'lisp-mode-hook
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
-			 (lsp-bridge-mode)
 			 (setq-local acm-enable-capf t)
 	     (rainbow-delimiters-mode)))
-
-;;
-;; geiser
-;;
-(use-package geiser
-  :ensure t
-  :init (setq geiser-active-implementations '(racket)))
-
-
-;; corfu
+	     
+	 ;; corfu
 ;; (add-hook 'emacs-lisp-mode-hook 'corfu-mode)
 
 ;; (add-hook 'lisp-mode-hook 'corfu-mode)
@@ -29,7 +23,6 @@
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
-			 (lsp-bridge-mode)
 			 (setq-local acm-enable-capf t)
 	     (rainbow-delimiters-mode)
 	     (geiser-mode)))
@@ -42,8 +35,19 @@
 	     ;;(highlight-sexp-mode)
 	     ;;(highlight-blocks-mode)
 	     ;;(corfu-mode)
-			 (lsp-bridge-mode)
 			 (setq-local acm-enable-capf t)
 	     (eldoc-mode)
-	     (rainbow-delimiters-mode)))
+	     (rainbow-delimiters-mode)))    
+)
+
+
+;;
+;; geiser
+;;
+(use-package geiser
+  :ensure t
+  :init (setq geiser-active-implementations '(racket)))
+
+
+
 

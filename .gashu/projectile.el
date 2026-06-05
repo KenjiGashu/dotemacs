@@ -1,4 +1,5 @@
 (use-package projectile
+	:after general
   :init 
 	(general-define-key
    :states '(normal visual insert emacs)

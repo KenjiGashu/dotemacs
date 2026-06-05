@@ -1,10 +1,7 @@
 (use-package dap-mode
-	:ensure t)
-
-;; (use-package realgud
-;; 	:ensure t)
-
-;; ;; Enabling only some features
+	:ensure t
+	:config
+	;; ;; Enabling only some features
 ;; (setq dap-auto-configure-features '(sessions locals controls tooltip))
 (dap-mode 1)
 (dap-auto-configure-mode 1)
@@ -27,3 +24,8 @@
 (require 'dap-netcore)
 (require 'dap-lldb)
 (require 'dap-gdb-lldb)
+
+	)
+
+;; (use-package realgud
+;; 	:ensure t)

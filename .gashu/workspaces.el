@@ -11,8 +11,8 @@
 ;; alternatively 
 (desktop-save-mode 1)
 
-(straight-use-package
- `(desktop-plus :type git :host github :repo "ffevotte/desktop-plus"))
+(use-package desktop+
+:ensure (:host github :repo "https://github.com/ffevotte/desktop-plus"))
 
 (setq desktop+-base-dir (concat xdg-home "desktops"))
 

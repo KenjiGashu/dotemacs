@@ -34,9 +34,11 @@
 ;;
 
 (use-package bookmark+
-  :straight '(bookmark+ :type git :host github :repo "emacsmirror/bookmark-plus"))
-
-(general-define-key
+	:ensure (:host github
+					 :repo "https://github.com/emacsmirror/bookmark-plus")
+	:after general
+	:config
+	(general-define-key
  :states '(normal  visual insert emacs)
  :prefix "SPC"
  :keymaps '(override pdf-view-mode)
@@ -46,6 +48,9 @@
  "bt" 'bmkp-switch-bookmark-file-create
  "bn" 'bmkp-next-bookmark
  "bp" 'bmkp-previous-bookmark)
+  )
+
+
 
 
 (setq bookmark-save-flag 1

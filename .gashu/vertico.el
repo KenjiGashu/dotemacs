@@ -53,13 +53,11 @@
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
-	:ensure t
   :init
   (savehist-mode))
 
 ;; A few more useful configurations...
 (use-package emacs
-	:ensure t
   :init
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; Alternatively try `consult-completing-read-multiple'.

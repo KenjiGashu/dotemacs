@@ -48,48 +48,49 @@
             ;; invisible here anyway.
             (assq-delete-all 'which-func-mode mode-line-misc-info))
 
-(use-package doom-themes)
-(use-package moe-theme)
-(use-package nordic-night-theme)
-(use-package ef-themes)
-(use-package standard-themes)
+(use-package doom-themes :ensure t)
+(use-package moe-theme :ensure t)
+(use-package nordic-night-theme :ensure t)
+(use-package ef-themes :ensure t)
+(use-package standard-themes :ensure t)
 ;;(use-package modus-themes)
-(when (string= system-type "gnu/linux")
-	(use-package alabaster-theme 
-  :straight '(alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
-(use-package catppuccin-theme)
+;; (when (string= system-type "gnu/linux")
+;; 	(use-package alabaster-theme 
+;;   :straight '(alabaster-theme :type git :host github :repo "reinh/flatwhite-emacs")))
+(use-package catppuccin-theme :ensure t)
 ;; (setq catppuccin-flavor 'mocha)
 ;; (catppuccin-reload)
 (use-package autothemer :ensure t)
-(straight-use-package
- '(rose-pine-emacs
-   :host github
-   :repo "thongpv87/rose-pine-emacs"
-   :branch "master"))
-(use-package timu-caribbean-theme)
-(use-package color-theme-sanityinc-tomorrow)
-(use-package color-theme-sanityinc-solarized)
-(straight-use-package
- '(emacs-material-theme
-	 :host github
-	 :repo "cpaulik/emacs-material-theme"))
-(use-package kaolin-themes)
+;; (straight-use-package
+;;  '(rose-pine-emacs
+;;    :host github
+;;    :repo "thongpv87/rose-pine-emacs"
+;;    :branch "master"))
+(use-package timu-caribbean-theme :ensure t)
+(use-package color-theme-sanityinc-tomorrow :ensure t)
+(use-package color-theme-sanityinc-solarized :ensure t)
+;; (straight-use-package
+;;  '(emacs-material-theme
+;; 	 :host github
+;; 	 :repo "cpaulik/emacs-material-theme"))
+(use-package kaolin-themes :ensure t)
   
-(use-package all-the-icons)
+(use-package all-the-icons :ensure t)
 
 (use-package doom-modeline
+   :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
 
-(use-package highlight-blocks)
+(use-package highlight-blocks :ensure t)
 (use-package rainbow-delimiters
+   :ensure t
 	:hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package all-the-icons-ibuffer
   :ensure t
-  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
-
-;; Whether display the icons.
+  :init
+  ;; Whether display the icons.
 (setq all-the-icons-ibuffer-icon t)
 
 ;; Whether display the colorful icons.
@@ -104,6 +105,9 @@
 
 ;; Use human readable file size in ibuffer.
 (setq  all-the-icons-ibuffer-human-readable-size t)
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
+
+
 
 
 (use-package nav-flash :ensure t
@@ -119,6 +123,7 @@
 ;;   (dimmer-mode t))
 
 (use-package highlight-indent-guides
+   :ensure t
   :config
   ;;(setq highlight-indent-guides-auto-character-face-perc 0)
   (setq highlight-indent-guides-auto-even-face-perc 18)
@@ -145,14 +150,26 @@
       (lambda ()
         (dired-hide-details-mode)))
 
-(use-package casual)
-(add-hook 'dired-mode-hook #'casual-dired-tmenu)
-(add-hook 'bookmark-bmenu-mode-hook #'casual-bookmarks-tmenu)
-(add-hook 'ibuffer-hook #'casual-ibuffer-tmenu)
+;; (use-package casual :ensure t)
+;; (add-hook 'dired-mode-hook #'casual-dired-tmenu)
+;; (add-hook 'bookmark-bmenu-mode-hook #'casual-bookmarks-tmenu)
+;; (add-hook 'ibuffer-hook #'casual-ibuffer-tmenu)
 
-(use-package rand-theme)
-(setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
+(use-package rand-theme :ensure t
+  :init
+  (setq rand-theme-wanted '(modus-vivendi-deuteranopia modus-vivendi modus-vivendi-tinted modus-vivendi-tritanopia
 timu-caribbean moe-dark ef-symbiosis ef-trio-dark ef-tritanopia-dark ef-owl ef-night ef-maris-dark ef-elea-dark
 ef-duo-dark ef-dream ef-deuteranopia-dark ef-dark ef-cherie ef-bio ef-autumn sanityinc-tomorrow-eighties catppuccin
-material))
-(rand-theme)
+material doom-1337 doom-Iosvkem doom-acario-dark doom-ayu-dark doom-ayu-mirage
+doom-badger doom-bluloco-dark doom-challenger-deep doom-city-lights doom-dark+ doom-dracula
+doom-earl-grey doom-ephemeral doom-fairy-floss doom-feather-dark doom-flatwhite doom-gruvbox
+doom-henna doom-homage-black doom-homage-white doom-horizon doom-ir-black doom-lantern doom-laserwave doom-manegarm
+doom-material-dark doom-material doom-meltbus doom-miramare doom-molokai doom-monokai-classic doom-monokai-machine
+doom-monokai-octagon doom-monokai-pro doom-monokai-ristretto doom-monokai-spectrum doom-moonlight doom-nord-aurora
+doom-nord doom-nova doom-oceanic-next doom-oksolar-dark doom-old-hope doom-one doom-opera doom-outrun-electric
+doom-palenight doom-peacock doom-pine doom-plain-dark doom-rouge doom-shades-of-purple doom-snazzy
+doom-solarized-dark-high-contrast doom-solarized-dark doom-sourcerer doom-spacegrey doom-tokyo-night
+doom-tomorrow-night doom-vibrant doom-wilmersdorf doom-winter-is-coming-dark-blue doom-xcode doom-zenburn))
+  :config
+  (rand-theme))
+

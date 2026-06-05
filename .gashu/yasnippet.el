@@ -1,4 +1,6 @@
 (use-package yasnippet
+  :after general
+  :ensure t
   ;;:demand t
   :config
   (yas-global-mode 1)
@@ -48,6 +50,7 @@
 
 					
 (use-package auto-yasnippet :ensure t
+  :after general
   :config
   (general-define-key
    :states '(normal visual insert emacs)

@@ -1,6 +1,7 @@
 ;;tempel
 ;; Configure Tempel
 (use-package tempel
+	:ensure t
   ;; Require trigger prefix before template name when completing.
   ;; :custom
   ;; (tempel-trigger-prefix "<")
@@ -35,7 +36,7 @@
 
 ;; Optional: Add tempel-collection.
 ;; The package is young and doesn't have comprehensive coverage.
-(use-package tempel-collection)
+(use-package tempel-collection :ensure t)
 
 
 ;; (defun tempel-include (elt)

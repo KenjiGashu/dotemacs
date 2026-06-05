@@ -36,6 +36,7 @@ nil : Otherwise, return nil and run next lineup function."
 
 ;;fix header not found when flycheck is enabled
 (use-package flycheck-clang-tidy
+	:ensure t
   :after flycheck
   :hook
   (flycheck-mode . flycheck-clang-tidy-setup)
@@ -49,12 +50,10 @@ nil : Otherwise, return nil and run next lineup function."
 ;;(add-hook 'c-mode-hook 'lspce-mode)
 ;; (add-hook 'c-mode-hook 'lsp)
 ;; (add-hook 'c-mode-hook 'corfu-mode)
-(add-hook 'c-mode-hook 'lsp-bridge-mode)
 
 ;; (add-hook 'c++-mode-hook 'lsp)
 ;; (add-hook 'c++-mode-hook 'corfu-mode)
 ;;(add-hook 'c++-mode-hook 'lspce-mode)
-(add-hook 'c++-mode-hook 'lsp-bridge-mode)
 
 ;; ==================================================================
 

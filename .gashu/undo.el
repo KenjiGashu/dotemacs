@@ -12,15 +12,18 @@
 ;;(add-hook 'after-revert-hook (lambda () (undo-tree-save-history nil t)))
 
 (use-package vundo
+	:ensure t
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package undo-fu
+	:ensure t
 	:after evil
 	:config
 	(setq evil-undo-system 'undo-fu)
   (evil-set-undo-system 'undo-fu))
 
 (use-package undo-fu-session
+	:ensure t
 	:after undo-fu
 	:config (undo-fu-session-global-mode))
