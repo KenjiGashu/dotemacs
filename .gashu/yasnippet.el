@@ -13,10 +13,27 @@
   (general-define-key
    :states '(insert)
    :non-normal-prefix "C-SPC"
-   "C-M-u" 'yas-expand))
+   "C-M-u" 'yas-expand)
+
+	:init
+	(add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
+	(add-hook 'c-ts-mode-hook
+						(lambda ()
+							(yas-minor-mode)
+							(yas-activate-extra-mode 'c++-mode)))
+
+	(add-hook 'c++-ts-mode-hook
+						(lambda ()
+							(yas-minor-mode)
+							(yas-activate-extra-mode 'c++-mode)))
+	(add-hook 'c++-mode-hook
+						(lambda ()
+							(yas-minor-mode)
+							(yas-activate-extra-mode 'c++-mode)))
+	)
 
 (use-package yasnippet-snippets
-    :after (yas-global-mode)
+    :after (yasnippet)
     :config (yas-reload-all)
     :ensure t)
 
@@ -33,24 +50,12 @@
 ;; 					(lambda ()
 ;; 						(yas-activate-extra-mode 'c++-mode))
 
-(add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
-(add-hook 'c-ts-mode-hook
-					(lambda ()
-						(yas-minor-mode)
-						(yas-activate-extra-mode 'c++-mode)))
-
-(add-hook 'c++-ts-mode-hook
-					(lambda ()
-						(yas-minor-mode)
-						(yas-activate-extra-mode 'c++-mode)))
-(add-hook 'c++-mode-hook
-					(lambda ()
-						(yas-minor-mode)
-						(yas-activate-extra-mode 'c++-mode)))
 
 					
-(use-package auto-yasnippet :ensure t
-  :after general
+(use-package auto-yasnippet
+	:ensure t
+
+  :after (yasnippet general)
   :config
   (general-define-key
    :states '(normal visual insert emacs)
