@@ -3,7 +3,7 @@
 ;;
 (use-package emacs
 :after rainbow-delimiters
-:config
+:init
 (add-hook 'lisp-mode-hook
 	  '(lambda ()
 	     ;;(highlight-sexp-mode)

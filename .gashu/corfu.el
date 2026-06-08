@@ -1,6 +1,6 @@
 (use-package corfu
-:ensure t
-:after general
+	:ensure t
+	:after general
   ;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -28,19 +28,19 @@
 	(:map corfu-map ("S-SPC" . corfu-insert-separator))
 
   ;;:init
-	;;(global-corfu-mode)
+	(global-corfu-mode)
 
 	:config
 
-(add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
-(add-hook 'corfu-mode-hook 'corfu-history-mode)
-(add-hook 'corfu-mode-hook 'corfu-echo-mode)
-(setq corfu-popupinfo-delay (cons 0.8 0.55))
+	(add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
+	(add-hook 'corfu-mode-hook 'corfu-history-mode)
+	(add-hook 'corfu-mode-hook 'corfu-echo-mode)
+	(setq corfu-popupinfo-delay (cons 0.8 0.55))
 
-(general-define-key
- :states '(insert emacs)
- :keymaps '(corfu-mode-map)
- "C-M-i" 'completion-at-point)
+	(general-define-key
+	 :states '(insert emacs)
+	 :keymaps '(corfu-mode-map)
+	 "C-M-i" 'completion-at-point)
 	)
 
 
@@ -66,15 +66,15 @@
 
 ;; Add extensions
 (use-package cape
-:ensure t
+	:ensure t
   :init
   ;; Add to the global default value of `completion-at-point-functions' which is
   ;; used by `completion-at-point'.  The order of the functions matters, the
   ;; first function returning a result wins.  Note that the list of buffer-local
   ;; completion functions takes precedence over the global list.
- (add-hook 'completion-at-point-functions #'cape-dabbrev)
- (add-hook 'completion-at-point-functions #'cape-file)
- (add-hook 'completion-at-point-functions #'cape-elisp-block)
+	(add-hook 'completion-at-point-functions #'cape-dabbrev)
+	(add-hook 'completion-at-point-functions #'cape-file)
+	(add-hook 'completion-at-point-functions #'cape-elisp-block)
   ;;(add-hook 'completion-at-point-functions #'cape-history)
   ;;(add-hook 'completion-at-point-functions #'cape-keyword)
   ;;(add-hook 'completion-at-point-functions #'cape-tex)
@@ -84,7 +84,7 @@
   ;;(add-hook 'completion-at-point-functions #'cape-dict)
   ;;(add-hook 'completion-at-point-functions #'cape-elisp-symbol)
   ;;(add-hook 'completion-at-point-functions #'cape-line)
-)
+	)
 
 (use-package orderless
   :ensure t
@@ -96,7 +96,7 @@
         completion-category-defaults nil
         completion-category-overrides nil)
 	)
-	
+
 
 
 ;; corfu terminal
@@ -119,8 +119,8 @@
   :ensure t
   :after corfu
   :custom
-   (kind-icon-blend-background t)
-   (kind-icon-default-face 'corfu-default) ; only needed with blend-background
+  (kind-icon-blend-background t)
+  (kind-icon-default-face 'corfu-default) ; only needed with blend-background
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 

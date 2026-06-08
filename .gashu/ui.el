@@ -138,6 +138,8 @@
   (setq highlight-indent-guides-auto-enabled t)
   (set-face-foreground 'highlight-indent-guides-character-face "dim gray")
   (set-face-foreground 'highlight-indent-guides-top-character-face "white smoke")
+
+	:init
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
   )
 
@@ -163,7 +165,7 @@ ef-duo-dark ef-dream ef-deuteranopia-dark ef-dark ef-cherie ef-bio ef-autumn san
 material doom-1337 doom-Iosvkem doom-acario-dark doom-ayu-dark doom-ayu-mirage
 doom-badger doom-bluloco-dark doom-challenger-deep doom-city-lights doom-dark+ doom-dracula
 doom-earl-grey doom-ephemeral doom-fairy-floss doom-feather-dark doom-flatwhite doom-gruvbox
-doom-henna doom-homage-black doom-homage-white doom-horizon doom-ir-black doom-lantern doom-laserwave doom-manegarm
+doom-henna doom-homage-black doom-horizon doom-ir-black doom-lantern doom-laserwave doom-manegarm
 doom-material-dark doom-material doom-meltbus doom-miramare doom-molokai doom-monokai-classic doom-monokai-machine
 doom-monokai-octagon doom-monokai-pro doom-monokai-ristretto doom-monokai-spectrum doom-moonlight doom-nord-aurora
 doom-nord doom-nova doom-oceanic-next doom-oksolar-dark doom-old-hope doom-one doom-opera doom-outrun-electric
