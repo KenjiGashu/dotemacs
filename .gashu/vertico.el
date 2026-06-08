@@ -9,8 +9,6 @@
   :init
   (vertico-mode)
 
-	(use-package compat :ensure t)
-
   ;; Different scroll margin
   ;; (setq vertico-scroll-margin 0)
 
@@ -36,6 +34,8 @@
                      #'consult-completion-in-region
                    #'completion--in-region)
 		 args))))
+
+(use-package compat :ensure t)
 
 ;; Optionally use the `orderless' completion style. See
 ;; `+orderless-dispatch' in the Consult wiki for an advanced Orderless style
