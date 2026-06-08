@@ -1,5 +1,6 @@
 (use-package treemacs
-	:ensure t)
+	:ensure t
+	)
 
 (use-package treemacs-evil
 	:ensure t

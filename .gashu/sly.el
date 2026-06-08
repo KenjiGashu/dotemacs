@@ -1,4 +1,5 @@
 (use-package sly
+	:ensure t
   ;;:demand t
   :commands sly
   :init
@@ -15,17 +16,18 @@
     )
 
 	(add-to-list 'sly-contribs 'sly-asdf 'append)
+	(add-hook 'sly-mrepl-mode-hook 'corfu-mode)
  )
 
 ;;(add-hook 'lisp-mode-hook #'company-mode)
 
 
 (use-package sly-asdf
+	:ensure t
   ;;:demand t
   :after sly
  )
 
-(add-hook 'sly-mrepl-mode-hook 'corfu-mode)
 
 
 ;; (asdf:initialize-source-registry

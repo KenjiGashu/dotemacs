@@ -27,16 +27,14 @@
 	:bind
 	(:map corfu-map ("S-SPC" . corfu-insert-separator))
 
-  ;;:init
+  :init
 	(global-corfu-mode)
-
-	:config
-
 	(add-hook 'corfu-mode-hook 'corfu-popupinfo-mode)
 	(add-hook 'corfu-mode-hook 'corfu-history-mode)
 	(add-hook 'corfu-mode-hook 'corfu-echo-mode)
 	(setq corfu-popupinfo-delay (cons 0.8 0.55))
 
+	:config
 	(general-define-key
 	 :states '(insert emacs)
 	 :keymaps '(corfu-mode-map)

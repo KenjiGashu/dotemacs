@@ -9,6 +9,8 @@
   :init
   (vertico-mode)
 
+	(use-package compat :ensure t)
+
   ;; Different scroll margin
   ;; (setq vertico-scroll-margin 0)
 
