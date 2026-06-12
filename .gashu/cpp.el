@@ -42,6 +42,10 @@ nil : Otherwise, return nil and run next lineup function."
   (flycheck-mode . flycheck-clang-tidy-setup)
   )
 
+(use-package emacs
+	:after (eglot)
+
+	:init
 ;;(add-hook 'c-mode-hook (lambda () (lsp-bridge-mode)))
 ;;(add-hook 'c-mode-hook 'lsp-bridge-mode)
 ;;(add-hook 'c-mode-common-hook 'lsp-bridge-mode)
@@ -49,11 +53,13 @@ nil : Otherwise, return nil and run next lineup function."
 
 ;;(add-hook 'c-mode-hook 'lspce-mode)
 ;; (add-hook 'c-mode-hook 'lsp)
-;; (add-hook 'c-mode-hook 'corfu-mode)
+(add-hook 'c-mode-hook 'eglot-ensure)
 
 ;; (add-hook 'c++-mode-hook 'lsp)
 ;; (add-hook 'c++-mode-hook 'corfu-mode)
-;;(add-hook 'c++-mode-hook 'lspce-mode)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+	)
+
 
 ;; ==================================================================
 

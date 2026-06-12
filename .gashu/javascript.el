@@ -94,6 +94,11 @@
 (use-package typescript-mode
 	:ensure t)
 
+(use-package emacs
+	:after (eglot corfu)
+	:init
+	(add-hook 'js-mode-hook 'eglot-ensure)
+	)
 ;;(add-hook 'js-mode-hook 'eglot-ensure)
 ;;(add-hook 'js-mode-hook 'lspce-mode)
 ;;(add-hook 'js-mode-hook 'corfu-mode)

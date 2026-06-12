@@ -6,8 +6,8 @@
 
 ;;change default font to iosevka
 (if (equal system-type 'windows-nt)
-    (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
-  (add-to-list 'default-frame-alist '(font . "Iosevka-12")))
+    (add-to-list 'default-frame-alist '(font . "Sergamon-11"))
+  (add-to-list 'default-frame-alist '(font . "Sergamon-12")))
 
 
 
