@@ -31,7 +31,11 @@
 
 (add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
 
-(general-define-key
+(use-package emacs
+	:after (general)
+
+	:init
+	(general-define-key
    :states '(normal visual insert emacs)
    :prefix "SPC"
    :keymaps '(eglot-mode-map)
@@ -42,6 +46,9 @@
 	 "lt" 'eglot-find-typeDefinition
 	 "lo" 'eglot-code-action-organize-imports
 	 "lz"  'eglot-shutdown-all)
+
+	)
+
 
 ;; (straight-use-package
 ;;  '(eglot-booster
